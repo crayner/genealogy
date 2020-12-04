@@ -1,2 +1,3 @@
-# genealogy
-Geneaology Manager
+# Genealogy Manager
+
+Version: Draft
