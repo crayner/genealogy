@@ -30,6 +30,20 @@ class ItemHandler
     private HeadHandler $headHandler;
 
     /**
+     * @var string
+     */
+    private string $encoding;
+
+    /**
+     * ItemHandler constructor.
+     * @param string $encoding
+     */
+    public function __construct(string $encoding)
+    {
+        $this->encoding = $encoding;
+    }
+
+    /**
      * @param ArrayCollection $item
      */
     public function parse(ArrayCollection $item)
@@ -50,6 +64,6 @@ class ItemHandler
      */
     public function getHeadHandler(): HeadHandler
     {
-        return $this->headHandler = isset($this->headHandler) ? $this->headHandler : new HeadHandler();
+        return $this->headHandler = isset($this->headHandler) ? $this->headHandler : new HeadHandler($this->encoding);
     }
 }

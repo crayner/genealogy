@@ -15,6 +15,7 @@
 namespace App\Manager;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * Class GedFileHandler
@@ -45,6 +46,11 @@ class GedFileHandler
     private ItemHandler $itemHandler;
 
     /**
+     * @var string
+     */
+    private string $encoding;
+
+    /**
      * GedFileHandler constructor.
      * @param string $fileName
      */
@@ -55,8 +61,11 @@ class GedFileHandler
 
     public function parse()
     {
-        $content = file($this->fileName);
+        $file = new File($this->fileName);
 
+        $this->setEncoding(mb_detect_encoding($file->getContent()));
+
+        $content = file($this->fileName);
         foreach ($content as $line) {
             $this->parseLine($line);
         }
@@ -66,6 +75,10 @@ class GedFileHandler
         }
     }
 
+    /**
+     * @param string $line
+     * @return $this|GedFileHandler
+     */
     private function parseLine(string $line)
     {
         $line = trim($line);
@@ -126,6 +139,24 @@ class GedFileHandler
      */
     private function getItemHandler(): ItemHandler
     {
-        return $this->itemHandler = isset($this->itemHandler) ? $this->itemHandler : new ItemHandler();
+        return $this->itemHandler = isset($this->itemHandler) ? $this->itemHandler : new ItemHandler($this->getEncoding());
+    }
+
+    /**
+     * @return string
+     */
+    public function getEncoding(): string
+    {
+        return $this->encoding;
+    }
+
+    /**
+     * @param string $encoding
+     * @return GedFileHandler
+     */
+    public function setEncoding(string $encoding): GedFileHandler
+    {
+        $this->encoding = $encoding;
+        return $this;
     }
 }
