@@ -21,6 +21,7 @@
         "symfony/flex": "^1.12",
         "symfony/framework-bundle": "^5.2",
         "symfony/intl": "5.2.*",
+        "symfony/monolog-bundle": "^3.6",
         "symfony/polyfill-intl-icu": "^1.22",
         "symfony/polyfill-uuid": "^1.22",
         "symfony/proxy-manager-bridge": "5.2.*",
@@ -34,7 +35,6 @@
     "require-dev": {
         "symfony/debug-bundle": "^5.2",
         "symfony/maker-bundle": "^1.30",
-        "symfony/monolog-bundle": "^3.0",
         "symfony/stopwatch": "^5.2",
         "symfony/var-dumper": "^5.2",
         "symfony/web-profiler-bundle": "^5.2"

@@ -17,6 +17,7 @@ namespace App\Manager;
 use App\Entity\Gedcom;
 use App\Entity\Header;
 use App\Exception\FileEncodingException;
+use App\Exception\HeaderInvalidException;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -59,9 +60,9 @@ class HeadHandler
     public function parse(ArrayCollection $item)
     {
         $q = 0;
-        while ($q<=count($item)) {
+        while ($q<count($item)) {
             $line = $item[$q];
-            $tag = substr($line, 2, 4);
+            extract(LineManager::getLineDetails($line));
             switch ($tag) {
                 case 'HEAD':
                     break;
@@ -92,14 +93,15 @@ class HeadHandler
                     }
                     $this->getHeader()->setDate($date);
                     break;
+                case 'FILE':
+                    $this->getHeader()->setFile(substr($line, 7));
+                    break;
                 default:
-                    dd(__CLASS__ . ': How to handle a '. $tag, $q, $item, $this);
+                    if (strpos($tag, '_') !== 0)
+                        throw new HeaderInvalidException(sprintf('The header was not able to handle a tag of "%s".', $tag));
             }
             $q++;
         }
-
-
-        $this->getHeader()->setGedcom($this->getGedcom());
     }
 
     /**

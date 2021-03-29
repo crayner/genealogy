@@ -21,8 +21,12 @@ tags:
                 description: The initial or original material from which information was obtained or (HEAD.SOUR) the
                       system that created the GEDCOM file.
             - DEST:
-                  name: DESTINATION
-                  description: A system receiving data
+                name: DESTINATION
+                description: A system receiving data
             - DATE:
-                  name: DATE
-                  description: The time of an event in a calendar format.
+                name: DATE
+                description: The time of an event in a calendar format.
+            - FILE:
+                name: FILE
+                description: The name of an external file, or, in the case of HEAD.FILE, the original filename of this
+                     GEDCOM file.
