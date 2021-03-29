@@ -31,13 +31,14 @@ class DefaultController extends AbstractController
     /**
      * @Route("/",name="home")
      * @param FileNameDiscriminator $fileNameDiscriminator
+     * @param GedFileHandler $handler
      * @return Response
      */
-    public function home(FileNameDiscriminator $fileNameDiscriminator): Response
+    public function home(FileNameDiscriminator $fileNameDiscriminator, GedFileHandler $handler): Response
     {
         $file = $fileNameDiscriminator->execute();
 
-        $handler = new GedFileHandler($file);
+        $handler->setFileName($file);
 
         return $this->render('base.html.twig',
             [

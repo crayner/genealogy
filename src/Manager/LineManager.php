@@ -50,7 +50,7 @@ class LineManager
         }
 
         if (key_exists(2, $items)) {
-            self::setLevel(implode(' ',$items));
+            self::setContent(implode(' ',$items));
         }
 
         return [
@@ -105,8 +105,6 @@ class LineManager
      */
     public static function setContent(string $content): void
     {
-        self::$content = $content;
+        self::$content = str_replace(['@@'], ['@'], $content);
     }
-
-
 }

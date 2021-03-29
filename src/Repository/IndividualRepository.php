@@ -1,30 +1,43 @@
 <?php
+/**
+ * Created by PhpStorm.
+ *
+ * genealogy
+ * (c) 2021 Craig Rayner <craig@craigrayner.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * User: Craig Rayner
+ * Date: 30/03/2021
+ * Time: 08:58
+ */
 
 namespace App\Repository;
 
-use App\Entity\Header;
+
+use App\Entity\Individual;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Header|null find($id, $lockMode = null, $lockVersion = null)
- * @method Header|null findOneBy(array $criteria, array $orderBy = null)
- * @method Header[]    findAll()
- * @method Header[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Class IndividualRepository
+ * @package App\Repository
+ * @author  Craig Rayner <craig@craigrayner.com>
+ * 30/03/2021 08:59
  */
-class HeaderRepository extends ServiceEntityRepository
+class IndividualRepository extends ServiceEntityRepository
 {
     /**
-     * HeaderRepository constructor.
+     * IndividualRepository constructor.
      * @param ManagerRegistry $registry
      */
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Header::class);
+        parent::__construct($registry, Individual::class);
     }
 
     // /**
-    //  * @return Header[] Returns an array of Header objects
+    //  * @return Individual[] Returns an array of Individual objects
     //  */
     /*
     public function findByExampleField($value)
@@ -41,7 +54,7 @@ class HeaderRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Header
+    public function findOneBySomeField($value): ?Individual
     {
         return $this->createQueryBuilder('i')
             ->andWhere('i.exampleField = :val')

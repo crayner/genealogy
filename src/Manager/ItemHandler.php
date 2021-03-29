@@ -30,17 +30,24 @@ class ItemHandler
     private HeadHandler $headHandler;
 
     /**
+     * @var IndividualHandler
+     */
+    private IndividualHandler $individualHandler;
+
+    /**
      * @var string
      */
     private string $encoding;
 
     /**
      * ItemHandler constructor.
-     * @param string $encoding
+     * @param HeadHandler $headHandler
+     * @param IndividualHandler $individualHandler
      */
-    public function __construct(string $encoding)
+    public function __construct(HeadHandler $headHandler, IndividualHandler $individualHandler)
     {
-        $this->encoding = $encoding;
+        $this->headHandler = $headHandler;
+        $this->individualHandler = $individualHandler;
     }
 
     /**
@@ -49,10 +56,13 @@ class ItemHandler
     public function parse(ArrayCollection $item)
     {
         // item Type
-        $first = preg_match("/HEAD/",$item->first(), $matches);
+        $first = preg_match("/HEAD|INDI$/",$item->first(), $matches);
         switch(key_exists(0, $matches) ? $matches[0] : '') {
             case 'HEAD':
                 $this->getHeadHandler()->parse($item);
+                break;
+            case 'INDI':
+                $this->getIndividualHandler()->parse($item);
                 break;
             default:
                 dd($item);
@@ -64,6 +74,33 @@ class ItemHandler
      */
     public function getHeadHandler(): HeadHandler
     {
-        return $this->headHandler = isset($this->headHandler) ? $this->headHandler : new HeadHandler($this->encoding);
+        $this->headHandler->setEncoding($this->getEncoding());
+        return $this->headHandler;
+    }
+
+    /**
+     * @return IndividualHandler
+     */
+    public function getIndividualHandler(): IndividualHandler
+    {
+        return $this->individualHandler;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEncoding(): string
+    {
+        return $this->encoding;
+    }
+
+    /**
+     * @param string $encoding
+     * @return ItemHandler
+     */
+    public function setEncoding(string $encoding): ItemHandler
+    {
+        $this->encoding = $encoding;
+        return $this;
     }
 }

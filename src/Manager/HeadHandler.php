@@ -45,16 +45,6 @@ class HeadHandler
     private string $encoding;
 
     /**
-     * HeadHandler constructor.
-     * @param string $encoding
-     */
-    public function __construct(string $encoding)
-    {
-        $this->encoding = $encoding;
-        $this->getHeader();
-    }
-
-    /**
      * @param ArrayCollection $item
      */
     public function parse(ArrayCollection $item)
@@ -163,5 +153,23 @@ class HeadHandler
 
         $this->getHeader()->setSource($source);
         return $q - 1;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEncoding(): string
+    {
+        return $this->encoding;
+    }
+
+    /**
+     * @param string $encoding
+     * @return HeadHandler
+     */
+    public function setEncoding(string $encoding): HeadHandler
+    {
+        $this->encoding = $encoding;
+        return $this;
     }
 }

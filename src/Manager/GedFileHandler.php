@@ -52,16 +52,16 @@ class GedFileHandler
 
     /**
      * GedFileHandler constructor.
-     * @param string $fileName
+     * @param ItemHandler $itemHandler
      */
-    public function __construct(string $fileName)
+    public function __construct(ItemHandler $itemHandler)
     {
-        $this->fileName = $fileName;
+        $this->itemHandler = $itemHandler;
     }
 
     public function parse()
     {
-        $file = new File($this->fileName);
+        $file = new File($this->getFileName());
 
         $this->setEncoding(mb_detect_encoding($file->getContent()));
 
@@ -139,7 +139,26 @@ class GedFileHandler
      */
     private function getItemHandler(): ItemHandler
     {
-        return $this->itemHandler = isset($this->itemHandler) ? $this->itemHandler : new ItemHandler($this->getEncoding());
+        $this->itemHandler->setEncoding($this->getEncoding());
+        return $this->itemHandler;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileName(): string
+    {
+        return $this->fileName;
+    }
+
+    /**
+     * @param string $fileName
+     * @return GedFileHandler
+     */
+    public function setFileName(string $fileName): GedFileHandler
+    {
+        $this->fileName = $fileName;
+        return $this;
     }
 
     /**
