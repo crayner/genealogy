@@ -77,6 +77,9 @@ class HeadHandler
                     $lang = substr($line, 7);
                     $this->getHeader()->setLang($lang);
                     break;
+                case 'SOUR':
+                    $q = $this->setSource($q, $item, substr($line, 7));
+                    break;
                 default:
                     dd(__CLASS__ . ': How to handle a '. $tag, $q, $item, $this);
             }
@@ -128,5 +131,23 @@ class HeadHandler
     public function getHeader(): Header
     {
         return $this->header = isset($this->header) ? $this->header : new Header();
+    }
+
+    /**
+     * @param int $q
+     * @param ArrayCollection $item
+     * @param string $source
+     * @return int
+     */
+    public function setSource(int $q, ArrayCollection $item, string $source): int
+    {
+        $line = '';
+        do {
+            $q++;
+            $line = $item->get($q);
+        } while (intval(substr($line, 0,1)) > 1);
+
+        $this->getHeader()->setSource($source);
+        return $q - 1;
     }
 }

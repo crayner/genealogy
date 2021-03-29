@@ -17,7 +17,6 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Intl\Exception\MissingResourceException;
-use Symfony\Component\Intl\Intl;
 use Symfony\Component\Intl\Languages;
 
 /**
@@ -59,6 +58,12 @@ class Header
      * @ORM\Column(length=32)
      */
     private string $lang;
+
+    /**
+     * @var string
+     * @ORM\Column(length=191)
+     */
+    private string $source;
 
     /**
      * @return string|null
@@ -120,6 +125,24 @@ class Header
         $code = array_search($lang, Languages::getNames());
         $lang = Languages::getAlpha3Code($code);
         $this->lang = $lang;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSource(): string
+    {
+        return $this->source;
+    }
+
+    /**
+     * @param string $source
+     * @return Header
+     */
+    public function setSource(string $source): Header
+    {
+        $this->source = $source;
         return $this;
     }
 

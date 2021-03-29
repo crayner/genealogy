@@ -16,3 +16,7 @@ tags:
             - LANG:
                 name: LANGUAGE
                 description: The name of the language used in a communication or transmission of information.
+            - SOUR:
+                name: SOURCE
+                description: The initial or original material from which information was obtained or (HEAD.SOUR) the
+                      system that created the GEDCOM file.
