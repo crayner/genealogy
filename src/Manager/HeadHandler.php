@@ -80,6 +80,9 @@ class HeadHandler
                 case 'SOUR':
                     $q = $this->setSource($q, $item, substr($line, 7));
                     break;
+                case 'DEST':
+                    $this->getHeader()->setDestination(substr($line, 7));
+                    break;
                 default:
                     dd(__CLASS__ . ': How to handle a '. $tag, $q, $item, $this);
             }

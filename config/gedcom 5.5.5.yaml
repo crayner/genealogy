@@ -20,3 +20,6 @@ tags:
                 name: SOURCE
                 description: The initial or original material from which information was obtained or (HEAD.SOUR) the
                       system that created the GEDCOM file.
+            - DEST:
+                  name: DESTINATION
+                  description: A system receiving data

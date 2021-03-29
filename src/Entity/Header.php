@@ -66,6 +66,12 @@ class Header
     private string $source;
 
     /**
+     * @var string
+     * @ORM\Column(length=191)
+     */
+    private string $destination;
+
+    /**
      * @return string|null
      */
     public function getId(): ?string
@@ -146,4 +152,21 @@ class Header
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getDestination(): string
+    {
+        return $this->destination;
+    }
+
+    /**
+     * @param string $destination
+     * @return Header
+     */
+    public function setDestination(string $destination): Header
+    {
+        $this->destination = $destination;
+        return $this;
+    }
 }
