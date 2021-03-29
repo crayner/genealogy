@@ -73,6 +73,10 @@ class HeadHandler
                     else
                         throw new FileEncodingException($this->encoding, substr($line, 7));
                     break;
+                case 'LANG':
+                    $lang = substr($line, 7);
+                    $this->getHeader()->setLang($lang);
+                    break;
                 default:
                     dd(__CLASS__ . ': How to handle a '. $tag, $q, $item, $this);
             }
