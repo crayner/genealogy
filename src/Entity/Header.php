@@ -14,6 +14,7 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Intl\Exception\MissingResourceException;
@@ -70,6 +71,12 @@ class Header
      * @ORM\Column(length=191)
      */
     private string $destination;
+
+    /**
+     * @var DateTimeImmutable
+     * @ORM\Column(type="date_immutable")
+     */
+    private DateTimeImmutable $date;
 
     /**
      * @return string|null
@@ -167,6 +174,24 @@ class Header
     public function setDestination(string $destination): Header
     {
         $this->destination = $destination;
+        return $this;
+    }
+
+    /**
+     * @return DateTimeImmutable
+     */
+    public function getDate(): DateTimeImmutable
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param DateTimeImmutable $date
+     * @return Header
+     */
+    public function setDate(DateTimeImmutable $date): Header
+    {
+        $this->date = $date;
         return $this;
     }
 }

@@ -17,6 +17,7 @@ namespace App\Manager;
 use App\Entity\Gedcom;
 use App\Entity\Header;
 use App\Exception\FileEncodingException;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -82,6 +83,14 @@ class HeadHandler
                     break;
                 case 'DEST':
                     $this->getHeader()->setDestination(substr($line, 7));
+                    break;
+                case 'DATE':
+                    try {
+                        $date = new DateTimeImmutable(substr($line, 7));
+                    } catch (\Exception $e) {
+                        throw $e;
+                    }
+                    $this->getHeader()->setDate($date);
                     break;
                 default:
                     dd(__CLASS__ . ': How to handle a '. $tag, $q, $item, $this);

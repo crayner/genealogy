@@ -23,3 +23,6 @@ tags:
             - DEST:
                   name: DESTINATION
                   description: A system receiving data
+            - DATE:
+                  name: DATE
+                  description: The time of an event in a calendar format.
