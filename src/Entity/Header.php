@@ -78,6 +78,13 @@ class Header
      */
     private DateTimeImmutable $date;
 
+
+    /**
+     * @var string
+     * @ORM\Column(length=191)
+     */
+    private string $file;
+
     /**
      * @return string|null
      */
@@ -192,6 +199,24 @@ class Header
     public function setDate(DateTimeImmutable $date): Header
     {
         $this->date = $date;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFile(): string
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param string $file
+     * @return Header
+     */
+    public function setFile(string $file): Header
+    {
+        $this->file = $file;
         return $this;
     }
 }
