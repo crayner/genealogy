@@ -1,0 +1,7 @@
+parameters:
+    name_type_list:
+        - aka
+        - birth
+        - immigration
+        - maiden
+        - married

@@ -73,6 +73,7 @@ class GedFileHandler
         foreach ($this->getContent()->toArray() as $item) {
             $this->getItemHandler()->parse($item);
         }
+        dd($this);
     }
 
     /**

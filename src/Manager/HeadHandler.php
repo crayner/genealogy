@@ -30,11 +30,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 class HeadHandler
 {
     /**
-     * @var Gedcom
-     */
-    private Gedcom $gedcom;
-
-    /**
      * @var Header
      */
     private Header $header;
@@ -99,7 +94,7 @@ class HeadHandler
      */
     public function getGedcom(): Gedcom
     {
-        return $this->gedcom;
+        return $this->getHeader()->getGedcom();
     }
 
     /**
@@ -109,12 +104,11 @@ class HeadHandler
      */
     public function setGedcom(int $q, ArrayCollection $item): int
     {
-        $this->gedcom = new Gedcom();
         $line = '';
-        do {
-            $q++;
-            $line = $item->get($q);
-            $tag = substr($line, 2, 4);
+        $gedcom = ItemHandler::getSubItem($q, $item);
+
+        foreach ($gedcom as $line) {
+            extract(LineManager::getLineDetails($line));
             switch ($tag) {
                 case 'VERS':
                     $this->getGedcom()->setVersion(substr($line, 7));
@@ -122,11 +116,14 @@ class HeadHandler
                 case 'FORM':
                     $this->getGedcom()->setForm(substr($line, 7));
                     break;
+                case 'GEDC':
+                    break;
             }
-        } while (intval(substr($line, 0,1)) > 1);
+        }
 
-        $this->getHeader()->setgedcom($this->getGedcom());
-        return $q - 1;
+        $this->getHeader()->setGedcom($this->getGedcom());
+
+        return $q + $gedcom->count() -1 ;
     }
 
     /**

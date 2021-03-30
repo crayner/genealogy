@@ -98,7 +98,7 @@ class Header
      */
     public function getGedcom(): Gedcom
     {
-        return $this->gedcom;
+        return $this->gedcom = isset($this->gedcom) ? $this->gedcom : new Gedcom();
     }
 
     /**

@@ -15,6 +15,7 @@
 namespace App\Manager;
 
 use App\Entity\Individual;
+use App\Entity\IndividualName;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -31,6 +32,21 @@ class IndividualHandler
     private Individual $individual;
 
     /**
+     * @var IndividualNameHandler
+     */
+    private IndividualNameHandler $individualNameHandler;
+
+    /**
+     * IndividualHandler constructor.
+     * @param IndividualNameHandler $individualNameHandler
+     */
+    public function __construct(IndividualNameHandler $individualNameHandler)
+    {
+        $this->individualNameHandler = $individualNameHandler;
+    }
+
+
+    /**
      * @param ArrayCollection $individual
      */
     public function parse(ArrayCollection $individual): Individual
@@ -43,13 +59,18 @@ class IndividualHandler
         while ($q < count($individual)) {
             extract(LineManager::getLineDetails($individual[$q]));
             switch ($tag) {
+                case 'NAME':
+                    $individualName = $this->getIndividualNameHandler()->parse($q, $individual);
+                    $this->getIndividual()->setName($individualName);
+                    $q = $individualName->getOffset();
+                    break;
                 default:
-                    dd($tag, $content, LineManager::getLineDetails($individual[$q]), $individual, $this->getIndividual());
+                    dump(sprintf('I don\'t know how to handle a "%s" in "%s"', $tag, __CLASS__));
+                    dd($individual, $this->getIndividual());
 
             }
             $q++;
         }
-        dd($individual, $this->getIndividual());
 
         return $this->getIndividual();
     }
@@ -71,4 +92,21 @@ class IndividualHandler
         $this->individual = $individual;
         return $this;
     }
+
+    /**
+     * @return IndividualName
+     */
+    public function getIndividualName(): IndividualName
+    {
+        return $this->getIndividual()->getName();
+    }
+
+    /**
+     * @return IndividualNameHandler
+     */
+    public function getIndividualNameHandler(): IndividualNameHandler
+    {
+        return $this->individualNameHandler;
+    }
+
 }

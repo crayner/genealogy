@@ -60,6 +60,7 @@ class ItemHandler
         switch(key_exists(0, $matches) ? $matches[0] : '') {
             case 'HEAD':
                 $this->getHeadHandler()->parse($item);
+                dump($this);
                 break;
             case 'INDI':
                 $this->getIndividualHandler()->parse($item);
@@ -102,5 +103,25 @@ class ItemHandler
     {
         $this->encoding = $encoding;
         return $this;
+    }
+
+    /**
+     * @param int $q
+     * @param ArrayCollection $item
+     * @return ArrayCollection
+     */
+    public static function getSubItem(int $q, ArrayCollection $item): ArrayCollection
+    {
+        $subItem = new ArrayCollection();
+        $subItem->add($item->get($q));
+        extract(LineManager::getLineDetails($item[$q]));
+        $index = $level;
+        do {
+            $q++;
+            extract(LineManager::getLineDetails($item[$q]));
+            if ($level > $index) $subItem->add($item->get($q));
+        } while ($index < $level && $item->containsKey($q));
+
+        return $subItem;
     }
 }

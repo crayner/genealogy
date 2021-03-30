@@ -16,6 +16,7 @@ namespace App\Controller;
 
 use App\Manager\FileNameDiscriminator;
 use App\Manager\GedFileHandler;
+use App\Manager\ParameterManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,9 +33,10 @@ class DefaultController extends AbstractController
      * @Route("/",name="home")
      * @param FileNameDiscriminator $fileNameDiscriminator
      * @param GedFileHandler $handler
+     * @param ParameterManager $parameterManager
      * @return Response
      */
-    public function home(FileNameDiscriminator $fileNameDiscriminator, GedFileHandler $handler): Response
+    public function home(FileNameDiscriminator $fileNameDiscriminator, GedFileHandler $handler, ParameterManager $parameterManager): Response
     {
         $file = $fileNameDiscriminator->execute();
 

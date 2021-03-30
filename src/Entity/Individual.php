@@ -14,7 +14,6 @@
 
 namespace App\Entity;
 
-use App\Exception\FileEncodingException;
 use App\Exception\IndividualException;
 use App\Repository\IndividualRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -42,6 +41,12 @@ class Individual
      * @ORM\Column(type="smallint")
      */
     private int $identifier;
+
+    /**
+     * @var IndividualName
+     * @ORM\OneToOne(targetEntity="App\Entity\IndividualName", inversedBy="individual")
+     */
+    private IndividualName $name;
 
     /**
      * Individual constructor.
@@ -86,6 +91,26 @@ class Individual
     public function setIdentifier(int $identifier): Individual
     {
         $this->identifier = $identifier;
+        return $this;
+    }
+
+    /**
+     * @return IndividualName
+     */
+    public function getName(): IndividualName
+    {
+        return $this->name = isset($this->name) ? $this->name : new IndividualName();
+    }
+
+    /**
+     * @param IndividualName $name
+     * @param bool $mirror
+     * @return Individual
+     */
+    public function setName(IndividualName $name, bool $mirror = true): Individual
+    {
+        $this->name = $name;
+        if ($mirror) $this->name->setIndividual($this, false);
         return $this;
     }
 }

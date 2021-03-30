@@ -14,6 +14,7 @@
 
 namespace App\Doctrine\Types;
 
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\StringType;
 
 /**
@@ -32,5 +33,14 @@ class EnumType extends StringType
     public function getName(): string
     {
         return self::ENUM;
+    }
+
+    /**
+     * @param AbstractPlatform $platform
+     * @return int
+     */
+    public function getDefaultLength(AbstractPlatform $platform): int
+    {
+        return 191; // Actual true max of varchar in mb4
     }
 }
