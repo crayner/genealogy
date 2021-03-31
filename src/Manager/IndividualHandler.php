@@ -16,6 +16,7 @@ namespace App\Manager;
 
 use App\Entity\Individual;
 use App\Entity\IndividualName;
+use App\Exception\AttributeException;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -32,6 +33,16 @@ class IndividualHandler
     private Individual $individual;
 
     /**
+     * @var EventHandler
+     */
+    private EventHandler $eventHandler;
+
+    /**
+     * @var AttributeHandler
+     */
+    private AttributeHandler $attributeHandler;
+
+    /**
      * @var IndividualNameHandler
      */
     private IndividualNameHandler $individualNameHandler;
@@ -39,10 +50,14 @@ class IndividualHandler
     /**
      * IndividualHandler constructor.
      * @param IndividualNameHandler $individualNameHandler
+     * @param EventHandler $eventHandler
+     * @param AttributeHandler $attributeHandler
      */
-    public function __construct(IndividualNameHandler $individualNameHandler)
+    public function __construct(IndividualNameHandler $individualNameHandler, EventHandler $eventHandler, AttributeHandler $attributeHandler)
     {
         $this->individualNameHandler = $individualNameHandler;
+        $this->eventHandler = $eventHandler;
+        $this->attributeHandler = $attributeHandler;
     }
 
 
@@ -53,7 +68,7 @@ class IndividualHandler
     {
         $line = LineManager::getLineDetails($individual[0]);
         extract($line);
-        $this->setIndividual(new Individual(intval(trim($tag, 'I@'))));
+        $this->setIndividual(new Individual(intval(trim($tag, 'IP@'))));
 
         $q = 1;
         while ($q < count($individual)) {
@@ -63,6 +78,19 @@ class IndividualHandler
                     $individualName = $this->getIndividualNameHandler()->parse($q, $individual);
                     $this->getIndividual()->setName($individualName);
                     $q = $individualName->getOffset();
+                    break;
+                case 'SEX':
+                    $this->getIndividual()->setGender($content);
+                    break;
+                case 'BIRT':
+                    $event = ItemHandler::getSubItem($q, $individual);
+                    $event = $this->getEventHandler()->parse($event, 'Individual');
+                    $q += $event->getOffset() - 1;
+                    break;
+                case 'RESI':
+                    $attribute = ItemHandler::getSubItem($q, $individual);
+                    $attribute = $this->getAttributeHandler()->parse($attribute, 'Individual');
+                    $q += $attribute->getOffset() - 1;
                     break;
                 default:
                     dump(sprintf('I don\'t know how to handle a "%s" in "%s"', $tag, __CLASS__));
@@ -109,4 +137,19 @@ class IndividualHandler
         return $this->individualNameHandler;
     }
 
+    /**
+     * @return EventHandler
+     */
+    public function getEventHandler(): EventHandler
+    {
+        return $this->eventHandler;
+    }
+
+    /**
+     * @return AttributeHandler
+     */
+    public function getAttributeHandler(): AttributeHandler
+    {
+        return $this->attributeHandler;
+    }
 }

@@ -107,20 +107,24 @@ class ItemHandler
 
     /**
      * @param int $q
-     * @param ArrayCollection $item
+     * @param ArrayCollection $items
      * @return ArrayCollection
      */
-    public static function getSubItem(int $q, ArrayCollection $item): ArrayCollection
+    public static function getSubItem(int $q, ArrayCollection $items): ArrayCollection
     {
         $subItem = new ArrayCollection();
-        $subItem->add($item->get($q));
-        extract(LineManager::getLineDetails($item[$q]));
+        $item = $items->get($q);
+        $subItem->add($item);
+        extract(LineManager::getLineDetails($item));
         $index = $level;
         do {
             $q++;
-            extract(LineManager::getLineDetails($item[$q]));
-            if ($level > $index) $subItem->add($item->get($q));
-        } while ($index < $level && $item->containsKey($q));
+            if ($items->containsKey($q)) {
+                $item = $items->get($q);
+                extract(LineManager::getLineDetails($item));
+                if ($level > $index) $subItem->add($item);
+            }
+        } while ($index < $level && $items->containsKey($q));
 
         return $subItem;
     }
