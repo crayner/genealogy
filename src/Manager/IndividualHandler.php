@@ -94,10 +94,14 @@ class IndividualHandler
                     $q += $attribute->getOffset() - 1;
                     break;
                 case 'FAMS':
-                        $identifier = intval(trim($content, 'F@'));
-                        $family = GedFileHandler::getFamily($identifier);
-                        GedFileHandler::addIndividualFamily($this->getIndividual(), $family, 'Spouse');
-
+                    $identifier = intval(trim($content, 'F@'));
+                    $family = GedFileHandler::getFamily($identifier);
+                    GedFileHandler::addIndividualFamily($this->getIndividual(), $family, 'Spouse');
+                    break;
+                case 'FAMC':
+                    $identifier = intval(trim($content, 'F@'));
+                    $family = GedFileHandler::getFamily($identifier);
+                    GedFileHandler::addIndividualFamily($this->getIndividual(), $family, 'Child');
                     break;
                 default:
                     dump(sprintf('I don\'t know how to handle a "%s" in "%s"', $tag, __CLASS__));
