@@ -17,10 +17,10 @@ namespace App\Manager;
 use App\Entity\Family;
 use App\Entity\Individual;
 use App\Entity\IndividualFamily;
+use App\Entity\Source;
 use App\Exception\ParseException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Validator\Constraints\Collection;
 
 /**
  * Class GedFileHandler
@@ -64,6 +64,11 @@ class GedFileHandler
      * @var ArrayCollection
      */
     private static ArrayCollection $individualsFamilies;
+
+    /**
+     * @var ArrayCollection
+     */
+    private static ArrayCollection $sources;
 
     /**
      * @var string
@@ -303,5 +308,27 @@ class GedFileHandler
         self::getIndividualsFamilies()->add($indfam);
 
         return $indfam;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public static function getSources(): ArrayCollection
+    {
+        return self::$sources = isset(self::$sources) ? self::$sources : new ArrayCollection();
+    }
+
+    /**
+     * @param int $identifier
+     * @return Source
+     */
+    public static function getSource(int $identifier): Source
+    {
+        if (self::getSources()->containsKey($identifier)) return self::$sources->get($identifier);
+
+        $source = new Source($identifier);
+
+        self::$sources->set($identifier, $source);
+        return $source;
     }
 }

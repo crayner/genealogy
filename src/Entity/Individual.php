@@ -90,12 +90,19 @@ class Individual
     private $families;
 
     /**
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity=SourceData::class)
+     */
+    private Collection $sources;
+
+    /**
      * Individual constructor.
      * @param int $identifier
      */
     public function __construct(int $identifier = 0)
     {
         if ($identifier > 0) $this->identifier = $identifier;
+        $this->sources = new ArrayCollection();
     }
 
     /**
@@ -250,6 +257,29 @@ class Individual
             if ($family->getIndividual() === $this) {
                 $family->setIndividual(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getSources(): Collection
+    {
+        if (isset($this->sources) && $this->sources instanceof PersistentCollection) $this->sources->initialize();
+
+        return $this->sources = isset($this->sources) ? $this->sources : new ArrayCollection();
+    }
+
+    /**
+     * @param SourceData $source
+     * @return Individual
+     */
+    public function addSource(SourceData $source): Individual
+    {
+        if (!$this->getSources()->contains($source)) {
+            $this->sources->add($source);
         }
 
         return $this;

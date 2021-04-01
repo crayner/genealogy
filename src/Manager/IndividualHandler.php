@@ -16,6 +16,7 @@ namespace App\Manager;
 
 use App\Entity\Individual;
 use App\Entity\IndividualName;
+use App\Entity\SourceData;
 use App\Exception\AttributeException;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -48,16 +49,22 @@ class IndividualHandler
     private IndividualNameHandler $individualNameHandler;
 
     /**
+     * @var SourceDataHandler
+     */
+    private SourceDataHandler $sourceDataHandler;
+
+    /**
      * IndividualHandler constructor.
      * @param IndividualNameHandler $individualNameHandler
      * @param EventHandler $eventHandler
      * @param AttributeHandler $attributeHandler
      */
-    public function __construct(IndividualNameHandler $individualNameHandler, EventHandler $eventHandler, AttributeHandler $attributeHandler)
+    public function __construct(IndividualNameHandler $individualNameHandler, EventHandler $eventHandler, AttributeHandler $attributeHandler, SourceDataHandler $sourceDataHandler)
     {
         $this->individualNameHandler = $individualNameHandler;
         $this->eventHandler = $eventHandler;
         $this->attributeHandler = $attributeHandler;
+        $this->sourceDataHandler = $sourceDataHandler;
     }
 
 
@@ -102,6 +109,15 @@ class IndividualHandler
                     $identifier = intval(trim($content, 'F@'));
                     $family = GedFileHandler::getFamily($identifier);
                     GedFileHandler::addIndividualFamily($this->getIndividual(), $family, 'Child');
+                    break;
+                case 'SOUR':
+                    $identifier = intval(trim($content, 'S@'));
+                    $source = GedFileHandler::getSource($identifier);
+                    $sourceData = new SourceData($source);
+                    $this->getIndividual()->addSource($sourceData);
+                    $source = ItemHandler::getSubItem($q, $individual);
+                    $q += $source->count() - 1;
+                    $this->getSourceDataHandler()->parse($source, $sourceData);
                     break;
                 default:
                     dump(sprintf('I don\'t know how to handle a "%s" in "%s"', $tag, __CLASS__));
@@ -162,5 +178,13 @@ class IndividualHandler
     public function getAttributeHandler(): AttributeHandler
     {
         return $this->attributeHandler;
+    }
+
+    /**
+     * @return SourceDataHandler
+     */
+    public function getSourceDataHandler(): SourceDataHandler
+    {
+        return $this->sourceDataHandler;
     }
 }
