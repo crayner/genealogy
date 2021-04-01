@@ -29,7 +29,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * 30/03/2021 08:58
  * @ORM\Entity(repositoryClass=IndividualRepository::class)
  * @ORM\Table(name="individual",
- *     indexes={@ORM\Index(name="name",columns="name")},
  *     uniqueConstraints={@ORM\UniqueConstraint(name="identifier",columns={"identifier"})})
  * @UniqueEntity("identifier")
  */
@@ -50,11 +49,10 @@ class Individual
     private int $identifier;
 
     /**
-     * @var IndividualName
-     * @ORM\OneToOne(targetEntity="App\Entity\IndividualName", inversedBy="individual")
-     * @ORM\JoinColumn(name="name")
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="App\Entity\IndividualName", mappedBy="individual")
      */
-    private IndividualName $name;
+    private Collection $names;
 
     /**
      * @var string
@@ -87,13 +85,19 @@ class Individual
      * @var Collection
      * @ORM\OneToMany(targetEntity=IndividualFamily::class, mappedBy="individual")
      */
-    private $families;
+    private Collection $families;
 
     /**
      * @var Collection
      * @ORM\ManyToMany(targetEntity=SourceData::class)
      */
     private Collection $sources;
+
+    /**
+     * @var int
+     * @ORM\Column(type="bigint")
+     */
+    private int $recordKey;
 
     /**
      * Individual constructor.
@@ -133,22 +137,36 @@ class Individual
     }
 
     /**
-     * @return IndividualName
+     * @return Collection
      */
-    public function getName(): IndividualName
+    public function getNames(): Collection
     {
-        return $this->name = isset($this->name) ? $this->name : new IndividualName();
+        if (isset($this->names) && $this->names instanceof PersistentCollection) $this->names->initialize();
+
+        return $this->names = isset($this->names) ? $this->names : new ArrayCollection();
+    }
+
+    /**
+     * @param Collection $names
+     * @return Individual
+     */
+    public function setNames(Collection $names): Individual
+    {
+        $this->names = $names;
+        return $this;
     }
 
     /**
      * @param IndividualName $name
-     * @param bool $mirror
      * @return Individual
      */
-    public function setName(IndividualName $name, bool $mirror = true): Individual
+    public function addName(IndividualName $name, bool $mirror = true): Individual
     {
-        $this->name = $name;
-        if ($mirror) $this->name->setIndividual($this, false);
+        if ($mirror) $name->setIndividual($this, false);
+        if ($this->getNames()->contains($name)) return $this;
+
+        $this->names->add($name);
+
         return $this;
     }
 
@@ -166,7 +184,7 @@ class Individual
      */
     public function setGender(string $gender): Individual
     {
-        if (!in_array($gender, self::getGenderList())) throw new IndividualException(sprintf('The gender (%s) given for the individual is not valid.', $gender));
+        if (!in_array($gender, self::getGenderList())) throw new IndividualException($this, sprintf('The gender (%s) given for the individual is not valid.', $gender));
         $this->gender = $gender;
         return $this;
     }
@@ -282,6 +300,24 @@ class Individual
             $this->sources->add($source);
         }
 
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRecordKey(): int
+    {
+        return $this->recordKey;
+    }
+
+    /**
+     * @param int $recordKey
+     * @return Individual
+     */
+    public function setRecordKey(int $recordKey): Individual
+    {
+        $this->recordKey = $recordKey;
         return $this;
     }
 }

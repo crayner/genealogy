@@ -52,6 +52,7 @@ class Event
      */
     private static $typeList = [
         'Birth',
+        'Death',
     ];
 
     /**
@@ -65,6 +66,18 @@ class Event
      * @var int
      */
     private int $offset;
+
+    /**
+     * @var string|null
+     * @ORM\Column(length=13,nullable=true)
+     */
+    private ?string $age;
+
+    /**
+     * @var string|null
+     * @ORM\Column(length=90,nullable=true)
+     */
+    private ?string $cause;
 
     /**
      * Event constructor.
@@ -143,7 +156,7 @@ class Event
      */
     public function setType(string $type): Event
     {
-        if (!in_array($type, self::getTypeList())) throw new EventException($this, sprintf('The event type (%s) is not valid.', $type));
+        if (!in_array($type, self::getTypeList())) throw new EventException($this, sprintf('The event type (%s) must be one of [%s].', $type, implode(', ', self::getTypeList())));
         $this->type = $type;
         return $this;
     }
@@ -189,6 +202,42 @@ class Event
     public function setOffset(int $offset): Event
     {
         $this->offset = $offset;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAge(): ?string
+    {
+        return isset($this->age) ? $this->age : null;
+    }
+
+    /**
+     * @param string|null $age
+     * @return Event
+     */
+    public function setAge(?string $age): Event
+    {
+        $this->age = $age;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCause(): ?string
+    {
+        return isset($this->cause) ? $this->cause : null;
+    }
+
+    /**
+     * @param string|null $cause
+     * @return Event
+     */
+    public function setCause(?string $cause): Event
+    {
+        $this->cause = $cause;
         return $this;
     }
 }

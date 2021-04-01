@@ -17,7 +17,6 @@ namespace App\Manager;
 use App\Entity\Individual;
 use App\Entity\IndividualName;
 use App\Entity\SourceData;
-use App\Exception\AttributeException;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -28,11 +27,6 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class IndividualHandler
 {
-    /**
-     * @var Individual
-     */
-    private Individual $individual;
-
     /**
      * @var EventHandler
      */
@@ -69,83 +63,75 @@ class IndividualHandler
 
 
     /**
-     * @param ArrayCollection $individual
+     * @param ArrayCollection $individualDetails
+     * @return Individual
      */
-    public function parse(ArrayCollection $individual): Individual
+    public function parse(ArrayCollection $individualDetails): Individual
     {
-        $line = LineManager::getLineDetails($individual[0]);
+        $line = LineManager::getLineDetails($individualDetails->get(0));
         extract($line);
         $identifier = intval(trim($tag, 'IP@'));
-        $this->setIndividual(GedFileHandler::getIndividual($identifier));
+        $individual = GedFileHandler::getIndividual($identifier);
 
         $q = 1;
-        while ($q < count($individual)) {
-            extract(LineManager::getLineDetails($individual->get($q)));
+        while ($q < count($individualDetails)) {
+            extract(LineManager::getLineDetails($individualDetails->get($q)));
             switch ($tag) {
                 case 'NAME':
-                    $individualName = $this->getIndividualNameHandler()->parse($q, $individual);
-                    $this->getIndividual()->setName($individualName);
+                    $individualName = $this->getIndividualNameHandler()->parse($q, $individualDetails, $individual);
+                    $individual->addName($individualName);
                     $q = $individualName->getOffset();
                     break;
                 case 'SEX':
-                    $this->getIndividual()->setGender($content);
+                    $individual->setGender($content);
                     break;
+                case 'DEAT':
                 case 'BIRT':
-                    $event = ItemHandler::getSubItem($q, $individual);
+                    $event = ItemHandler::getSubItem($q, $individualDetails);
+                    $q += $event->count() - 1;
                     $event = $this->getEventHandler()->parse($event, 'Individual');
-                    $q += $event->getOffset() - 1;
+                    $individual->addEvent($event);
                     break;
                 case 'RESI':
-                    $attribute = ItemHandler::getSubItem($q, $individual);
+                    $attribute = ItemHandler::getSubItem($q, $individualDetails);
                     $attribute = $this->getAttributeHandler()->parse($attribute, 'Individual');
                     $q += $attribute->getOffset() - 1;
                     break;
                 case 'FAMS':
                     $identifier = intval(trim($content, 'F@'));
                     $family = GedFileHandler::getFamily($identifier);
-                    GedFileHandler::addIndividualFamily($this->getIndividual(), $family, 'Spouse');
+                    GedFileHandler::addIndividualFamily($individual, $family, 'Spouse');
                     break;
                 case 'FAMC':
                     $identifier = intval(trim($content, 'F@'));
                     $family = GedFileHandler::getFamily($identifier);
-                    GedFileHandler::addIndividualFamily($this->getIndividual(), $family, 'Child');
+                    GedFileHandler::addIndividualFamily($individual, $family, 'Child');
                     break;
                 case 'SOUR':
                     $identifier = intval(trim($content, 'S@'));
                     $source = GedFileHandler::getSource($identifier);
                     $sourceData = new SourceData($source);
-                    $this->getIndividual()->addSource($sourceData);
-                    $source = ItemHandler::getSubItem($q, $individual);
+                    $individual->addSource($sourceData);
+                    $source = ItemHandler::getSubItem($q, $individualDetails);
                     $q += $source->count() - 1;
                     $this->getSourceDataHandler()->parse($source, $sourceData);
                     break;
+                case 'RIN':
+                    $individual->setRecordKey(intval($content));
+                    break;
+                case '_UID':  // My Heritage Site crap
+                case '_UPD':  // My Heritage Site crap
+                    // Ignore rubbish
+                    break;
                 default:
                     dump(sprintf('I don\'t know how to handle a "%s" in "%s"', $tag, __CLASS__));
-                    dd($individual, $this->getIndividual());
+                    dd($individualDetails, $individual);
 
             }
             $q++;
         }
 
-        return $this->getIndividual();
-    }
-
-    /**
-     * @return Individual
-     */
-    public function getIndividual(): Individual
-    {
-        return $this->individual;
-    }
-
-    /**
-     * @param Individual $individual
-     * @return IndividualHandler
-     */
-    public function setIndividual(Individual $individual): IndividualHandler
-    {
-        $this->individual = $individual;
-        return $this;
+        return $individual;
     }
 
     /**
@@ -153,7 +139,7 @@ class IndividualHandler
      */
     public function getIndividualName(): IndividualName
     {
-        return $this->getIndividual()->getName();
+        return $individual->getName();
     }
 
     /**

@@ -27,83 +27,56 @@ use Doctrine\Common\Collections\ArrayCollection;
 class IndividualNameHandler
 {
     /**
-     * @var IndividualName
-     */
-    private IndividualName $individualName;
-
-    /**
      * @param int $q
      * @param ArrayCollection $person
+     * @param Individual $individual
      * @return IndividualName
      */
-    public function parse(int $q, ArrayCollection $person): IndividualName
+    public function parse(int $q, ArrayCollection $person, Individual $individual): IndividualName
     {
         $name = ItemHandler::getSubItem($q, $person);
+        $individualName = new IndividualName();
         foreach ($name as $item) {
             extract(LineManager::getLineDetails($item));
             switch ($tag) {
                 case 'NAME':
-                    $this->newIndividualName();
-                    $this->getIndividualName()->setName($content);
+                    $individualName->setName($content);
                     break;
                 case 'TYPE':
-                    $this->getIndividualName()->setNameType($content);
+                    $individualName->setNameType($content);
                     break;
                 case 'GIVN':
-                    $this->getIndividualName()->setGivenName($content);
+                    $individualName->setGivenName($content);
                     break;
                 case 'SURN':
-                    $this->getIndividualName()->setSurname($content);
+                    $individualName->setSurname($content);
                     break;
                 case 'NICK':
-                    $this->getIndividualName()->setNickName($content);
+                    $individualName->setNickName($content);
                     break;
                 case 'NPFX':
-                    $this->getIndividualName()->setNamePrefix($content);
+                    $individualName->setNamePrefix($content);
                     break;
                 case 'SPFX':
-                    $this->getIndividualName()->setSurnamePrefix($content);
+                    $individualName->setSurnamePrefix($content);
                     break;
                 case 'NOTE':
-                    $this->getIndividualName()->setNote($content);
+                    $individualName->setNote($content);
                     break;
                 case 'SOUR':
-                    $this->getIndividualName()->setSource($content);
+                    $individualName->setSource($content);
+                    break;
+                case '_MARNM':  //  My Heritage non standard.
+                    $x = new IndividualName();
+                    $individual->addName($x);
+                    $x->setName($content)->setNameType('married');
                     break;
                 default:
-                    dump($this);
+                    dump($this, $person);
                     dd(sprintf('The Individual Name part of "%s" can not be handled.', $tag));
             }
         }
-        $this->getIndividualName()->setOffset($q + $name->count() - 1);
-        return $this->getIndividualName();
-    }
-
-    /**
-     * @return IndividualName
-     */
-    public function getIndividualName(): IndividualName
-    {
-        return $this->individualName = isset($this->individualName) ? $this->individualName : new IndividualName();
-    }
-
-    /**
-     * @param IndividualName $individualName
-     * @return IndividualNameHandler
-     */
-    public function setIndividualName(IndividualName $individualName): IndividualNameHandler
-    {
-        $this->individualName = $individualName;
-        return $this;
-    }
-
-    /**
-     * @return IndividualName
-     */
-    public function newIndividualName(): IndividualName
-    {
-        $this->setIndividualName(new IndividualName());
-
-        return $this->individualName;
+        $individualName->setOffset($q + $name->count() - 1);
+        return $individualName;
     }
 }

@@ -52,6 +52,9 @@ class EventHandler
                 case 'BIRT':
                     $event->setType('Birth');
                     break;
+                case 'DEAT':
+                    $event->setType('Death');
+                    break;
                 case 'DATE':
                     try {
                         $event->setDate(new \DateTimeImmutable($content));
@@ -65,8 +68,15 @@ class EventHandler
                     $q += $place->getOffset() - 1;
                     $event->setPlace($place);
                     break;
+                case 'AGE':
+                    $event->setAge($content);
+                    break;
+                case 'CAUS':
+                    $event->setCause($content);
+                    break;
                 default:
                     dump(sprintf('Event handles the %s how?', $tag));
+                    dd($eventDetails,$event,$source);
             }
             $q++;
         }

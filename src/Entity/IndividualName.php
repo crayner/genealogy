@@ -15,6 +15,7 @@
 namespace App\Entity;
 
 use App\Exception\IndividualException;
+use App\Exception\IndividualNameException;
 use App\Manager\ParameterManager;
 use App\Repository\IndividualNameRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,7 +26,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @author  Craig Rayner <craig@craigrayner.com>
  * 30/03/2021 10:34
  * @ORM\Entity(repositoryClass=IndividualNameRepository::class)
- * @ORM\Table(name="individual_name")
+ * @ORM\Table(name="individual_name", indexes={@ORM\Index(name="individual",columns={"individual"})})
  */
 class IndividualName
 {
@@ -39,7 +40,8 @@ class IndividualName
 
     /**
      * @var Individual
-     * @ORM\OneToOne(targetEntity="App\Entity\Individual",inversedBy="name")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Individual",inversedBy="names")
+     * @ORM\JoinColumn(name="individual")
      */
     private Individual $individual;
 
@@ -153,7 +155,7 @@ class IndividualName
     public function setIndividual(Individual $individual, bool $mirror = true): IndividualName
     {
         $this->individual = $individual;
-        if ($mirror) $this->individual->setName($this, false);
+        if ($mirror) $individual->addName($this, false);
         return $this;
     }
 
@@ -171,7 +173,6 @@ class IndividualName
      */
     public function setName(string $name): IndividualName
     {
-        if (mb_strlen($name) > 120) throw new IndividualException(sprintf('The name, "%s", of the individual exceeds 120 (%s) characters in length.', $name, mb_strlen($name)));
         $this->name = $name;
         return $this;
     }
@@ -237,7 +238,7 @@ class IndividualName
      */
     public function setSurname(string $surname): IndividualName
     {
-        if (mb_strlen($surname) > 120) throw new IndividualException(sprintf('The surname, "%s", of the individual exceeds 120 (%s) characters in length.', $surname, mb_strlen($surname)));
+        if (mb_strlen($surname) > 120) throw new IndividualNameException($this,sprintf('The surname, "%s", of the individual exceeds 120 (%s) characters in length.', $surname, mb_strlen($surname)));
         $this->surname = $surname;
         return $this;
     }
@@ -256,7 +257,7 @@ class IndividualName
      */
     public function setNickName(string $nickName): IndividualName
     {
-        if (mb_strlen($nickName) > 30) throw new IndividualException(sprintf('The nick name, "%s", of the individual exceeds 30 (%s) characters in length.', $nickName, mb_strlen($nickName)));
+        if (mb_strlen($nickName) > 30) throw new IndividualNameException($this,sprintf('The nick name, "%s", of the individual exceeds 30 (%s) characters in length.', $nickName, mb_strlen($nickName)));
         $this->nickName = $nickName;
         return $this;
     }
@@ -275,7 +276,7 @@ class IndividualName
      */
     public function setNamePrefix(string $namePrefix): IndividualName
     {
-        if (mb_strlen($namePrefix) > 30) throw new IndividualException(sprintf('The name prefix, "%s", of the individual exceeds 30 (%s) characters in length.', $namePrefix, mb_strlen($namePrefix)));
+        if (mb_strlen($namePrefix) > 30) throw new IndividualNameException($this,sprintf('The name prefix, "%s", of the individual exceeds 30 (%s) characters in length.', $namePrefix, mb_strlen($namePrefix)));
         $this->namePrefix = $namePrefix;
         return $this;
     }
@@ -294,7 +295,7 @@ class IndividualName
      */
     public function setSurnamePrefix(string $surnamePrefix): IndividualName
     {
-        if (mb_strlen($surnamePrefix) > 30) throw new IndividualException(sprintf('The surname prefix, "%s", of the individual exceeds 30 (%s) characters in length.', $surnamePrefix, mb_strlen($surnamePrefix)));
+        if (mb_strlen($surnamePrefix) > 30) throw new IndividualNameException($this,sprintf('The surname prefix, "%s", of the individual exceeds 30 (%s) characters in length.', $surnamePrefix, mb_strlen($surnamePrefix)));
         $this->surnamePrefix = $surnamePrefix;
         return $this;
     }
@@ -313,7 +314,7 @@ class IndividualName
      */
     public function setNameSuffix(string $nameSuffix): IndividualName
     {
-        if (mb_strlen($nameSuffix) > 30) throw new IndividualException(sprintf('The name suffix, "%s", of the individual exceeds 30 (%s) characters in length.', $nameSuffix, mb_strlen($nameSuffix)));
+        if (mb_strlen($nameSuffix) > 30) throw new IndividualNameException($this,sprintf('The name suffix, "%s", of the individual exceeds 30 (%s) characters in length.', $nameSuffix, mb_strlen($nameSuffix)));
         $this->nameSuffix = $nameSuffix;
         return $this;
     }
@@ -332,7 +333,7 @@ class IndividualName
      */
     public function setNote(string $note): IndividualName
     {
-        if (mb_strlen($note) > 32767) throw new IndividualException(sprintf('The note, "%s", of the individual exceeds 32767 (%s) characters in length.', $note, mb_strlen($note)));
+        if (mb_strlen($note) > 32767) throw new IndividualNameException($this,sprintf('The note, "%s", of the individual exceeds 32767 (%s) characters in length.', $note, mb_strlen($note)));
         $this->note = $note;
         return $this;
     }
@@ -351,8 +352,8 @@ class IndividualName
      */
     public function setSource(?string $source): IndividualName
     {
-        throw new IndividualException('Source is not yet implemented.');
-        if (mb_strlen($note) > 32767) throw new IndividualException(sprintf('The note, "%s", of the individual exceeds 32767 (%s) characters in length.', $note, mb_strlen($note)));
+        throw new IndividualNameException($this,'Source is not yet implemented.');
+        if (mb_strlen($note) > 32767) throw new IndividualNameException($this,sprintf('The note, "%s", of the individual exceeds 32767 (%s) characters in length.', $note, mb_strlen($note)));
         $this->source = $source;
         return $this;
     }
