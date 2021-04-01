@@ -8,36 +8,36 @@
  * file that was distributed with this source code.
  *
  * User: Craig Rayner
- * Date: 30/03/2021
- * Time: 09:06
+ * Date: 1/04/2021
+ * Time: 10:31
  */
 
 namespace App\Exception;
 
-use App\Entity\Individual;
+use App\Entity\Family;
 
 /**
- * Class IndividualException
+ * Class FamilyException
  * @package App\Exception
  * @author  Craig Rayner <craig@craigrayner.com>
- * 30/03/2021 09:06
+ * 1/04/2021 10:32
  */
-class IndividualException extends \RuntimeException
+class FamilyException extends \RuntimeException
 {
     /**
-     * @var Individual
+     * @var Family
      */
-    private Individual $individual;
+    private Family $family;
 
     /**
-     * IndividualException constructor.
-     * @param Individual $individual
+     * FamilyException constructor.
+     * @param Family $family
      * @param string|null $message
      */
-    public function __construct(Individual $individual, string $message = null)
+    public function __construct(Family $family, string $message = null)
     {
-        $this->individual = $individual;
-        $message = $message ?: 'The Individual is not valid';
+        $this->family = $family;
+        $message = $message ?: 'The Family is not valid';
         parent::__construct($message);
     }
 }

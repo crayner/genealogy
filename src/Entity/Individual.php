@@ -20,7 +20,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
-use PhpParser\ErrorHandler\Collecting;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Class Individual
@@ -28,7 +28,10 @@ use PhpParser\ErrorHandler\Collecting;
  * @author  Craig Rayner <craig@craigrayner.com>
  * 30/03/2021 08:58
  * @ORM\Entity(repositoryClass=IndividualRepository::class)
- * @ORM\Table(name="individual")
+ * @ORM\Table(name="individual",
+ *     indexes={@ORM\Index(name="name",columns="name")},
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="identifier",columns={"identifier"})})
+ * @UniqueEntity("identifier")
  */
 class Individual
 {
@@ -49,6 +52,7 @@ class Individual
     /**
      * @var IndividualName
      * @ORM\OneToOne(targetEntity="App\Entity\IndividualName", inversedBy="individual")
+     * @ORM\JoinColumn(name="name")
      */
     private IndividualName $name;
 
@@ -80,6 +84,12 @@ class Individual
     private Collection $events;
 
     /**
+     * @var Collection
+     * @ORM\OneToMany(targetEntity=IndividualFamily::class, mappedBy="individual")
+     */
+    private $families;
+
+    /**
      * Individual constructor.
      * @param int $identifier
      */
@@ -94,16 +104,6 @@ class Individual
     public function getId(): ?string
     {
         return $this->id;
-    }
-
-    /**
-     * @param string|null $id
-     * @return Individual
-     */
-    public function setId(?string $id): Individual
-    {
-        $this->id = $id;
-        return $this;
     }
 
     /**
@@ -201,6 +201,56 @@ class Individual
         if ($this->getEvents()->contains($event)) return $this;
 
         $this->events->add($event);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getFamilies(): Collection
+    {
+        if (isset($this->families) && $this->families instanceof PersistentCollection) $this->families->initialize();
+
+        return $this->families = isset($this->families) ? $this->families : new ArrayCollection();
+    }
+
+    /**
+     * @param Collection $families
+     * @return Individual
+     */
+    public function setFamilies(Collection $families): Individual
+    {
+        $this->families = $families;
+        return $this;
+    }
+
+    /**
+     * @param IndividualFamily $family
+     * @return Individual
+     */
+    public function addFamily(IndividualFamily $family): Individual
+    {
+        if (!$this->getFamilies()->contains($family)) {
+            $this->families->add($family);
+            $family->setIndividual($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param IndividualFamily $family
+     * @return Individual
+     */
+    public function removeFamily(IndividualFamily $family): Individual
+    {
+        if ($this->getFamilies()->removeElement($family)) {
+            // set the owning side to null (unless already changed)
+            if ($family->getIndividual() === $this) {
+                $family->setIndividual(null);
+            }
+        }
 
         return $this;
     }

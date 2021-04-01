@@ -68,11 +68,12 @@ class IndividualHandler
     {
         $line = LineManager::getLineDetails($individual[0]);
         extract($line);
-        $this->setIndividual(new Individual(intval(trim($tag, 'IP@'))));
+        $identifier = intval(trim($tag, 'IP@'));
+        $this->setIndividual(GedFileHandler::getIndividual($identifier));
 
         $q = 1;
         while ($q < count($individual)) {
-            extract(LineManager::getLineDetails($individual[$q]));
+            extract(LineManager::getLineDetails($individual->get($q)));
             switch ($tag) {
                 case 'NAME':
                     $individualName = $this->getIndividualNameHandler()->parse($q, $individual);
@@ -91,6 +92,12 @@ class IndividualHandler
                     $attribute = ItemHandler::getSubItem($q, $individual);
                     $attribute = $this->getAttributeHandler()->parse($attribute, 'Individual');
                     $q += $attribute->getOffset() - 1;
+                    break;
+                case 'FAMS':
+                        $identifier = intval(trim($content, 'F@'));
+                        $family = GedFileHandler::getFamily($identifier);
+                        GedFileHandler::addIndividualFamily($this->getIndividual(), $family, 'Spouse');
+
                     break;
                 default:
                     dump(sprintf('I don\'t know how to handle a "%s" in "%s"', $tag, __CLASS__));

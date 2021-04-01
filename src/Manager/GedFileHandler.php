@@ -14,8 +14,13 @@
 
 namespace App\Manager;
 
+use App\Entity\Family;
+use App\Entity\Individual;
+use App\Entity\IndividualFamily;
+use App\Exception\ParseException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints\Collection;
 
 /**
  * Class GedFileHandler
@@ -44,6 +49,21 @@ class GedFileHandler
      * @var ItemHandler
      */
     private ItemHandler $itemHandler;
+
+    /**
+     * @var ArrayCollection
+     */
+    private static ArrayCollection $individuals;
+
+    /**
+     * @var ArrayCollection
+     */
+    private static ArrayCollection $families;
+
+    /**
+     * @var ArrayCollection
+     */
+    private static ArrayCollection $individualsFamilies;
 
     /**
      * @var string
@@ -178,5 +198,110 @@ class GedFileHandler
     {
         $this->encoding = $encoding;
         return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public static function getIndividuals(): ArrayCollection
+    {
+        return self::$individuals = isset(self::$individuals) ? self::$individuals : new ArrayCollection();
+    }
+
+    /**
+     * @param Individual $individual
+     */
+    public static function addIndividual(Individual $individual)
+    {
+        if (self::getIndividuals()->containsKey($individual->getIdentifier())) return;
+
+        self::$individuals->set($individual->getIdentifier(), $individual);
+    }
+
+    /**
+     * @param int $identifier
+     * @return Individual
+     */
+    public static function getIndividual(int $identifier): Individual
+    {
+        if ($identifier < 1) throw new ParseException(__METHOD__, __CLASS__);
+        if (self::getIndividuals()->containsKey($identifier)) return self::$individuals->get($identifier);
+
+        $individual = new Individual($identifier);
+
+        self::addIndividual($individual);
+
+        return $individual;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public static function getFamilies(): ArrayCollection
+    {
+        return self::$families = isset(self::$families) ? self::$families : new ArrayCollection();
+    }
+
+    /**
+     * @param Family $family
+     */
+    public static function addFamily(Family $family)
+    {
+        if (self::getFamilies()->containsKey($family->getIdentifier())) return;
+
+        self::$families->set($family->getIdentifier(), $family);
+    }
+
+    /**
+     * @param int $identifier
+     * @return Family
+     */
+    public static function getFamily(int $identifier): Family
+    {
+        if ($identifier < 1) throw new ParseException(__METHOD__, __CLASS__);
+        if (self::getFamilies()->containsKey($identifier)) return self::$families->get($identifier);
+
+        $family = new Family($identifier);
+
+        self::addFamily($family);
+
+        return $family;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public static function getIndividualsFamilies(): ArrayCollection
+    {
+        return self::$individualsFamilies = isset(self::$individualsFamilies) ? self::$individualsFamilies : new ArrayCollection();
+    }
+
+    /**
+     * @param Individual $individual
+     * @param Family $family
+     * @param string $relationship
+     * @return IndividualFamily
+     */
+    public static function addIndividualFamily(Individual $individual, Family $family, string $relationship): IndividualFamily
+    {
+        $x = self::getIndividualsFamilies()->filter(function (IndividualFamily $indfam) use ($individual) {
+            if ($individual ===$indfam->getIndividual()) return $indfam;
+        });
+
+        $y = $x->filter(function(IndividualFamily $indfam) use ($family) {
+            if ($family === $indfam->getFamily()) return $indfam;
+        });
+
+        if ($y->count() === 1) return $y->first();
+
+        if ($y->count() > 1) throw new ParseException(__METHOD__,__CLASS__);
+
+        $indfam = new IndividualFamily($individual, $family, $relationship);
+
+        $family->addIndividual($indfam);
+        $individual->addFamily($indfam);
+        self::getIndividualsFamilies()->add($indfam);
+
+        return $indfam;
     }
 }
