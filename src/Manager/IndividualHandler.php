@@ -86,6 +86,13 @@ class IndividualHandler
                     $individual->setGender($content);
                     break;
                 case 'DEAT':
+                case 'BURI':
+                case 'EVEN':
+                case 'BAPM':
+                case 'IMMI':
+                case 'OCCU':
+                case 'CHR':
+                case 'EDUC':
                 case 'BIRT':
                     $event = ItemHandler::getSubItem($q, $individualDetails);
                     $q += $event->count() - 1;
@@ -123,6 +130,13 @@ class IndividualHandler
                 case '_UPD':  // My Heritage Site crap
                     // Ignore rubbish
                     break;
+                case 'NOTE':
+                    $individual->setNote($content);
+                    break;
+                case 'CONC':
+                case 'CONT':
+                    $individual->concatNote($content);
+                    break;
                 default:
                     dump(sprintf('I don\'t know how to handle a "%s" in "%s"', $tag, __CLASS__));
                     dd($individualDetails, $individual);
@@ -132,14 +146,6 @@ class IndividualHandler
         }
 
         return $individual;
-    }
-
-    /**
-     * @return IndividualName
-     */
-    public function getIndividualName(): IndividualName
-    {
-        return $individual->getName();
     }
 
     /**

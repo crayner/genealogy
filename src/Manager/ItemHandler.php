@@ -66,7 +66,7 @@ class ItemHandler
                 $this->getIndividualHandler()->parse($item);
                 break;
             default:
-                dd($item);
+                dd($item, GedFileHandler::getDataManager());
         }
     }
 

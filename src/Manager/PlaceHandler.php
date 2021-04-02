@@ -33,7 +33,8 @@ class PlaceHandler
         while ($q < $placeDetails->count() && $placeDetails->containsKey($q)) {
             extract(LineManager::getLineDetails($placeDetails->get($q)));
             switch ($tag) {
-                case 'PLAC';
+                case 'EVEN':
+                case 'PLAC':
                     $place->setName($content);
                     break;
                 default:

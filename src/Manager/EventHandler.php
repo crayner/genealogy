@@ -16,6 +16,8 @@ namespace App\Manager;
 
 
 use App\Entity\Event;
+use App\Entity\Place;
+use App\Entity\SourceData;
 use App\Exception\EventException;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -27,12 +29,19 @@ class EventHandler
     private PlaceHandler $placeHandler;
 
     /**
+     * @var SourceDataHandler
+     */
+    private SourceDataHandler $sourceDataHandler;
+
+    /**
      * EventHandler constructor.
      * @param PlaceHandler $placeHandler
+     * @param SourceDataHandler $sourceDataHandler
      */
-    public function __construct(PlaceHandler $placeHandler)
+    public function __construct(PlaceHandler $placeHandler, SourceDataHandler $sourceDataHandler)
     {
         $this->placeHandler = $placeHandler;
+        $this->sourceDataHandler = $sourceDataHandler;
     }
 
     /**
@@ -55,12 +64,35 @@ class EventHandler
                 case 'DEAT':
                     $event->setType('Death');
                     break;
+                case 'BURI':
+                    $event->setType('Buried');
+                    break;
+                case 'BAPM':
+                    $event->setType('Baptism');
+                    break;
+                case 'CHR':
+                    $event->setType('Christening');
+                    break;
+                case 'IMMI':
+                    $event->setType('Immigration');
+                    break;
+                case 'OCCU':
+                    $event->setType('Occupation');
+                    $event->setName($content);
+                    break;
+                case 'EDUC':
+                    $event->setType('Education');
+                    $event->setName($content);
+                    break;
                 case 'DATE':
                     try {
                         $event->setDate(new \DateTimeImmutable($content));
                     } catch (\Exception $e) {
                         throw new EventException($event, sprintf('The event date (%s) is not valid.',$content));
                     }
+                    break;
+                case 'EVEN':
+                    $event->setName($content);
                     break;
                 case 'PLAC':
                     $place = ItemHandler::getSubItem($q, $eventDetails);
@@ -74,8 +106,26 @@ class EventHandler
                 case 'CAUS':
                     $event->setCause($content);
                     break;
+                case 'TYPE':
+                    $event->setType($content);
+                    break;
+                case 'NOTE':
+                    $event->setNote($content);
+                    break;
+                case 'ROLE':
+                    $event->setRole($content);
+                    break;
+                case 'SOUR':
+                    $identifier = intval(trim($content, 'S@'));
+                    $source = GedFileHandler::getSource($identifier);
+                    $sourceData = new SourceData($source);
+                    $event->setSource($sourceData);
+                    $source = ItemHandler::getSubItem($q, $eventDetails);
+                    $q += $source->count() - 1;
+                    $this->getSourceDataHandler()->parse($source, $sourceData);
+                    break;
                 default:
-                    dump(sprintf('Event handles the %s how?', $tag));
+                    dump(sprintf('Handling a %s is beyond the EventHandler!', $tag));
                     dd($eventDetails,$event,$source);
             }
             $q++;
@@ -90,5 +140,13 @@ class EventHandler
     public function getPlaceHandler(): PlaceHandler
     {
         return $this->placeHandler;
+    }
+
+    /**
+     * @return SourceDataHandler
+     */
+    public function getSourceDataHandler(): SourceDataHandler
+    {
+        return $this->sourceDataHandler;
     }
 }

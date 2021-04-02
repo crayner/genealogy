@@ -100,6 +100,12 @@ class Individual
     private int $recordKey;
 
     /**
+     * @var string|null
+     * @ORM\Column(type="text",nullable=true)
+     */
+    private ?string $note;
+
+    /**
      * Individual constructor.
      * @param int $identifier
      */
@@ -318,6 +324,34 @@ class Individual
     public function setRecordKey(int $recordKey): Individual
     {
         $this->recordKey = $recordKey;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNote(): ?string
+    {
+        return $this->note;
+    }
+
+    /**
+     * @param string|null $note
+     * @return Individual
+     */
+    public function setNote(?string $note): Individual
+    {
+        $this->note = $note;
+        return $this;
+    }
+
+    /**
+     * @param string $note
+     * @return Individual
+     */
+    public function concatNote(string $note): Individual
+    {
+        $this->note .= $note;
         return $this;
     }
 }

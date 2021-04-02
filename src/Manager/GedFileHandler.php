@@ -18,7 +18,6 @@ use App\Entity\Family;
 use App\Entity\Individual;
 use App\Entity\IndividualFamily;
 use App\Entity\Source;
-use App\Exception\ParseException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\File\File;
 
@@ -36,6 +35,11 @@ class GedFileHandler
     private string $fileName;
 
     /**
+     * @var DataManager
+     */
+    private static DataManager $dataManager;
+
+    /**
      * @var ArrayCollection
      */
     private ArrayCollection $content;
@@ -51,26 +55,6 @@ class GedFileHandler
     private ItemHandler $itemHandler;
 
     /**
-     * @var ArrayCollection
-     */
-    private static ArrayCollection $individuals;
-
-    /**
-     * @var ArrayCollection
-     */
-    private static ArrayCollection $families;
-
-    /**
-     * @var ArrayCollection
-     */
-    private static ArrayCollection $individualsFamilies;
-
-    /**
-     * @var ArrayCollection
-     */
-    private static ArrayCollection $sources;
-
-    /**
      * @var string
      */
     private string $encoding;
@@ -78,10 +62,12 @@ class GedFileHandler
     /**
      * GedFileHandler constructor.
      * @param ItemHandler $itemHandler
+     * @param DataManager $dataManager
      */
-    public function __construct(ItemHandler $itemHandler)
+    public function __construct(ItemHandler $itemHandler, DataManager $dataManager)
     {
         $this->itemHandler = $itemHandler;
+        self::$dataManager = $dataManager;
     }
 
     public function parse()
@@ -210,7 +196,7 @@ class GedFileHandler
      */
     public static function getIndividuals(): ArrayCollection
     {
-        return self::$individuals = isset(self::$individuals) ? self::$individuals : new ArrayCollection();
+        return self::getDataManager()->getIndividuals();
     }
 
     /**
@@ -218,9 +204,7 @@ class GedFileHandler
      */
     public static function addIndividual(Individual $individual)
     {
-        if (self::getIndividuals()->containsKey($individual->getIdentifier())) return;
-
-        self::$individuals->set($individual->getIdentifier(), $individual);
+        self::getDataManager()->addIndividual($individual);
     }
 
     /**
@@ -229,14 +213,7 @@ class GedFileHandler
      */
     public static function getIndividual(int $identifier): Individual
     {
-        if ($identifier < 1) throw new ParseException(__METHOD__, __CLASS__);
-        if (self::getIndividuals()->containsKey($identifier)) return self::$individuals->get($identifier);
-
-        $individual = new Individual($identifier);
-
-        self::addIndividual($individual);
-
-        return $individual;
+        return self::getDataManager()->getIndividual($identifier);
     }
 
     /**
@@ -244,7 +221,7 @@ class GedFileHandler
      */
     public static function getFamilies(): ArrayCollection
     {
-        return self::$families = isset(self::$families) ? self::$families : new ArrayCollection();
+        return self::getDataManager()->getFamilies();
     }
 
     /**
@@ -252,9 +229,7 @@ class GedFileHandler
      */
     public static function addFamily(Family $family)
     {
-        if (self::getFamilies()->containsKey($family->getIdentifier())) return;
-
-        self::$families->set($family->getIdentifier(), $family);
+        self::getDataManager()->addFamily($family);
     }
 
     /**
@@ -263,22 +238,14 @@ class GedFileHandler
      */
     public static function getFamily(int $identifier): Family
     {
-        if ($identifier < 1) throw new ParseException(__METHOD__, __CLASS__);
-        if (self::getFamilies()->containsKey($identifier)) return self::$families->get($identifier);
-
-        $family = new Family($identifier);
-
-        self::addFamily($family);
-
-        return $family;
-    }
+        return self::getDataManager()->getFamily($identifier);    }
 
     /**
      * @return ArrayCollection
      */
     public static function getIndividualsFamilies(): ArrayCollection
     {
-        return self::$individualsFamilies = isset(self::$individualsFamilies) ? self::$individualsFamilies : new ArrayCollection();
+        return self::getDataManager()->getIndividualsFamilies();
     }
 
     /**
@@ -289,25 +256,7 @@ class GedFileHandler
      */
     public static function addIndividualFamily(Individual $individual, Family $family, string $relationship): IndividualFamily
     {
-        $x = self::getIndividualsFamilies()->filter(function (IndividualFamily $indfam) use ($individual) {
-            if ($individual ===$indfam->getIndividual()) return $indfam;
-        });
-
-        $y = $x->filter(function(IndividualFamily $indfam) use ($family) {
-            if ($family === $indfam->getFamily()) return $indfam;
-        });
-
-        if ($y->count() === 1) return $y->first();
-
-        if ($y->count() > 1) throw new ParseException(__METHOD__,__CLASS__);
-
-        $indfam = new IndividualFamily($individual, $family, $relationship);
-
-        $family->addIndividual($indfam);
-        $individual->addFamily($indfam);
-        self::getIndividualsFamilies()->add($indfam);
-
-        return $indfam;
+        return self::getDataManager()->addIndividualFamily($individual, $family, $relationship);
     }
 
     /**
@@ -315,7 +264,7 @@ class GedFileHandler
      */
     public static function getSources(): ArrayCollection
     {
-        return self::$sources = isset(self::$sources) ? self::$sources : new ArrayCollection();
+        return self::getDataManager()->getSources();
     }
 
     /**
@@ -324,11 +273,15 @@ class GedFileHandler
      */
     public static function getSource(int $identifier): Source
     {
-        if (self::getSources()->containsKey($identifier)) return self::$sources->get($identifier);
-
-        $source = new Source($identifier);
-
-        self::$sources->set($identifier, $source);
-        return $source;
+        return self::getDataManager()->getSource($identifier);
     }
+
+    /**
+     * @return DataManager
+     */
+    public static function getDataManager(): DataManager
+    {
+        return self::$dataManager;
+    }
+
 }
