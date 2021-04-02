@@ -9,7 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=EventRepository::class)
- * @ORM\Table(name="event")
+ * @ORM\Table(name="event",
+ *     indexes={@ORM\Index(name="source",columns={"source"})},
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="place",columns={"place"})}
+ *     )
  */
 class Event
 {
@@ -35,7 +38,7 @@ class Event
 
     /**
      * @var string
-     * @ORM\Column(type="enum")
+     * @ORM\Column(type="enum",length=191)
      */
     private string $eventSource;
 
@@ -49,7 +52,7 @@ class Event
 
     /**
      * @var string
-     * @ORM\Column(type="enum")
+     * @ORM\Column(type="enum",length=191)
      */
     private string $type;
 
@@ -75,11 +78,6 @@ class Event
      * @ORM\JoinColumn(name="place",nullable=true)
      */
     private ?Place $place;
-
-    /**
-     * @var int
-     */
-    private int $offset;
 
     /**
      * @var string|null
@@ -119,7 +117,7 @@ class Event
 
     /**
      * @var SourceData|null
-     * @ORM\OneToOne(targetEntity=SourceData::class)
+     * @ORM\ManyToOne(targetEntity=SourceData::class)
      * @ORM\JoinColumn(name="source",nullable=true)
      */
     private ?SourceData $source;
@@ -219,6 +217,7 @@ class Event
      */
     public function setType(string $type): Event
     {
+        if (preg_match('/arrival/i', $type)) $type = 'Immigration';
         if (!in_array($type, self::getTypeList())) throw new EventException($this, sprintf('The event type (%s) must be one of [%s].', $type, implode(', ', self::getTypeList())));
         $this->type = $type;
         return $this;

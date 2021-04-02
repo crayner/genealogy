@@ -16,6 +16,7 @@ namespace App\Manager;
 
 use App\Entity\Individual;
 use App\Entity\IndividualName;
+use App\Entity\SourceData;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -27,16 +28,30 @@ use Doctrine\Common\Collections\ArrayCollection;
 class IndividualNameHandler
 {
     /**
-     * @param int $q
-     * @param ArrayCollection $person
+     * @var SourceDataHandler
+     */
+    private SourceDataHandler $sourceDataHandler;
+
+    /**
+     * IndividualNameHandler constructor.
+     * @param SourceDataHandler $sourceDataHandler
+     */
+    public function __construct(SourceDataHandler $sourceDataHandler)
+    {
+        $this->sourceDataHandler = $sourceDataHandler;
+    }
+
+    /**
+     * @param ArrayCollection $name
      * @param Individual $individual
      * @return IndividualName
      */
-    public function parse(int $q, ArrayCollection $person, Individual $individual): IndividualName
+    public function parse(ArrayCollection $name, Individual $individual): IndividualName
     {
-        $name = ItemHandler::getSubItem($q, $person);
         $individualName = new IndividualName();
-        foreach ($name as $item) {
+        $q = 0;
+        while ($name->containsKey($q)) {
+            $item = $name->get($q);
             extract(LineManager::getLineDetails($item));
             switch ($tag) {
                 case 'NAME':
@@ -64,7 +79,13 @@ class IndividualNameHandler
                     $individualName->setNote($content);
                     break;
                 case 'SOUR':
-                    $individualName->setSource($content);
+                    $identifier = intval(trim($content, 'S@'));
+                    $source = GedFileHandler::getSource($identifier);
+                    $sourceData = new SourceData($source);
+                    $individualName->setSource($sourceData);
+                    $source = ItemHandler::getSubItem($q, $name);
+                    $q += $source->count() - 1;
+                    $this->getSourceDataHandler()->parse($source, $sourceData);
                     break;
                 case '_MARNM':  //  My Heritage non standard.
                     $x = new IndividualName();
@@ -72,11 +93,19 @@ class IndividualNameHandler
                     $x->setName($content)->setNameType('married');
                     break;
                 default:
-                    dump($this, $person);
+                    dump($this, $name);
                     dd(sprintf('The Individual Name part of "%s" can not be handled.', $tag));
             }
+            $q++;
         }
-        $individualName->setOffset($q + $name->count() - 1);
         return $individualName;
+    }
+
+    /**
+     * @return SourceDataHandler
+     */
+    public function getSourceDataHandler(): SourceDataHandler
+    {
+        return $this->sourceDataHandler;
     }
 }

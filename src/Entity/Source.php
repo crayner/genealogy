@@ -19,18 +19,18 @@ class Source
     private string $id;
 
     /**
-     * @var int
-     * @ORM\Column(type="smallint")
+     * @var string
+     * @ORM\Column(length=22)
      */
-    private int $identifier;
+    private string $identifier;
 
     /**
      * Source constructor.
      * @param int $identifier
      */
-    public function __construct(int $identifier = 0)
+    public function __construct(?string $identifier = null)
     {
-        if ($identifier > 0) $this->setIdentifier($identifier);
+        if (!is_null($identifier)) $this->setIdentifier($identifier);
     }
 
     /**
@@ -42,18 +42,18 @@ class Source
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getIdentifier(): int
+    public function getIdentifier(): string
     {
-        return $this->identifier;
+        return $this->identifier = isset($this->identifier) ? $this->identifier : mb_substr(uniqid('SOUR_', true), 0, 22);
     }
 
     /**
-     * @param mixed $identifier
+     * @param string $identifier
      * @return Source
      */
-    public function setIdentifier($identifier): Source
+    public function setIdentifier(string $identifier): Source
     {
         $this->identifier = $identifier;
         return $this;

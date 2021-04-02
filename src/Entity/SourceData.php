@@ -194,6 +194,7 @@ for bias for example, an autobiography)',
      */
     public function concatNote(string $note): SourceData
     {
+        if (!isset($this->note)) $this->note = '';
         $this->note .= $note;
 
         return $this;

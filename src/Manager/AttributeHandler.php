@@ -15,7 +15,7 @@
 namespace App\Manager;
 
 use App\Entity\Attribute;
-use App\Exception\AttributeException;
+use App\Entity\SourceData;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -26,6 +26,19 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class AttributeHandler
 {
+    /**
+     * @var SourceDataHandler
+     */
+    private SourceDataHandler $sourceDataHandler;
+
+    /**
+     * AttributeHandler constructor.
+     * @param SourceDataHandler $sourceDataHandler
+     */
+    public function __construct(SourceDataHandler $sourceDataHandler)
+    {
+        $this->sourceDataHandler = $sourceDataHandler;
+    }
 
     /**
      * @param ArrayCollection $attributeDetails
@@ -48,6 +61,18 @@ class AttributeHandler
                 case 'EMAI':
                     $attribute->setEmail($content);
                     break;
+                case 'PLAC':
+                    $attribute->setPlace($content);
+                    break;
+                case 'SOUR':
+                    $identifier = intval(trim($content, 'S@'));
+                    $source = GedFileHandler::getSource($identifier);
+                    $sourceData = new SourceData($source);
+                    $attribute->setSource($sourceData);
+                    $source = ItemHandler::getSubItem($q, $attributeDetails);
+                    $q += $source->count() - 1;
+                    $this->getSourceDataHandler()->parse($source, $sourceData);
+                    break;
                 default:
                     dump(sprintf('Attribute handles the %s how?', $tag));
                     dd($attribute,$attributeDetails);
@@ -58,4 +83,11 @@ class AttributeHandler
         return $attribute;
     }
 
+    /**
+     * @return SourceDataHandler
+     */
+    public function getSourceDataHandler(): SourceDataHandler
+    {
+        return $this->sourceDataHandler;
+    }
 }

@@ -12,7 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @author  Craig Rayner <craig@craigrayner.com>
  * 1/04/2021 09:21
  * @ORM\Entity(repositoryClass=AttributeRepository::class)
- * @ORM\Table(name="attribute")
+ * @ORM\Table(name="attribute",
+ *     indexes={@ORM\Index(name="source",columns={"source"})})
  */
 class Attribute
 {
@@ -22,25 +23,13 @@ class Attribute
      * @ORM\Column(type="guid")
      * @ORM\GeneratedValue(strategy="UUID")
      */
-    private string $id;
-
-    /**
-     * @ORM\Column(type="enum")
-     */
-    private $source;
-
-    /**
-     * @var array|string[]
-     */
-    private static array $sourceList = [
-        'Individual',
-    ];
+    private ?string $id;
 
     /**
      * @var string|null
      * @ORM\Column(length=120, nullable=true)
      */
-    private $email;
+    private ?string $email;
 
     /**
      * @var int
@@ -61,13 +50,17 @@ class Attribute
     ];
 
     /**
-     * Attribute constructor.
-     * @param string|null $source
+     * @var string|null
+     * @ORM\Column(length=120)
      */
-    public function __construct(?string $source = null)
-    {
-        if (!is_null($source)) $this->setSource($source);
-    }
+    private ?string $place;
+
+    /**
+     * @var SourceData|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\SourceData")
+     * @ORM\JoinColumn(name="source",nullable=true)
+     */
+    private ?SourceData $source;
 
     /**
      * @return string|null
@@ -88,33 +81,6 @@ class Attribute
     }
 
     /**
-     * @return mixed
-     */
-    public function getSource()
-    {
-        return $this->source;
-    }
-
-    /**
-     * @param mixed $source
-     * @return Attribute
-     */
-    public function setSource($source)
-    {
-        if (!in_array($source, self::getSourceList())) throw new AttributeException($this, sprintf('The attribute source (%s) is not valid.', $source));
-        $this->source = $source;
-        return $this;
-    }
-
-    /**
-     * @return array|string[]
-     */
-    public static function getSourceList(): array
-    {
-        return self::$sourceList;
-    }
-
-    /**
      * @return string|null
      */
     public function getEmail(): ?string
@@ -123,7 +89,7 @@ class Attribute
     }
 
     /**
-     * @param string $email
+     * @param string|null $email
      * @return Attribute
      */
     public function setEmail(?string $email): Attribute
@@ -176,5 +142,41 @@ class Attribute
     public static function getTypeList(): array
     {
         return self::$typeList;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPlace(): ?string
+    {
+        return $this->place;
+    }
+
+    /**
+     * @param string|null $place
+     * @return Attribute
+     */
+    public function setPlace(?string $place): Attribute
+    {
+        $this->place = $place;
+        return $this;
+    }
+
+    /**
+     * @return SourceData|null
+     */
+    public function getSource(): ?SourceData
+    {
+        return isset($this->source) ? $this->source : null;
+    }
+
+    /**
+     * @param SourceData|null $source
+     * @return Attribute
+     */
+    public function setSource(?SourceData $source): Attribute
+    {
+        $this->source = $source;
+        return $this;
     }
 }

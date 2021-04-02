@@ -14,7 +14,6 @@
 
 namespace App\Entity;
 
-use App\Exception\IndividualException;
 use App\Exception\IndividualNameException;
 use App\Manager\ParameterManager;
 use App\Repository\IndividualNameRepository;
@@ -36,7 +35,7 @@ class IndividualName
      * @ORM\Column(type="guid")
      * @ORM\GeneratedValue(strategy="UUID")
      */
-    private string $id;
+    private ?string $id;
 
     /**
      * @var Individual
@@ -111,15 +110,11 @@ class IndividualName
     private ?string $note;
 
     /**
-     * @var string
-     * @ORM\Column(type="text",nullable=true)
+     * @var SourceData|null
+     * @ORM\OneToOne(targetEntity="App\Entity\SourceData")
+     * @ORM\JoinColumn(nullable=true,name="source")
      */
-    private ?string $source;
-
-    /**
-     * @var int
-     */
-    private int $offset;
+    private ?SourceData $source;
 
     /**
      * @return string|null
@@ -127,16 +122,6 @@ class IndividualName
     public function getId(): ?string
     {
         return $this->id;
-    }
-
-    /**
-     * @param string|null $id
-     * @return IndividualName
-     */
-    public function setId(?string $id): IndividualName
-    {
-        $this->id = $id;
-        return $this;
     }
 
     /**
@@ -191,7 +176,7 @@ class IndividualName
      */
     public function setNameType(string $nameType): IndividualName
     {
-        if (!in_array($nameType, self::getNameTypeList())) throw new IndividualException(sprintf('The name type, "%s", of the individual is not valid.', $nameType));
+        if (!in_array($nameType, self::getNameTypeList())) throw new IndividualNameException($this,sprintf('The name type, "%s", of the individual is not valid.', $nameType));
         $this->nameType = $nameType;
 
         return $this;
@@ -219,7 +204,7 @@ class IndividualName
      */
     public function setGivenName(string $givenName): IndividualName
     {
-        if (mb_strlen($givenName) > 120) throw new IndividualException(sprintf('The given name, "%s", of the individual exceeds 120 (%s) characters in length.', $givenName, mb_strlen($givenName)));
+        if (mb_strlen($givenName) > 120) throw new IndividualNameException($this, sprintf('The given name, "%s", of the individual exceeds 120 (%s) characters in length.', $givenName, mb_strlen($givenName)));
         $this->givenName = $givenName;
         return $this;
     }
@@ -339,40 +324,20 @@ class IndividualName
     }
 
     /**
-     * @return string
+     * @return SourceData|null
      */
-    public function getSource(): ?string
+    public function getSource(): ?SourceData
     {
-        return $this->source;
+        return isset($this->source) ? $this->source : null;
     }
 
     /**
-     * @param string $source
+     * @param SourceData|null $source
      * @return IndividualName
      */
-    public function setSource(?string $source): IndividualName
+    public function setSource(?SourceData $source): IndividualName
     {
-        throw new IndividualNameException($this,'Source is not yet implemented.');
-        if (mb_strlen($note) > 32767) throw new IndividualNameException($this,sprintf('The note, "%s", of the individual exceeds 32767 (%s) characters in length.', $note, mb_strlen($note)));
         $this->source = $source;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOffset(): int
-    {
-        return $this->offset;
-    }
-
-    /**
-     * @param int $offset
-     * @return IndividualName
-     */
-    public function setOffset(int $offset): IndividualName
-    {
-        $this->offset = $offset;
         return $this;
     }
 }

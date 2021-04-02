@@ -48,17 +48,27 @@ class IndividualHandler
     private SourceDataHandler $sourceDataHandler;
 
     /**
+     * @var MultimediaRecordHandler
+     */
+    private MultimediaRecordHandler $multimediaRecordHandler;
+
+    /**
      * IndividualHandler constructor.
      * @param IndividualNameHandler $individualNameHandler
      * @param EventHandler $eventHandler
      * @param AttributeHandler $attributeHandler
+     * @param SourceDataHandler $sourceDataHandler
+     * @param MultimediaRecordHandler $multimediaRecordHandler
      */
-    public function __construct(IndividualNameHandler $individualNameHandler, EventHandler $eventHandler, AttributeHandler $attributeHandler, SourceDataHandler $sourceDataHandler)
+    public function __construct(IndividualNameHandler $individualNameHandler, EventHandler $eventHandler,
+                                AttributeHandler $attributeHandler, SourceDataHandler $sourceDataHandler,
+                                MultimediaRecordHandler $multimediaRecordHandler)
     {
         $this->individualNameHandler = $individualNameHandler;
         $this->eventHandler = $eventHandler;
         $this->attributeHandler = $attributeHandler;
         $this->sourceDataHandler = $sourceDataHandler;
+        $this->multimediaRecordHandler = $multimediaRecordHandler;
     }
 
 
@@ -78,9 +88,10 @@ class IndividualHandler
             extract(LineManager::getLineDetails($individualDetails->get($q)));
             switch ($tag) {
                 case 'NAME':
-                    $individualName = $this->getIndividualNameHandler()->parse($q, $individualDetails, $individual);
+                    $name = ItemHandler::getSubItem($q, $individualDetails);
+                    $individualName = $this->getIndividualNameHandler()->parse($name, $individual);
                     $individual->addName($individualName);
-                    $q = $individualName->getOffset();
+                    $q += $name->count() - 1;
                     break;
                 case 'SEX':
                     $individual->setGender($content);
@@ -115,9 +126,7 @@ class IndividualHandler
                     GedFileHandler::addIndividualFamily($individual, $family, 'Child');
                     break;
                 case 'SOUR':
-                    $identifier = intval(trim($content, 'S@'));
-                    $source = GedFileHandler::getSource($identifier);
-                    $sourceData = new SourceData($source);
+                    $sourceData = new SourceData();
                     $individual->addSource($sourceData);
                     $source = ItemHandler::getSubItem($q, $individualDetails);
                     $q += $source->count() - 1;
@@ -126,8 +135,9 @@ class IndividualHandler
                 case 'RIN':
                     $individual->setRecordKey(intval($content));
                     break;
-                case '_UID':  // My Heritage Site crap
-                case '_UPD':  // My Heritage Site crap
+                case '_UID':  // My Heritage Reference
+                case '_UPD':  // My Heritage Stuff
+                case 'UID': // Ancestry.com Reference
                     // Ignore rubbish
                     break;
                 case 'NOTE':
@@ -136,6 +146,15 @@ class IndividualHandler
                 case 'CONC':
                 case 'CONT':
                     $individual->concatNote($content);
+                    break;
+                case 'OBJE':
+                    $object = ItemHandler::getSubItem($q, $individualDetails);
+                    $q += $object->count() - 1;
+                    $record = $this->getMultimediaRecordHandler()->parse($object);
+                    $individual->addMultimediaRecord($record);
+                    break;
+                case 'DSCR':
+                    $individual->setDescription(explode(',',$content));
                     break;
                 default:
                     dump(sprintf('I don\'t know how to handle a "%s" in "%s"', $tag, __CLASS__));
@@ -178,5 +197,13 @@ class IndividualHandler
     public function getSourceDataHandler(): SourceDataHandler
     {
         return $this->sourceDataHandler;
+    }
+
+    /**
+     * @return MultimediaRecordHandler
+     */
+    public function getMultimediaRecordHandler(): MultimediaRecordHandler
+    {
+        return $this->multimediaRecordHandler;
     }
 }

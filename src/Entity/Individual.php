@@ -106,13 +106,28 @@ class Individual
     private ?string $note;
 
     /**
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity=MultimediaRecord::class)
+     * @ORM\JoinTable(name="individual_multimedia_records",
+     *      joinColumns={@ORM\JoinColumn(name="individual_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="multimedia_record_id", referencedColumnName="id")}
+     *      )
+     */
+    private Collection $multimediaRecords;
+
+    /**
+     * @var array|null
+     * @ORM\Column(type="simple_array",nullable=true)
+     */
+    private ?array $description;
+
+    /**
      * Individual constructor.
      * @param int $identifier
      */
     public function __construct(int $identifier = 0)
     {
         if ($identifier > 0) $this->identifier = $identifier;
-        $this->sources = new ArrayCollection();
     }
 
     /**
@@ -352,6 +367,55 @@ class Individual
     public function concatNote(string $note): Individual
     {
         $this->note .= $note;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMultimediaRecords(): Collection
+    {
+        return $this->multimediaRecords = isset($this->multimediaRecords) ? $this->multimediaRecords : new ArrayCollection();
+    }
+
+    /**
+     * @param Collection $multimediaRecords
+     * @return Individual
+     */
+    public function setMultimediaRecords(Collection $multimediaRecords): Individual
+    {
+        $this->multimediaRecords = $multimediaRecords;
+        return $this;
+    }
+
+    /**
+     * @param MultimediaRecord $record
+     * @return Individual
+     */
+    public function addMultimediaRecord(MultimediaRecord $record): Individual
+    {
+        if ($this->getMultimediaRecords()->containsKey($record->getLink())) return $this;
+
+        $this->multimediaRecords->set($record->getLink(), $record);
+
+        return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getDescription(): ?array
+    {
+        return isset($this->description) ? $this->description : null;
+    }
+
+    /**
+     * @param array|null $description
+     * @return Individual
+     */
+    public function setDescription(?array $description): Individual
+    {
+        $this->description = $description;
         return $this;
     }
 }

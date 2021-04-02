@@ -36,6 +36,7 @@ class SourceDataException extends \RuntimeException
      */
     public function __construct(SourceData $sourceData, string $message = null)
     {
+        dd($sourceData,$message,debug_backtrace());
         $this->sourceData = $sourceData;
         $message = $message ?: 'The Source Data is not valid';
         parent::__construct($message);

@@ -73,6 +73,9 @@ class SourceDataHandler
                 case 'CONT':
                     $source->concatNote($content);
                     break;
+                case '_APID': // Ancestry Data
+                    $source->concatNote(' '.$tag.' '.$content);
+                    break;
                 default:
                     dump(sprintf('Handling a %s is beyond the SourceDataHandler!',$tag));
                     dd($sourceDetails,$source);

@@ -163,11 +163,13 @@ class DataManager
     }
 
     /**
-     * @param int $identifier
+     * @param string $identifier
      * @return Source
      */
-    public function getSource(int $identifier): Source
+    public function getSource(string $identifier): Source
     {
+        if ($identifier === '' || $identifier === '0') $identifier = mb_substr(uniqid('SOUR_', true),0,22);
+
         if ($this->getSources()->containsKey($identifier)) return $this->sources->get($identifier);
 
         $source = new Source($identifier);

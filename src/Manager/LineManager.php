@@ -39,6 +39,9 @@ class LineManager
     public static function getLineDetails(string $line): array
     {
         $items = explode(' ', $line);
+        self::setLevel('');
+        self::setTag('');
+        self::setContent('');
         if (key_exists(0, $items)) {
             self::setLevel($items[0]);
             unset($items[0]);
@@ -105,6 +108,6 @@ class LineManager
      */
     public static function setContent(string $content): void
     {
-        self::$content = str_replace(['@@'], ['@'], $content);
+        self::$content = $content;
     }
 }

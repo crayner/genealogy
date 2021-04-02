@@ -117,7 +117,7 @@ class GedFileHandler
      */
     private function getSection(): ArrayCollection
     {
-        return $this->section;
+        return $this->section = isset($this->section) ? $this->section : new ArrayCollection();
     }
 
     /**

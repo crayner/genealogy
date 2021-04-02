@@ -60,7 +60,6 @@ class ItemHandler
         switch(key_exists(0, $matches) ? $matches[0] : '') {
             case 'HEAD':
                 $this->getHeadHandler()->parse($item);
-                dump($this);
                 break;
             case 'INDI':
                 $this->getIndividualHandler()->parse($item);
