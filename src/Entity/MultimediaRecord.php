@@ -62,6 +62,12 @@ class MultimediaRecord
     private ?\DateTimeImmutable $changeDate;
 
     /**
+     * @var array
+     * @ORM\Column(type="json")
+     */
+    private array $extra;
+
+    /**
      * @return string|null
      */
     public function getId(): ?string
@@ -93,7 +99,7 @@ class MultimediaRecord
      */
     public function getFileReference(): ?MultimediaFile
     {
-        return $this->fileReference;
+        return $this->fileReference = isset($this->fileReference) ? $this->fileReference : null;
     }
 
     /**
@@ -104,6 +110,14 @@ class MultimediaRecord
     {
         $this->fileReference = $fileReference;
         return $this;
+    }
+
+    /**
+     * @return MultimediaFile
+     */
+    public function createFileReference(): MultimediaFile
+    {
+        return $this->fileReference = isset($this->fileReference) ? $this->fileReference : new MultimediaFile();
     }
 
     /**
@@ -175,6 +189,37 @@ class MultimediaRecord
     public function setChangeDate(?\DateTimeImmutable $changeDate): MultimediaRecord
     {
         $this->changeDate = $changeDate;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExtra(): array
+    {
+        return $this->extra = isset($this->extra) ? $this->extra : [];
+    }
+
+    /**
+     * @param array $extra
+     * @return MultimediaRecord
+     */
+    public function setExtra(array $extra): MultimediaRecord
+    {
+        $this->extra = $extra;
+        return $this;
+    }
+
+    /**
+     * @param string $tag
+     * @param string $content
+     * @return MultimediaRecord
+     */
+    public function addExtra(string $tag, string $content): MultimediaRecord
+    {
+        $this->getExtra();
+        $this->extra[$tag] = $content;
+
         return $this;
     }
 }

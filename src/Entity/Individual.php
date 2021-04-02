@@ -94,10 +94,10 @@ class Individual
     private Collection $sources;
 
     /**
-     * @var int
-     * @ORM\Column(type="bigint")
+     * @var string|null
+     * @ORM\Column(length=22)
      */
-    private int $recordKey;
+    private ?string $recordKey;
 
     /**
      * @var string|null
@@ -325,18 +325,18 @@ class Individual
     }
 
     /**
-     * @return int
+     * @return string|null
      */
-    public function getRecordKey(): int
+    public function getRecordKey(): ?string
     {
-        return $this->recordKey;
+        return isset($this->recordKey) ? $this->recordKey : null;
     }
 
     /**
-     * @param int $recordKey
+     * @param string|null $recordKey
      * @return Individual
      */
-    public function setRecordKey(int $recordKey): Individual
+    public function setRecordKey(?string $recordKey): Individual
     {
         $this->recordKey = $recordKey;
         return $this;

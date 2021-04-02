@@ -208,10 +208,10 @@ class GedFileHandler
     }
 
     /**
-     * @param int $identifier
+     * @param string $identifier
      * @return Individual
      */
-    public static function getIndividual(int $identifier): Individual
+    public static function getIndividual(string $identifier): Individual
     {
         return self::getDataManager()->getIndividual($identifier);
     }
@@ -233,10 +233,10 @@ class GedFileHandler
     }
 
     /**
-     * @param int $identifier
+     * @param string $identifier
      * @return Family
      */
-    public static function getFamily(int $identifier): Family
+    public static function getFamily(string $identifier): Family
     {
         return self::getDataManager()->getFamily($identifier);    }
 
@@ -260,6 +260,17 @@ class GedFileHandler
     }
 
     /**
+     * @param Individual $individual
+     * @param Family $family
+     * @param string $relationship
+     * @return IndividualFamily
+     */
+    public static function getIndividualFamily(Individual $individual, Family $family, string $relationship): IndividualFamily
+    {
+        return self::getDataManager()->getIndividualFamily($individual,$family,$relationship);
+    }
+
+    /**
      * @return ArrayCollection
      */
     public static function getSources(): ArrayCollection
@@ -268,10 +279,10 @@ class GedFileHandler
     }
 
     /**
-     * @param int $identifier
+     * @param string $identifier
      * @return Source
      */
-    public static function getSource(int $identifier): Source
+    public static function getSource(string $identifier): Source
     {
         return self::getDataManager()->getSource($identifier);
     }

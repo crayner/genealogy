@@ -15,7 +15,6 @@
 namespace App\Manager;
 
 
-use App\Entity\MultimediaFile;
 use App\Entity\MultimediaRecord;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -33,18 +32,20 @@ class MultimediaRecordHandler
                     if (!is_null($content)) $record->setLink($content);
                     break;
                 case 'FILE':
-                    $fileReference = new MultimediaFile();
-                    $record->setFileReference($fileReference);
-                    $record->getFileReference()->setReference($content);
+                    $record->createFileReference()->setReference($content);
                     break;
                 case 'FORM':
-                    $record->getFileReference()->setFormat($content);
+                    $record->createFileReference()->setFormat($content);
                     break;
                 case 'TITL':
-                    $record->getFileReference()->setTitle($content);
+                    $record->createFileReference()->setTitle($content);
+                    break;
+                case '_FILESIZE':
+                case '_PHOTO_RIN':
+                    $record->addExtra($tag,$content);
                     break;
                 default:
-                    dump(sprintf('Handling a %s is beyond the %s!',$tag,__CLASS__));
+                    dump(sprintf('Handling a %s is beyond the %s!',$tag, __CLASS__));
                     dd($tag,$content,$record,$details);
             }
             $q++;

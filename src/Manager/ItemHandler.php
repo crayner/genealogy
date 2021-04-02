@@ -35,6 +35,11 @@ class ItemHandler
     private IndividualHandler $individualHandler;
 
     /**
+     * @var FamilyHandler
+     */
+    private FamilyHandler $FamilyHandler;
+
+    /**
      * @var string
      */
     private string $encoding;
@@ -43,11 +48,13 @@ class ItemHandler
      * ItemHandler constructor.
      * @param HeadHandler $headHandler
      * @param IndividualHandler $individualHandler
+     * @param FamilyHandler $FamilyHandler
      */
-    public function __construct(HeadHandler $headHandler, IndividualHandler $individualHandler)
+    public function __construct(HeadHandler $headHandler, IndividualHandler $individualHandler, FamilyHandler $FamilyHandler)
     {
         $this->headHandler = $headHandler;
         $this->individualHandler = $individualHandler;
+        $this->FamilyHandler = $FamilyHandler;
     }
 
     /**
@@ -56,13 +63,16 @@ class ItemHandler
     public function parse(ArrayCollection $item)
     {
         // item Type
-        $first = preg_match("/HEAD|INDI$/",$item->first(), $matches);
+        $first = preg_match("/HEAD|INDI$|FAM$/",$item->first(), $matches);
         switch(key_exists(0, $matches) ? $matches[0] : '') {
             case 'HEAD':
                 $this->getHeadHandler()->parse($item);
                 break;
             case 'INDI':
                 $this->getIndividualHandler()->parse($item);
+                break;
+            case 'FAM':
+                $this->getFamilyHandler()->parse($item);
                 break;
             default:
                 dd($item, GedFileHandler::getDataManager());
@@ -126,5 +136,13 @@ class ItemHandler
         } while ($index < $level && $items->containsKey($q));
 
         return $subItem;
+    }
+
+    /**
+     * @return FamilyHandler
+     */
+    public function getFamilyHandler(): FamilyHandler
+    {
+        return $this->FamilyHandler;
     }
 }

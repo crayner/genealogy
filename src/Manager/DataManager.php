@@ -68,10 +68,10 @@ class DataManager
     }
 
     /**
-     * @param int $identifier
+     * @param string $identifier
      * @return Individual
      */
-    public function getIndividual(int $identifier): Individual
+    public function getIndividual(string $identifier): Individual
     {
         if ($identifier < 1) throw new ParseException(__METHOD__, __CLASS__);
         if ($this->getIndividuals()->containsKey($identifier)) return $this->individuals->get($identifier);
@@ -102,10 +102,10 @@ class DataManager
     }
 
     /**
-     * @param int $identifier
+     * @param string $identifier
      * @return Family
      */
-    public function getFamily(int $identifier): Family
+    public function getFamily(string $identifier): Family
     {
         if ($identifier < 1) throw new ParseException(__METHOD__, __CLASS__);
         if ($this->getFamilies()->containsKey($identifier)) return $this->families->get($identifier);
@@ -133,6 +133,18 @@ class DataManager
      */
     public function addIndividualFamily(Individual $individual, Family $family, string $relationship): IndividualFamily
     {
+        return $this->searchIndividualFamily($individual,$family, $relationship);
+    }
+
+    /**
+     * @param Individual $individual
+     * @param Family $family
+     * @param string $relationship
+     * @param bool $create
+     * @return IndividualFamily|null
+     */
+    private function searchIndividualFamily(Individual $individual, Family $family, string $relationship, bool $create = true): ?IndividualFamily
+    {
         $x = $this->getIndividualsFamilies()->filter(function (IndividualFamily $indfam) use ($individual) {
             if ($individual ===$indfam->getIndividual()) return $indfam;
         });
@@ -145,6 +157,8 @@ class DataManager
 
         if ($y->count() > 1) throw new ParseException(__METHOD__,__CLASS__);
 
+        if (!$create) return null;
+
         $indfam = new IndividualFamily($individual, $family, $relationship);
 
         $family->addIndividual($indfam);
@@ -152,6 +166,18 @@ class DataManager
         $this->getIndividualsFamilies()->add($indfam);
 
         return $indfam;
+    }
+
+    /**
+     * @param Individual $individual
+     * @param Family $family
+     * @param string $relationship
+     * @param bool $create
+     * @return IndividualFamily|null
+     */
+    public function getIndividualFamily(Individual $individual, Family $family, string $relationship, bool $create = true): ?IndividualFamily
+    {
+        return $this->searchIndividualFamily($individual,$family,$relationship, $create);
     }
 
     /**

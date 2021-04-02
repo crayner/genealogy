@@ -40,20 +40,6 @@ class Event
      * @var string
      * @ORM\Column(type="enum",length=191)
      */
-    private string $eventSource;
-
-    /**
-     * @var array|string[]
-     */
-    private static array $eventSourceList = [
-        'Individual',
-        'Family',
-    ];
-
-    /**
-     * @var string
-     * @ORM\Column(type="enum",length=191)
-     */
     private string $type;
 
     /**
@@ -123,15 +109,6 @@ class Event
     private ?SourceData $source;
 
     /**
-     * Event constructor.
-     * @param string|null $eventSource
-     */
-    public function __construct(?string $eventSource = null)
-    {
-        if (!is_null($eventSource) ) $this->setEventSource($eventSource);
-    }
-
-    /**
      * @return string|null
      */
     public function getId(): ?string
@@ -173,25 +150,6 @@ class Event
     public function setName(?string $name): Event
     {
         $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEventSource(): string
-    {
-        return $this->eventSource;
-    }
-
-    /**
-     * @param string $eventSource
-     * @return Event
-     */
-    public function setEventSource(string $eventSource): Event
-    {
-        if (!in_array($eventSource, self::getEventSourceList())) throw new EventException($this, sprintf('The event source (%s) is not valid', $eventSource));
-        $this->eventSource = $eventSource;
         return $this;
     }
 

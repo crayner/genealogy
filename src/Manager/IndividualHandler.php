@@ -80,11 +80,11 @@ class IndividualHandler
     {
         $line = LineManager::getLineDetails($individualDetails->get(0));
         extract($line);
-        $identifier = intval(trim($tag, 'IP@'));
+        $identifier = trim($tag, 'IP@');
         $individual = GedFileHandler::getIndividual($identifier);
 
         $q = 1;
-        while ($q < count($individualDetails)) {
+        while ($individualDetails->containsKey($q)) {
             extract(LineManager::getLineDetails($individualDetails->get($q)));
             switch ($tag) {
                 case 'NAME':
@@ -116,12 +116,12 @@ class IndividualHandler
                     $q += $attribute->getOffset() - 1;
                     break;
                 case 'FAMS':
-                    $identifier = intval(trim($content, 'F@'));
+                    $identifier = trim($content, 'F@');
                     $family = GedFileHandler::getFamily($identifier);
                     GedFileHandler::addIndividualFamily($individual, $family, 'Spouse');
                     break;
                 case 'FAMC':
-                    $identifier = intval(trim($content, 'F@'));
+                    $identifier = trim($content, 'F@');
                     $family = GedFileHandler::getFamily($identifier);
                     GedFileHandler::addIndividualFamily($individual, $family, 'Child');
                     break;
@@ -133,7 +133,7 @@ class IndividualHandler
                     $this->getSourceDataHandler()->parse($source, $sourceData);
                     break;
                 case 'RIN':
-                    $individual->setRecordKey(intval($content));
+                    $individual->setRecordKey($content);
                     break;
                 case '_UID':  // My Heritage Reference
                 case '_UPD':  // My Heritage Stuff

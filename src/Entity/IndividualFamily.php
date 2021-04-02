@@ -47,6 +47,8 @@ class IndividualFamily
     private static array $relationshipTypeList = [
         'Spouse',
         'Child',
+        'Husband',
+        'Wife',
     ];
 
     /**

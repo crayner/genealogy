@@ -46,12 +46,11 @@ class EventHandler
 
     /**
      * @param ArrayCollection $eventDetails
-     * @param string $source
      * @return Event
      */
-    public function parse(ArrayCollection $eventDetails, string $source): Event
+    public function parse(ArrayCollection $eventDetails): Event
     {
-        $event = new Event($source);
+        $event = new Event();
         $event->setOffset($eventDetails->count());
         $q = 0;
         while ($q < $eventDetails->count()) {
@@ -61,6 +60,9 @@ class EventHandler
                 case 'BIRT':
                     $event->setType('Birth');
                     break;
+                case 'MARR':
+                    $event->setType('Marriage');
+                    break;
                 case 'DEAT':
                     $event->setType('Death');
                     break;
@@ -69,6 +71,9 @@ class EventHandler
                     break;
                 case 'BAPM':
                     $event->setType('Baptism');
+                    break;
+                case 'DIV':
+                    $event->setType('Divorce');
                     break;
                 case 'CHR':
                     $event->setType('Christening');
@@ -116,7 +121,7 @@ class EventHandler
                     $event->setRole($content);
                     break;
                 case 'SOUR':
-                    $identifier = intval(trim($content, 'S@'));
+                    $identifier = trim($content, 'S@');
                     $source = GedFileHandler::getSource($identifier);
                     $sourceData = new SourceData($source);
                     $event->setSource($sourceData);
@@ -125,8 +130,8 @@ class EventHandler
                     $this->getSourceDataHandler()->parse($source, $sourceData);
                     break;
                 default:
-                    dump(sprintf('Handling a %s is beyond the EventHandler!', $tag));
-                    dd($eventDetails,$event,$source);
+                    dump(sprintf('Handling a (%s) is beyond the %s!', $tag, __CLASS__));
+                    dd($eventDetails,$event);
             }
             $q++;
         }

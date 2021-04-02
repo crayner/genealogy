@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Exception\FamilyException;
 use App\Repository\FamilyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -29,10 +30,10 @@ class Family
     private string $id;
 
     /**
-     * @var int
-     * @ORM\Column(type="smallint")
+     * @var string
+     * @ORM\Column(length=22)
      */
-    private int $identifier;
+    private string $identifier;
 
     /**
      * @var Collection
@@ -42,13 +43,41 @@ class Family
      *      inverseJoinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id")}
      *      )
      */
-    private $events;
+    private Collection $events;
 
     /**
      * @var Collection
      * @ORM\OneToMany(targetEntity=IndividualFamily::class, mappedBy="family")
      */
-    private $individuals;
+    private Collection $individuals;
+
+    /**
+     * @var string|null
+     * @ORM\Column(length=22)
+     */
+    private ?string $recordKey;
+
+    /**
+     * @var array
+     * @ORM\Column(type="json")
+     */
+    private array $extra;
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="text",nullable=true)
+     */
+    private ?string $note;
+
+    /**
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity=MultimediaRecord::class)
+     * @ORM\JoinTable(name="family_multimedia_records",
+     *      joinColumns={@ORM\JoinColumn(name="family_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="multimedia_record_id", referencedColumnName="id")}
+     *      )
+     */
+    private Collection $multimediaRecords;
 
     /**
      * Family constructor.
@@ -68,18 +97,18 @@ class Family
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getIdentifier(): int
+    public function getIdentifier()
     {
         return $this->identifier;
     }
 
     /**
-     * @param int $identifier
+     * @param string $identifier
      * @return Family
      */
-    public function setIdentifier(int $identifier): Family
+    public function setIdentifier(string $identifier)
     {
         $this->identifier = $identifier;
         return $this;
@@ -90,7 +119,7 @@ class Family
      */
     public function getEvents(): Collection
     {
-        return $this->events;
+        return $this->events = isset($this->events) ? $this->events : new ArrayCollection();
     }
 
     /**
@@ -109,7 +138,7 @@ class Family
      */
     public function addEvent(Event $event): Family
     {
-        if (!$this->events->contains($event)) {
+        if (!$this->getEvents()->contains($event)) {
             $this->events->add($event);
         }
 
@@ -163,6 +192,118 @@ class Family
                 $individual->setFamily(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRecordKey(): ?string
+    {
+        return $this->recordKey;
+    }
+
+    /**
+     * @param string|null $recordKey
+     * @return Family
+     */
+    public function setRecordKey(?string $recordKey): Family
+    {
+        if (mb_strlen($recordKey) > 22) throw new FamilyException($this, sprintf('This record key (%s) is too long. It should have 22 character or less.',$recordKey));
+        $this->recordKey = $recordKey;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExtra(): array
+    {
+        return $this->extra = isset($this->extra) ? $this->extra : [];
+    }
+
+    /**
+     * @param array $extra
+     * @return Family
+     */
+    public function setExtra(array $extra): Family
+    {
+        $this->extra = $extra;
+        return $this;
+    }
+
+    /**
+     * @param string $tag
+     * @param string $content
+     * @return Family
+     */
+    public function addExtra(string $tag, string $content): Family
+    {
+        $this->getExtra();
+        $this->extra[$tag] = $content;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNote(): ?string
+    {
+        return isset($this->note) ? $this->note : null;
+    }
+
+    /**
+     * @param string|null $note
+     * @return Family
+     */
+    public function setNote(string $note): Family
+    {
+        $this->note = $note;
+        return $this;
+    }
+
+    /**
+     * @param string $note
+     * @return Family
+     */
+    public function concatNote(string $note): Family
+    {
+        $this->note = (isset($this->note) ? $this->note : '') . $note;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMultimediaRecords(): Collection
+    {
+        if (isset($this->multimediaRecords) && $this->multimediaRecords instanceof PersistentCollection) $this->multimediaRecords->initialize();
+
+        return $this->multimediaRecords = isset($this->multimediaRecords) ? $this->multimediaRecords : new ArrayCollection();
+    }
+
+    /**
+     * @param Collection $multimediaRecords
+     * @return Family
+     */
+    public function setMultimediaRecords(Collection $multimediaRecords): Family
+    {
+        $this->multimediaRecords = $multimediaRecords;
+        return $this;
+    }
+
+    /**
+     * @param MultimediaRecord $record
+     * @return Family
+     */
+    public function addMultimediaRecord(MultimediaRecord $record): Family
+    {
+        if ($this->getMultimediaRecords()->contains($record)) return $this;
+
+        $this->multimediaRecords->add($record);
 
         return $this;
     }

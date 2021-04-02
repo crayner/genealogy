@@ -65,7 +65,7 @@ class AttributeHandler
                     $attribute->setPlace($content);
                     break;
                 case 'SOUR':
-                    $identifier = intval(trim($content, 'S@'));
+                    $identifier = trim($content, 'S@');
                     $source = GedFileHandler::getSource($identifier);
                     $sourceData = new SourceData($source);
                     $attribute->setSource($sourceData);
