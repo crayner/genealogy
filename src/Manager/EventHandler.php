@@ -124,7 +124,7 @@ class EventHandler
                     $event->setRole($content);
                     break;
                 case 'SOUR':
-                    $identifier = trim($content, 'S@');
+                    $identifier = trim($content, '@');
                     $source = GedFileHandler::getSource($identifier);
                     $sourceData = new SourceData($source);
                     $event->setSource($sourceData);

@@ -37,7 +37,12 @@ class ItemHandler
     /**
      * @var FamilyHandler
      */
-    private FamilyHandler $FamilyHandler;
+    private FamilyHandler $familyHandler;
+
+    /**
+     * @var SourceHandler
+     */
+    private SourceHandler $sourceHandler;
 
     /**
      * @var string
@@ -48,13 +53,15 @@ class ItemHandler
      * ItemHandler constructor.
      * @param HeadHandler $headHandler
      * @param IndividualHandler $individualHandler
-     * @param FamilyHandler $FamilyHandler
+     * @param FamilyHandler $familyHandler
+     * @param SourceHandler $sourceHandler
      */
-    public function __construct(HeadHandler $headHandler, IndividualHandler $individualHandler, FamilyHandler $FamilyHandler)
+    public function __construct(HeadHandler $headHandler, IndividualHandler $individualHandler, FamilyHandler $familyHandler, SourceHandler $sourceHandler)
     {
         $this->headHandler = $headHandler;
         $this->individualHandler = $individualHandler;
-        $this->FamilyHandler = $FamilyHandler;
+        $this->familyHandler = $familyHandler;
+        $this->sourceHandler = $sourceHandler;
     }
 
     /**
@@ -63,7 +70,7 @@ class ItemHandler
     public function parse(ArrayCollection $item)
     {
         // item Type
-        $first = preg_match("/HEAD|INDI$|FAM$/",$item->first(), $matches);
+        $first = preg_match("/HEAD$|INDI$|FAM$|SOUR$/",$item->first(), $matches);
         switch(key_exists(0, $matches) ? $matches[0] : '') {
             case 'HEAD':
                 $this->getHeadHandler()->parse($item);
@@ -73,6 +80,9 @@ class ItemHandler
                 break;
             case 'FAM':
                 $this->getFamilyHandler()->parse($item);
+                break;
+            case 'SOUR':
+                $this->getSourceHandler()->parse($item);
                 break;
             default:
                 dd($item, GedFileHandler::getDataManager());
@@ -143,6 +153,14 @@ class ItemHandler
      */
     public function getFamilyHandler(): FamilyHandler
     {
-        return $this->FamilyHandler;
+        return $this->familyHandler;
+    }
+
+    /**
+     * @return SourceHandler
+     */
+    public function getSourceHandler(): SourceHandler
+    {
+        return $this->sourceHandler;
     }
 }

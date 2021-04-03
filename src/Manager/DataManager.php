@@ -17,6 +17,7 @@ namespace App\Manager;
 use App\Entity\Family;
 use App\Entity\Individual;
 use App\Entity\IndividualFamily;
+use App\Entity\RepositoryRecord;
 use App\Entity\Source;
 use App\Exception\ParseException;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -50,6 +51,11 @@ class DataManager
     private ArrayCollection $sources;
 
     /**
+     * @var ArrayCollection
+     */
+    private ArrayCollection $repositories;
+
+    /**
      * @return ArrayCollection
      */
     public function getIndividuals(): ArrayCollection
@@ -73,7 +79,7 @@ class DataManager
      */
     public function getIndividual(string $identifier): Individual
     {
-        if ($identifier < 1) throw new ParseException(__METHOD__, __CLASS__);
+        if ($identifier === '') throw new ParseException(__METHOD__, __CLASS__);
         if ($this->getIndividuals()->containsKey($identifier)) return $this->individuals->get($identifier);
 
         $individual = new Individual($identifier);
@@ -107,7 +113,7 @@ class DataManager
      */
     public function getFamily(string $identifier): Family
     {
-        if ($identifier < 1) throw new ParseException(__METHOD__, __CLASS__);
+        if ($identifier === '') throw new ParseException(__METHOD__, __CLASS__);
         if ($this->getFamilies()->containsKey($identifier)) return $this->families->get($identifier);
 
         $family = new Family($identifier);
@@ -202,5 +208,30 @@ class DataManager
 
         $this->sources->set($identifier, $source);
         return $source;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getRepositories(): ArrayCollection
+    {
+        return $this->repositories = isset($this->repositories) ? $this->repositories : new ArrayCollection();
+    }
+
+    /**
+     * @param string $identifier
+     * @return RepositoryRecord
+     */
+    public function getRepository(string $identifier): RepositoryRecord
+    {
+        if ($identifier === '' || $identifier === '0') $identifier = mb_substr(uniqid('SOUR_', true),0,22);
+
+        if ($this->getRepositories()->containsKey($identifier)) return $this->repositories->get($identifier);
+
+        $source = new RepositoryRecord($identifier);
+
+        $this->repositories->set($identifier, $source);
+        return $source;
+
     }
 }

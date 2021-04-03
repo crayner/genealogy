@@ -81,11 +81,11 @@ class Family
 
     /**
      * Family constructor.
-     * @param int $identifier
+     * @param string|null $identifier
      */
-    public function __construct(int $identifier = 0)
+    public function __construct(?string $identifier = null)
     {
-        if ($identifier > 0) $this->setIdentifier($identifier);
+        if (!in_array($identifier, [null,''] )) $this->setIdentifier($identifier);
     }
 
     /**
@@ -99,7 +99,7 @@ class Family
     /**
      * @return string
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return $this->identifier;
     }

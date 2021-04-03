@@ -51,7 +51,7 @@
             "authors": [
                 {
                     "name": "Marco Pivetta",
-                    "email": "ocramius@gmail.com"
+                    "email": "ocramiu@gmail.com"
                 },
                 {
                     "name": "Jordi Boggiano",
@@ -377,7 +377,7 @@
                 },
                 {
                     "name": "Marco Pivetta",
-                    "email": "ocramius@gmail.com"
+                    "email": "ocramiu@gmail.com"
                 }
             ],
             "description": "PHP Doctrine Common project is a library that provides additional functionality that other Doctrine projects depend on such as better reflection support, proxies and much more.",
@@ -778,7 +778,7 @@
                 },
                 {
                     "name": "Marco Pivetta",
-                    "email": "ocramius@gmail.com"
+                    "email": "ocramiu@gmail.com"
                 }
             ],
             "description": "The Doctrine Event Manager is a simple PHP event system that was built to be used with the various Doctrine projects.",
@@ -944,7 +944,7 @@
             "authors": [
                 {
                     "name": "Marco Pivetta",
-                    "email": "ocramius@gmail.com",
+                    "email": "ocramiu@gmail.com",
                     "homepage": "https://ocramius.github.io/"
                 }
             ],
@@ -1238,7 +1238,7 @@
                 },
                 {
                     "name": "Marco Pivetta",
-                    "email": "ocramius@gmail.com"
+                    "email": "ocramiu@gmail.com"
                 }
             ],
             "description": "Object-Relational-Mapper for PHP",
@@ -1319,7 +1319,7 @@
                 },
                 {
                     "name": "Marco Pivetta",
-                    "email": "ocramius@gmail.com"
+                    "email": "ocramiu@gmail.com"
                 }
             ],
             "description": "The Doctrine Persistence project is a set of shared interfaces and functionality that the different Doctrine object mappers share.",
@@ -1443,7 +1443,7 @@
             "authors": [
                 {
                     "name": "Marco Pivetta",
-                    "email": "ocramius@gmail.com",
+                    "email": "ocramiu@gmail.com",
                     "homepage": "http://ocramius.github.io/"
                 },
                 {

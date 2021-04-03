@@ -14,30 +14,30 @@
 
 namespace App\Exception;
 
-use App\Entity\SourceData;
+use App\Entity\Source;
 
 /**
- * Class SourceDataException
+ * Class SourceException
  * @package App\Exception
  * @author  Craig Rayner <craig@craigrayner.com>
- * 1/04/2021 15:39
+ * 3/04/2021 11:58
  */
-class SourceDataException extends \RuntimeException
+class SourceException extends \RuntimeException
 {
     /**
-     * @var SourceData
+     * @var Source
      */
-    private SourceData $sourceData;
+    private Source $source;
 
     /**
-     * SourceDataException constructor.
-     * @param SourceData $sourceData
+     * SourceException constructor.
+     * @param Source $source
      * @param string|null $message
      */
-    public function __construct(SourceData $sourceData, string $message = null)
+    public function __construct(Source $source, string $message = null)
     {
-        $this->sourceData = $sourceData;
-        $message = $message ?: 'The Source Data is not valid';
+        $this->source = $source;
+        $message = $message ?: 'The Source is not valid';
         parent::__construct($message);
     }
 }

@@ -43,10 +43,10 @@ class Individual
     private string $id;
 
     /**
-     * @var int
-     * @ORM\Column(type="smallint")
+     * @var string
+     * @ORM\Column(length=22)
      */
-    private int $identifier;
+    private string $identifier;
 
     /**
      * @var Collection
@@ -123,11 +123,11 @@ class Individual
 
     /**
      * Individual constructor.
-     * @param int $identifier
+     * @param string|null $identifier
      */
-    public function __construct(int $identifier = 0)
+    public function __construct(?string $identifier = null)
     {
-        if ($identifier > 0) $this->identifier = $identifier;
+        if (!in_array($identifier, [null,''])) $this->identifier = $identifier;
     }
 
     /**
@@ -139,19 +139,19 @@ class Individual
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getIdentifier(): int
+    public function getIdentifier(): string
     {
         if (!isset($this->identifier)) throw new IndividualException('The individual does not have a valid identifier.');
         return $this->identifier;
     }
 
     /**
-     * @param int $identifier
+     * @param string $identifier
      * @return Individual
      */
-    public function setIdentifier(int $identifier): Individual
+    public function setIdentifier(string $identifier): Individual
     {
         $this->identifier = $identifier;
         return $this;

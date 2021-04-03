@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @author  Craig Rayner <craig@craigrayner.com>
  * 3/04/2021 11:21
  * @ORM\Entity(repositoryClass=RepositoryRecordRepository::class)
- * @ORM\JoinTable(name="repository_record")
+ * @ORM\Table(name="repository_record")
  */
 class RepositoryRecord
 {
@@ -21,17 +21,19 @@ class RepositoryRecord
      * @ORM\Column(type="guid")
      * @ORM\GeneratedValue(strategy="UUID")
      */
-    private string $id;
+    private ?string $id;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=90)
      */
-    private $name;
+    private string $name;
 
     /**
+     * @var string|null
      * @ORM\Column(type="string", length=12, nullable=true)
      */
-    private $recordKey;
+    private ?string $recordKey;
 
     /**
      * @return string|null
@@ -42,9 +44,9 @@ class RepositoryRecord
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -53,25 +55,25 @@ class RepositoryRecord
      * @param mixed $name
      * @return RepositoryRecord
      */
-    public function setName($name)
+    public function setName($name): RepositoryRecord
     {
         $this->name = $name;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getRecordKey()
+    public function getRecordKey(): ?string
     {
-        return $this->recordKey;
+        return isset($this->recordKey) ? $this->recordKey : null;
     }
 
     /**
-     * @param mixed $recordKey
+     * @param string|null $recordKey
      * @return RepositoryRecord
      */
-    public function setRecordKey($recordKey)
+    public function setRecordKey(?string $recordKey): RepositoryRecord
     {
         $this->recordKey = $recordKey;
         return $this;

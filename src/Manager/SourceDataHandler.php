@@ -51,7 +51,7 @@ class SourceDataHandler
             extract(LineManager::getLineDetails($sourceDetails->get($q)));
             switch ($tag) {
                 case 'SOUR':
-                    $identifier = trim($content, '@S');
+                    $identifier = trim($content, '@');
                     $x = GedFileHandler::getSource($identifier);
                     $source->setSource($x);
                     break;

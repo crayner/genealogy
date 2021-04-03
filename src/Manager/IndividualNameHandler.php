@@ -79,7 +79,7 @@ class IndividualNameHandler
                     $individualName->setNote($content);
                     break;
                 case 'SOUR':
-                    $identifier = trim($content, 'S@');
+                    $identifier = trim($content, '@');
                     $source = GedFileHandler::getSource($identifier);
                     $sourceData = new SourceData($source);
                     $individualName->setSource($sourceData);

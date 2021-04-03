@@ -54,7 +54,7 @@ class FamilyHandler
     {
         $line = LineManager::getLineDetails($familyDetails->get(0));
         extract($line);
-        $identifier = trim($tag, 'F@');
+        $identifier = trim($tag, '@');
         $family = GedFileHandler::getFamily($identifier);
 
         $q = 1;
@@ -62,19 +62,19 @@ class FamilyHandler
             extract(LineManager::getLineDetails($familyDetails->get($q)));
             switch ($tag) {
                 case 'HUSB':
-                    $identifier = trim($content, "PI@");
+                    $identifier = trim($content, "@");
                     $individual = GedFileHandler::getIndividual($identifier);
                     $indfam = GedFileHandler::getIndividualFamily($individual,$family,'Husband');
                     $indfam->setRelationshipType('Husband');
                     break;
                 case 'WIFE':
-                    $identifier = trim($content, "PI@");
+                    $identifier = trim($content, "@");
                     $individual = GedFileHandler::getIndividual($identifier);
                     $indfam = GedFileHandler::getIndividualFamily($individual,$family,'Wife');
                     $indfam->setRelationshipType('Wife');
                     break;
                 case 'CHIL':
-                    $identifier = trim($content, "PI@");
+                    $identifier = trim($content, "@");
                     $individual = GedFileHandler::getIndividual($identifier);
                     $indfam = GedFileHandler::getIndividualFamily($individual,$family,'Child');
                     $indfam->setRelationshipType('Child');

@@ -80,7 +80,7 @@ class IndividualHandler
     {
         $line = LineManager::getLineDetails($individualDetails->get(0));
         extract($line);
-        $identifier = trim($tag, 'IP@');
+        $identifier = trim($tag, '@');
         $individual = GedFileHandler::getIndividual($identifier);
 
         $q = 1;
@@ -116,12 +116,12 @@ class IndividualHandler
                     $q += $attribute->getOffset() - 1;
                     break;
                 case 'FAMS':
-                    $identifier = trim($content, 'F@');
+                    $identifier = trim($content, '@');
                     $family = GedFileHandler::getFamily($identifier);
                     GedFileHandler::addIndividualFamily($individual, $family, 'Spouse');
                     break;
                 case 'FAMC':
-                    $identifier = trim($content, 'F@');
+                    $identifier = trim($content, '@');
                     $family = GedFileHandler::getFamily($identifier);
                     GedFileHandler::addIndividualFamily($individual, $family, 'Child');
                     break;
