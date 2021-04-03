@@ -5,9 +5,16 @@ namespace App\Entity;
 use App\Exception\SourceException;
 use App\Repository\SourceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
+ * Class Source
+ * @package App\Entity
+ * @author  Craig Rayner <craig@craigrayner.com>
+ * 3/04/2021 13:08
  * @ORM\Entity(repositoryClass=SourceRepository::class)
+ * @ORM\Table(name="source", uniqueConstraints={@ORM\UniqueConstraint(name="repository_record",columns={"repository_record"})})
+ * @UniqueEntity("repositoryRecord")
  */
 class Source
 {
@@ -66,6 +73,13 @@ class Source
      * @ORM\Column(type="json")
      */
     private array $extra;
+
+    /**
+     * @var RepositoryRecord|null
+     * @ORM\ManyToOne(targetEntity="App\Entity\RepositoryRecord")
+     * @ORM\JoinColumn(name="repository_record",nullable=true)
+     */
+    private ?RepositoryRecord $repositoryRecord;
 
     /**
      * Source constructor.
@@ -192,6 +206,7 @@ class Source
      */
     public function setNote(?string $note): Source
     {
+        if (mb_strlen($note) < 1) return $this;
         $this->note = $note;
         return $this;
     }
@@ -255,6 +270,24 @@ class Source
     {
         $this->getExtra();
         $this->extra[$tag] = $content;
+        return $this;
+    }
+
+    /**
+     * @return RepositoryRecord|null
+     */
+    public function getRepositoryRecord(): ?RepositoryRecord
+    {
+        return isset($this->repositoryRecord) ? $this->repositoryRecord : null;
+    }
+
+    /**
+     * @param RepositoryRecord|null $repositoryRecord
+     * @return Source
+     */
+    public function setRepositoryRecord(?RepositoryRecord $repositoryRecord): Source
+    {
+        $this->repositoryRecord = $repositoryRecord;
         return $this;
     }
 }

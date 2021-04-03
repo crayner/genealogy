@@ -56,13 +56,28 @@ class SourceHandler
                     break;
                 case 'PUBL':
                     $source->setPublish($content);
+                    if ($details->containsKey($q+1)) {
+                        extract(LineManager::getLineDetails($details->get($q + 1)), EXTR_PREFIX_ALL, 'publ');
+                        if ($publ_tag === 'CONC' && $publ_level > $level) {
+                            $q++;
+                            $source->setPublish($content.$publ_content);
+                        }
+                    }
                     break;
                 case '_TYPE':
                 case '_MEDI':
+                case '_APID':
                     $source->addExtra($tag,$content);
                     break;
+                case 'REPO':
+                    $identifier = trim($content, '@');
+                    $repository = GedFileHandler::getRepository($identifier);
+                    $source->setRepositoryRecord($repository);
+                    $data = ItemHandler::getSubItem($q, $details);  // handle deprecated formats and IGNORE.
+                    $q += $data->count() - 1;
+                    break;
                 default:
-                    dump(sprintf('Handling a (%s) is beyond %s?', $tag, __CLASS__));
+                    dump(sprintf('Handling a (%s) is beyond %s!', $tag, __CLASS__));
                     dd($details, $source);
 
             }

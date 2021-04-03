@@ -25,6 +25,12 @@ class RepositoryRecord
 
     /**
      * @var string
+     * @ORM\Column(length=22)
+     */
+    private string $identifier;
+
+    /**
+     * @var string
      * @ORM\Column(type="string", length=90)
      */
     private string $name;
@@ -36,11 +42,39 @@ class RepositoryRecord
     private ?string $recordKey;
 
     /**
+     * RepositoryRecord constructor.
+     * @param string|null $identifier
+     */
+    public function __construct(?string $identifier = null)
+    {
+        if (!in_array($identifier, [null,''])) $this->setIdentifier($identifier);
+    }
+
+
+    /**
      * @return string|null
      */
     public function getId(): ?string
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentifier(): string
+    {
+        return $this->identifier;
+    }
+
+    /**
+     * @param string $identifier
+     * @return RepositoryRecord
+     */
+    public function setIdentifier(string $identifier): RepositoryRecord
+    {
+        $this->identifier = $identifier;
+        return $this;
     }
 
     /**

@@ -17,6 +17,7 @@ namespace App\Manager;
 use App\Entity\Family;
 use App\Entity\Individual;
 use App\Entity\IndividualFamily;
+use App\Entity\RepositoryRecord;
 use App\Entity\Source;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\File\File;
@@ -295,4 +296,20 @@ class GedFileHandler
         return self::$dataManager;
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public static function getRepositories(): ArrayCollection
+    {
+        return self::getDataManager()->getRepositories();
+    }
+
+    /**
+     * @param string $identifier
+     * @return RepositoryRecord
+     */
+    public static function getRepository(string $identifier): RepositoryRecord
+    {
+        return self::getDataManager()->getRepository($identifier);
+    }
 }
