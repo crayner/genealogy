@@ -45,6 +45,11 @@ class ItemHandler
     private SourceHandler $sourceHandler;
 
     /**
+     * @var RepositoryHandler
+     */
+    private RepositoryHandler $repositoryHandler;
+
+    /**
      * @var string
      */
     private string $encoding;
@@ -55,13 +60,17 @@ class ItemHandler
      * @param IndividualHandler $individualHandler
      * @param FamilyHandler $familyHandler
      * @param SourceHandler $sourceHandler
+     * @param RepositoryHandler $repositoryHandler
      */
-    public function __construct(HeadHandler $headHandler, IndividualHandler $individualHandler, FamilyHandler $familyHandler, SourceHandler $sourceHandler)
+    public function __construct(HeadHandler $headHandler, IndividualHandler $individualHandler,
+                                FamilyHandler $familyHandler, SourceHandler $sourceHandler,
+                                RepositoryHandler $repositoryHandler)
     {
         $this->headHandler = $headHandler;
         $this->individualHandler = $individualHandler;
         $this->familyHandler = $familyHandler;
         $this->sourceHandler = $sourceHandler;
+        $this->repositoryHandler = $repositoryHandler;
     }
 
     /**
@@ -70,7 +79,7 @@ class ItemHandler
     public function parse(ArrayCollection $item)
     {
         // item Type
-        $first = preg_match("/HEAD$|INDI$|FAM$|SOUR$/",$item->first(), $matches);
+        $first = preg_match("/HEAD$|INDI$|FAM$|SOUR$|REPO$/",$item->first(), $matches);
         switch(key_exists(0, $matches) ? $matches[0] : '') {
             case 'HEAD':
                 $this->getHeadHandler()->parse($item);
@@ -83,6 +92,9 @@ class ItemHandler
                 break;
             case 'SOUR':
                 $this->getSourceHandler()->parse($item);
+                break;
+            case 'REPO':
+                $this->getRepositoryHandler()->parse($item);
                 break;
             default:
                 dd($item, GedFileHandler::getDataManager());
@@ -162,5 +174,13 @@ class ItemHandler
     public function getSourceHandler(): SourceHandler
     {
         return $this->sourceHandler;
+    }
+
+    /**
+     * @return RepositoryHandler
+     */
+    public function getRepositoryHandler(): RepositoryHandler
+    {
+        return $this->repositoryHandler;
     }
 }

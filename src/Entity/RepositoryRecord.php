@@ -42,6 +42,19 @@ class RepositoryRecord
     private ?string $recordKey;
 
     /**
+     * @var Address|null
+     * @ORM\OneToOne(targetEntity="App\Entity\Address")
+     * @ORM\JoinColumn(name="address",nullable=true)
+     */
+    private ?Address $address;
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="text",nullable=true)
+     */
+    private ?string $note;
+
+    /**
      * RepositoryRecord constructor.
      * @param string|null $identifier
      */
@@ -110,6 +123,42 @@ class RepositoryRecord
     public function setRecordKey(?string $recordKey): RepositoryRecord
     {
         $this->recordKey = $recordKey;
+        return $this;
+    }
+
+    /**
+     * @return Address|null
+     */
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param Address|null $address
+     * @return RepositoryRecord
+     */
+    public function setAddress(?Address $address): RepositoryRecord
+    {
+        $this->address = $address;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNote(): ?string
+    {
+        return $this->note;
+    }
+
+    /**
+     * @param string|null $note
+     * @return RepositoryRecord
+     */
+    public function setNote(?string $note): RepositoryRecord
+    {
+        $this->note = $note;
         return $this;
     }
 }
