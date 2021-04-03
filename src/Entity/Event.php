@@ -56,6 +56,7 @@ class Event
         'Occupation',
         'Education',
         'Christening',
+        'Engagement',
     ];
 
     /**

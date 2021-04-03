@@ -84,11 +84,15 @@ class FamilyHandler
                     break;
                 case '_UID':
                 case '_UPD':
+                case '_FREL':
+                case '_MREL':
+                case 'UID':
                     $family->addExtra($tag,$content);
                     break;
                 case 'EVEN':
                 case 'MARR':
                 case 'DIV':
+                case 'ENGA':
                     $event = ItemHandler::getSubItem($q, $familyDetails);
                     $q += $event->count() - 1;
                     $event = $this->getEventHandler()->parse($event);

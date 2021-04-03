@@ -78,6 +78,9 @@ class EventHandler
                 case 'CHR':
                     $event->setType('Christening');
                     break;
+                case 'ENGA':
+                    $event->setType('Engagement');
+                    break;
                 case 'IMMI':
                     $event->setType('Immigration');
                     break;
