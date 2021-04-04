@@ -71,7 +71,7 @@ class Family
 
     /**
      * @var Collection
-     * @ORM\ManyToMany(targetEntity=MultimediaRecord::class)
+     * @ORM\ManyToMany(targetEntity=MultimediaRecord::class,cascade="persist")
      * @ORM\JoinTable(name="family_multimedia_records",
      *      joinColumns={@ORM\JoinColumn(name="family_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="multimedia_record_id", referencedColumnName="id")}

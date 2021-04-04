@@ -26,7 +26,7 @@ class MultimediaRecord
 
     /**
      * @var string
-     * @ORM\Column(length=36)
+     * @ORM\Column(length=36,nullable=true)
      */
     private string $link;
 

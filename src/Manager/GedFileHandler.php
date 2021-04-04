@@ -89,7 +89,10 @@ class GedFileHandler
         $q = 0;
         foreach ($this->getContent()->toArray() as $item) {
             $this->getItemHandler()->parse($item);
-            if ($q++ % 100 === 0) $this->getItemHandler()->getEntityManager()->flush();
+            if ($q++ % 100 === 0) {
+                $this->getItemHandler()->getEntityManager()->flush();
+                ini_set('max_execution_time', 30);
+            }
         }
         $this->getItemHandler()->getEntityManager()->flush();
     }

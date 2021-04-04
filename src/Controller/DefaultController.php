@@ -43,12 +43,9 @@ class DefaultController extends AbstractController
 
         $handler->setFileName($file);
 
-        $handler->parse();
-        $handler::getDataManager()->write($this->getDoctrine()->getManager());
-
         return $this->render('base.html.twig',
             [
-                'stuff' => [],
+                'stuff' => $handler->parse(),
             ]
         );
     }

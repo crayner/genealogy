@@ -234,35 +234,4 @@ class DataManager
 
         return $repository;
     }
-
-    /**
-     * @param EntityManagerInterface $manager
-     */
-    public function write(EntityManagerInterface $manager)
-    {
-        return;
-        $q = 0;
-/*        foreach ($this->getRepositories() as $entity) {
-            $manager->persist($entity);
-            if ($q++ % 10 === 0) $manager->flush();
-        }
-
-        foreach ($this->getSources() as $entity) {
-            $manager->persist($entity);
-            if ($q++ % 10 === 0) $manager->flush();
-        }
-*/
-        foreach ($this->getIndividuals() as $entity) {
-            $manager->persist($entity);
-            if ($q++ % 50 === 0) $manager->flush();
-        }
-
-        foreach ($this->getFamilies() as $entity) {
-            $manager->persist($entity);
-            if ($q++ % 50 === 0) $manager->flush();
-        }
-
-        $manager->flush();
-        dump($this);
-    }
 }
