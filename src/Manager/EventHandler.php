@@ -104,7 +104,7 @@ class EventHandler
                     break;
                 case 'PLAC':
                     $place = ItemHandler::getSubItem($q, $eventDetails);
-                    $place = $this->getPlaceHandler()->parse($place, 'Event');
+                    $place = $this->getPlaceHandler()->parse($place);
                     $q += $place->getOffset() - 1;
                     $event->setPlace($place);
                     break;

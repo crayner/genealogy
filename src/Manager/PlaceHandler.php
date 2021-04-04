@@ -25,9 +25,13 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class PlaceHandler
 {
-    public function parse(ArrayCollection $placeDetails, string $source): Place
+    /**
+     * @param ArrayCollection $placeDetails
+     * @return Place
+     */
+    public function parse(ArrayCollection $placeDetails): Place
     {
-        $place = new Place($source);
+        $place = new Place();
         $place->setOffset($placeDetails->count());
         $q = 0;
         while ($q < $placeDetails->count() && $placeDetails->containsKey($q)) {

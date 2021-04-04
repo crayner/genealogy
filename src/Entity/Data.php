@@ -26,7 +26,7 @@ class Data
 
     /**
      * @var \DateTimeImmutable
-     * @ORM\Column(type="date_immutable")
+     * @ORM\Column(type="date_immutable",nullable=true)
      */
     private \DateTimeImmutable $date;
 

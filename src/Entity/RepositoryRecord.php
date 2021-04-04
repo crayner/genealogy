@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @author  Craig Rayner <craig@craigrayner.com>
  * 3/04/2021 11:21
  * @ORM\Entity(repositoryClass=RepositoryRecordRepository::class)
- * @ORM\Table(name="repository_record")
+ * @ORM\Table(name="repository_record",uniqueConstraints={@ORM\UniqueConstraint(name="identifier",columns={"identifier"})})
  */
 class RepositoryRecord
 {
@@ -25,7 +25,7 @@ class RepositoryRecord
 
     /**
      * @var string
-     * @ORM\Column(length=22)
+     * @ORM\Column(length=22,unique=true)
      */
     private string $identifier;
 
@@ -43,7 +43,7 @@ class RepositoryRecord
 
     /**
      * @var Address|null
-     * @ORM\OneToOne(targetEntity="App\Entity\Address")
+     * @ORM\OneToOne(targetEntity="App\Entity\Address",cascade="persist")
      * @ORM\JoinColumn(name="address",nullable=true)
      */
     private ?Address $address;

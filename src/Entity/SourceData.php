@@ -26,7 +26,7 @@ class SourceData
 
     /**
      * @var Source
-     * @ORM\ManyToOne(targetEntity=Source::class)
+     * @ORM\ManyToOne(targetEntity=Source::class,cascade="persist")
      * @ORM\JoinColumn(name="source",nullable=false)
      */
     private Source $source;
@@ -38,10 +38,10 @@ class SourceData
     private string $page;
 
     /**
-     * #var strinf
-     * @ORM\Column(type="enum")
+     * #var string
+     * @ORM\Column(type="enum",options={"default"="Unreliable evidence or estimated data"})
      */
-    private string $qualityOfData;
+    private string $qualityOfData = 'Unreliable evidence or estimated data';
 
     /**
      * @var array|string[]
@@ -56,7 +56,8 @@ for bias for example, an autobiography)',
 
     /**
      * @var Data
-     * @ORM\OneToOne(targetEntity=Data::class, inversedBy="sourceData")
+     * @ORM\OneToOne(targetEntity=Data::class, inversedBy="sourceData",cascade="persist")
+     * @ORM\JoinColumn(name="data")
      */
     private Data $data;
 

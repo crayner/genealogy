@@ -38,14 +38,14 @@ class Event
 
     /**
      * @var string
-     * @ORM\Column(type="enum",length=191)
+     * @ORM\Column(type="enum",length=191,options={"default": "Not Stated"})
      */
-    private string $type;
+    private string $type = 'Not Stated';
 
     /**
      * @var array|string[] ]
      */
-    private static $typeList = [
+    private static array $typeList = [
         'Birth',
         'Death',
         'Buried',
@@ -61,7 +61,7 @@ class Event
 
     /**
      * @var Place
-     * @ORM\OneToOne(targetEntity="App\Entity\Place")
+     * @ORM\OneToOne(targetEntity="App\Entity\Place",cascade="persist")
      * @ORM\JoinColumn(name="place",nullable=true)
      */
     private ?Place $place;
@@ -86,7 +86,7 @@ class Event
 
     /**
      * @var string|null
-     * @ORM\Column(length=27)
+     * @ORM\Column(length=27,nullable=true)
      */
     private ?string $role;
 
@@ -104,7 +104,7 @@ class Event
 
     /**
      * @var SourceData|null
-     * @ORM\ManyToOne(targetEntity=SourceData::class)
+     * @ORM\ManyToOne(targetEntity=SourceData::class,cascade="persist")
      * @ORM\JoinColumn(name="source",nullable=true)
      */
     private ?SourceData $source;

@@ -36,19 +36,6 @@ class Place
     private int $offset;
 
     /**
-     * @var string
-     * @ORM\Column(type="enum");
-     */
-    private string $source;
-
-    /**
-     * @var array|string[]
-     */
-    private static array $sourceList = [
-        'Event',
-    ];
-
-    /**
      * @return string
      */
     public function getId(): string
@@ -91,32 +78,5 @@ class Place
     {
         $this->offset = $offset;
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSource(): string
-    {
-        return $this->source;
-    }
-
-    /**
-     * @param string $source
-     * @return Place
-     */
-    public function setSource(string $source): Place
-    {
-        if (!in_array($source,self::getSourceList())) throw new PlaceException($this, sprintf('The place source (%s) is not valid.',$source));
-        $this->source = $source;
-        return $this;
-    }
-
-    /**
-     * @return array|string[]
-     */
-    public static function getSourceList(): array
-    {
-        return self::$sourceList;
     }
 }

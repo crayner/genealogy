@@ -14,6 +14,7 @@
 
 namespace App\Controller;
 
+use App\Manager\DataManager;
 use App\Manager\FileNameDiscriminator;
 use App\Manager\GedFileHandler;
 use App\Manager\ParameterManager;
@@ -42,9 +43,12 @@ class DefaultController extends AbstractController
 
         $handler->setFileName($file);
 
+        $handler->parse();
+        $handler::getDataManager()->write($this->getDoctrine()->getManager());
+
         return $this->render('base.html.twig',
             [
-                'stuff' => $handler->parse(),
+                'stuff' => [],
             ]
         );
     }

@@ -37,7 +37,7 @@ class Family
 
     /**
      * @var Collection
-     * @ORM\ManyToMany(targetEntity=Event::class)
+     * @ORM\ManyToMany(targetEntity=Event::class,cascade="persist")
      * @ORM\JoinTable(name="family_events",
      *      joinColumns={@ORM\JoinColumn(name="family_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id")}
@@ -47,19 +47,19 @@ class Family
 
     /**
      * @var Collection
-     * @ORM\OneToMany(targetEntity=IndividualFamily::class, mappedBy="family")
+     * @ORM\OneToMany(targetEntity=IndividualFamily::class, mappedBy="family",cascade="persist")
      */
     private Collection $individuals;
 
     /**
      * @var string|null
-     * @ORM\Column(length=22)
+     * @ORM\Column(length=22,nullable=true)
      */
     private ?string $recordKey;
 
     /**
      * @var array
-     * @ORM\Column(type="json")
+     * @ORM\Column(type="json",nullable=true)
      */
     private array $extra;
 

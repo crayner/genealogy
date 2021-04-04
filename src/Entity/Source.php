@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Exception\SourceException;
 use App\Repository\SourceRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Class Source
@@ -13,8 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @author  Craig Rayner <craig@craigrayner.com>
  * 3/04/2021 13:08
  * @ORM\Entity(repositoryClass=SourceRepository::class)
- * @ORM\Table(name="source", uniqueConstraints={@ORM\UniqueConstraint(name="repository_record",columns={"repository_record"})})
- * @UniqueEntity("repositoryRecord")
+ * @ORM\Table(name="source")
  */
 class Source
 {
@@ -34,49 +32,49 @@ class Source
 
     /**
      * @var string|null
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text",nullable=true)
      */
     private ?string $authority;
 
     /**
      * @var string|null
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text",nullable=true)
      */
     private ?string $title;
 
     /**
      * @var string|null
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private ?string $sourceText;
 
     /**
      * @var string|null
-     * @ORM\Column(length=12)
+     * @ORM\Column(length=12,nullable=true)
      */
     private ?string $recordKey;
 
     /**
      * @var string|null
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text",nullable=true)
      */
     private ?string $note;
 
     /**
      * @var string|null
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text",nullable=true)
      */
     private ?string $publish;
 
     /**
      * @var array
-     * @ORM\Column(type="json")
+     * @ORM\Column(type="json",nullable=true)
      */
     private array $extra;
 
     /**
      * @var RepositoryRecord|null
-     * @ORM\ManyToOne(targetEntity="App\Entity\RepositoryRecord")
+     * @ORM\ManyToOne(targetEntity="App\Entity\RepositoryRecord",cascade="persist")
      * @ORM\JoinColumn(name="repository_record",nullable=true)
      */
     private ?RepositoryRecord $repositoryRecord;

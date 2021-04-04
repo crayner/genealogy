@@ -28,13 +28,13 @@ class IndividualFamily
     private string $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Individual::class, inversedBy="families")
+     * @ORM\ManyToOne(targetEntity=Individual::class, inversedBy="families",cascade="persist")
      * @ORM\JoinColumn(nullable=false, name="individual")
      */
     private Individual $individual;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Family::class, inversedBy="individuals")
+     * @ORM\ManyToOne(targetEntity=Family::class, inversedBy="individuals",cascade="persist")
      * @ORM\JoinColumn(nullable=false, name="family")
      */
     private Family $family;

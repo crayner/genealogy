@@ -21,6 +21,7 @@ use App\Entity\RepositoryRecord;
 use App\Entity\Source;
 use App\Exception\ParseException;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class DataManager
@@ -228,10 +229,39 @@ class DataManager
 
         if ($this->getRepositories()->containsKey($identifier)) return $this->repositories->get($identifier);
 
-        $source = new RepositoryRecord($identifier);
+        $repository = new RepositoryRecord($identifier);
+        $this->repositories->set($identifier, $repository);
 
-        $this->repositories->set($identifier, $source);
-        return $source;
+        return $repository;
+    }
 
+    /**
+     * @param EntityManagerInterface $manager
+     */
+    public function write(EntityManagerInterface $manager)
+    {
+        $q = 0;
+/*        foreach ($this->getRepositories() as $entity) {
+            $manager->persist($entity);
+            if ($q++ % 10 === 0) $manager->flush();
+        }
+
+        foreach ($this->getSources() as $entity) {
+            $manager->persist($entity);
+            if ($q++ % 10 === 0) $manager->flush();
+        }
+*/
+        foreach ($this->getIndividuals() as $entity) {
+            $manager->persist($entity);
+            if ($q++ % 50 === 0) $manager->flush();
+        }
+
+        foreach ($this->getFamilies() as $entity) {
+            $manager->persist($entity);
+            if ($q++ % 50 === 0) $manager->flush();
+        }
+
+        $manager->flush();
+        dump($this);
     }
 }

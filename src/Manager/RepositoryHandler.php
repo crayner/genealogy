@@ -46,6 +46,8 @@ class RepositoryHandler
     public function parse(ArrayCollection $details): RepositoryRecord
     {
         $line = LineManager::getLineDetails($details->get(0));
+        $content = '';
+        $tag = '';
         extract($line);
         $identifier = trim($tag, '@');
         $repository = GedFileHandler::getRepository($identifier);

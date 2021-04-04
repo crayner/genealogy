@@ -39,7 +39,7 @@ class IndividualName
 
     /**
      * @var Individual
-     * @ORM\ManyToOne(targetEntity="App\Entity\Individual",inversedBy="names")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Individual",inversedBy="names",cascade="persist")
      * @ORM\JoinColumn(name="individual")
      */
     private Individual $individual;
@@ -111,7 +111,7 @@ class IndividualName
 
     /**
      * @var SourceData|null
-     * @ORM\OneToOne(targetEntity="App\Entity\SourceData")
+     * @ORM\OneToOne(targetEntity="App\Entity\SourceData",cascade="persist")
      * @ORM\JoinColumn(nullable=true,name="source")
      */
     private ?SourceData $source;

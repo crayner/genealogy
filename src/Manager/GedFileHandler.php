@@ -85,7 +85,6 @@ class GedFileHandler
         foreach ($this->getContent()->toArray() as $item) {
             $this->getItemHandler()->parse($item);
         }
-        dd($this,self::getDataManager(),self::getSource('S46'));
     }
 
     /**

@@ -50,7 +50,7 @@ class Individual
 
     /**
      * @var Collection
-     * @ORM\OneToMany(targetEntity="App\Entity\IndividualName", mappedBy="individual")
+     * @ORM\OneToMany(targetEntity="App\Entity\IndividualName", mappedBy="individual",cascade="persist")
      */
     private Collection $names;
 
@@ -73,7 +73,7 @@ class Individual
 
     /**
      * @var Collection
-     * @ORM\ManyToMany(targetEntity="event")
+     * @ORM\ManyToMany(targetEntity="event",cascade="persist")
      * @ORM\JoinTable(name="individual_events",
      *      joinColumns={@ORM\JoinColumn(name="individual_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id")}
@@ -83,19 +83,19 @@ class Individual
 
     /**
      * @var Collection
-     * @ORM\OneToMany(targetEntity=IndividualFamily::class, mappedBy="individual")
+     * @ORM\OneToMany(targetEntity=IndividualFamily::class, mappedBy="individual",cascade="persist")
      */
     private Collection $families;
 
     /**
      * @var Collection
-     * @ORM\ManyToMany(targetEntity=SourceData::class)
+     * @ORM\ManyToMany(targetEntity=SourceData::class,cascade="persist")
      */
     private Collection $sources;
 
     /**
      * @var string|null
-     * @ORM\Column(length=22)
+     * @ORM\Column(length=22,nullable=true)
      */
     private ?string $recordKey;
 
@@ -107,7 +107,7 @@ class Individual
 
     /**
      * @var Collection
-     * @ORM\ManyToMany(targetEntity=MultimediaRecord::class)
+     * @ORM\ManyToMany(targetEntity=MultimediaRecord::class,cascade="persist")
      * @ORM\JoinTable(name="individual_multimedia_records",
      *      joinColumns={@ORM\JoinColumn(name="individual_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="multimedia_record_id", referencedColumnName="id")}

@@ -32,7 +32,11 @@ class MultimediaRecord
 
     /**
      * @var MultimediaFile|null
-     * @ORM\ManyToMany(targetEntity=MultimediaFile::class)
+     * @ORM\ManyToOne(targetEntity=MultimediaFile::class,cascade="persist")
+     * @ORM\JoinTable(name="multimedia_record_filr",
+     *      joinColumns={@ORM\JoinColumn(name="record_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="file_id", referencedColumnName="id")}
+     *      )
      */
     private ?MultimediaFile $fileReference;
 
@@ -65,7 +69,7 @@ class MultimediaRecord
      * @var array
      * @ORM\Column(type="json")
      */
-    private array $extra;
+    private array $extra = [];
 
     /**
      * @return string|null
