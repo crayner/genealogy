@@ -12,7 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @author  Craig Rayner <craig@craigrayner.com>
  * 1/04/2021 15:56
  * @ORM\Entity(repositoryClass=SourceDataRepository::class)
- * @ORM\Table(name="source_data")
+ * @ORM\Table(name="source_data",
+ *     indexes={@ORM\Index(name="source",columns={"source"})},
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="data",columns={"data"})})
  */
 class SourceData
 {
@@ -27,7 +29,7 @@ class SourceData
     /**
      * @var Source
      * @ORM\ManyToOne(targetEntity=Source::class,cascade="persist")
-     * @ORM\JoinColumn(name="source",nullable=false)
+     * @ORM\JoinColumn(name="source",nullable=true)
      */
     private Source $source;
 
@@ -39,7 +41,7 @@ class SourceData
 
     /**
      * #var string
-     * @ORM\Column(type="enum",options={"default"="Unreliable evidence or estimated data"})
+     * @ORM\Column(type="enum",options={"default"="Unreliable evidence or estimated data"},length=191)
      */
     private string $qualityOfData = 'Unreliable evidence or estimated data';
 
@@ -56,7 +58,7 @@ for bias for example, an autobiography)',
 
     /**
      * @var Data
-     * @ORM\OneToOne(targetEntity=Data::class, inversedBy="sourceData",cascade="persist")
+     * @ORM\OneToOne(targetEntity=Data::class,inversedBy="sourceData",cascade="persist")
      * @ORM\JoinColumn(name="data")
      */
     private Data $data;

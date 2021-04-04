@@ -52,8 +52,10 @@ class SourceDataHandler
             switch ($tag) {
                 case 'SOUR':
                     $identifier = trim($content, '@');
-                    $x = GedFileHandler::getSource($identifier);
-                    $source->setSource($x);
+                    if (mb_strlen($identifier) > 0) {
+                        $x = GedFileHandler::getSource($identifier);
+                        $source->setSource($x);
+                    }
                     break;
                 case 'PAGE':
                     $source->setPage($content);

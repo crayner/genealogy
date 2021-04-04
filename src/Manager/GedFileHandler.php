@@ -20,6 +20,7 @@ use App\Entity\IndividualFamily;
 use App\Entity\RepositoryRecord;
 use App\Entity\Source;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
@@ -71,6 +72,9 @@ class GedFileHandler
         self::$dataManager = $dataManager;
     }
 
+    /**
+     * parse
+     */
     public function parse()
     {
         $file = new File($this->getFileName());
@@ -82,9 +86,12 @@ class GedFileHandler
             $this->parseLine($line);
         }
 
+        $q = 0;
         foreach ($this->getContent()->toArray() as $item) {
             $this->getItemHandler()->parse($item);
+            if ($q++ % 100 === 0) $this->getItemHandler()->getEntityManager()->flush();
         }
+        $this->getItemHandler()->getEntityManager()->flush();
     }
 
     /**

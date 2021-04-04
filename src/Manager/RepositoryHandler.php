@@ -16,6 +16,7 @@ namespace App\Manager;
 
 use App\Entity\RepositoryRecord;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class RepositoryHandler
@@ -31,12 +32,19 @@ class RepositoryHandler
     private AddressHandler $addressHandler;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
+    /**
      * RepositoryHandler constructor.
      * @param AddressHandler $addressHandler
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(AddressHandler $addressHandler)
+    public function __construct(AddressHandler $addressHandler, EntityManagerInterface $entityManager)
     {
         $this->addressHandler = $addressHandler;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -76,6 +84,7 @@ class RepositoryHandler
             $q++;
         }
 
+        $this->getEntityManager()->persist($repository);
         return $repository;
     }
 
@@ -85,5 +94,13 @@ class RepositoryHandler
     public function getAddressHandler(): AddressHandler
     {
         return $this->addressHandler;
+    }
+
+    /**
+     * @return EntityManagerInterface
+     */
+    public function getEntityManager(): EntityManagerInterface
+    {
+        return $this->entityManager;
     }
 }

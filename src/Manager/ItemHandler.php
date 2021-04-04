@@ -15,6 +15,7 @@
 namespace App\Manager;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class ItemHandler
@@ -50,6 +51,11 @@ class ItemHandler
     private RepositoryHandler $repositoryHandler;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
+    /**
      * @var string
      */
     private string $encoding;
@@ -61,16 +67,18 @@ class ItemHandler
      * @param FamilyHandler $familyHandler
      * @param SourceHandler $sourceHandler
      * @param RepositoryHandler $repositoryHandler
+     * @param EntityManagerInterface $entityManager
      */
     public function __construct(HeadHandler $headHandler, IndividualHandler $individualHandler,
                                 FamilyHandler $familyHandler, SourceHandler $sourceHandler,
-                                RepositoryHandler $repositoryHandler)
+                                RepositoryHandler $repositoryHandler, EntityManagerInterface $entityManager)
     {
         $this->headHandler = $headHandler;
         $this->individualHandler = $individualHandler;
         $this->familyHandler = $familyHandler;
         $this->sourceHandler = $sourceHandler;
         $this->repositoryHandler = $repositoryHandler;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -182,5 +190,13 @@ class ItemHandler
     public function getRepositoryHandler(): RepositoryHandler
     {
         return $this->repositoryHandler;
+    }
+
+    /**
+     * @return EntityManagerInterface
+     */
+    public function getEntityManager(): EntityManagerInterface
+    {
+        return $this->entityManager;
     }
 }

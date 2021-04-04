@@ -16,6 +16,7 @@ namespace App\Manager;
 
 use App\Entity\Individual;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class FamilyHandler
@@ -36,14 +37,21 @@ class FamilyHandler
     private MultimediaRecordHandler $multimediaRecordHandler;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
+    /**
      * FamilyHandler constructor.
      * @param EventHandler $eventHandler
      * @param MultimediaRecordHandler $multimediaRecordHandler
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(EventHandler $eventHandler, MultimediaRecordHandler $multimediaRecordHandler)
+    public function __construct(EventHandler $eventHandler, MultimediaRecordHandler $multimediaRecordHandler, EntityManagerInterface $entityManager)
     {
         $this->eventHandler = $eventHandler;
         $this->multimediaRecordHandler = $multimediaRecordHandler;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -118,7 +126,7 @@ class FamilyHandler
             }
             $q++;
         }
-
+        $this->getEntityManager()->persist($family);
         return $family;
     }
 
@@ -136,5 +144,13 @@ class FamilyHandler
     public function getMultimediaRecordHandler(): MultimediaRecordHandler
     {
         return $this->multimediaRecordHandler;
+    }
+
+    /**
+     * @return EntityManagerInterface
+     */
+    public function getEntityManager(): EntityManagerInterface
+    {
+        return $this->entityManager;
     }
 }

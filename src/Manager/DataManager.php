@@ -240,6 +240,7 @@ class DataManager
      */
     public function write(EntityManagerInterface $manager)
     {
+        return;
         $q = 0;
 /*        foreach ($this->getRepositories() as $entity) {
             $manager->persist($entity);

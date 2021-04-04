@@ -15,6 +15,7 @@
 namespace App\Manager;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class SourceHandler
@@ -24,6 +25,21 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class SourceHandler
 {
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
+    /**
+     * SourceHandler constructor.
+     * @param EntityManagerInterface $entityManager
+     */
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     /**
      * @param ArrayCollection $details
      * @param bool $key
@@ -84,7 +100,15 @@ class SourceHandler
             $q++;
         }
 
+        $this->getEntityManager()->persist($source);
         return $source;
     }
 
+    /**
+     * @return EntityManagerInterface
+     */
+    public function getEntityManager(): EntityManagerInterface
+    {
+        return $this->entityManager;
+    }
 }

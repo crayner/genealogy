@@ -18,6 +18,7 @@ use App\Entity\Individual;
 use App\Entity\IndividualName;
 use App\Entity\SourceData;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class IndividualHandler
@@ -53,22 +54,29 @@ class IndividualHandler
     private MultimediaRecordHandler $multimediaRecordHandler;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
+    /**
      * IndividualHandler constructor.
-     * @param IndividualNameHandler $individualNameHandler
      * @param EventHandler $eventHandler
      * @param AttributeHandler $attributeHandler
+     * @param IndividualNameHandler $individualNameHandler
      * @param SourceDataHandler $sourceDataHandler
      * @param MultimediaRecordHandler $multimediaRecordHandler
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(IndividualNameHandler $individualNameHandler, EventHandler $eventHandler,
-                                AttributeHandler $attributeHandler, SourceDataHandler $sourceDataHandler,
-                                MultimediaRecordHandler $multimediaRecordHandler)
+    public function __construct(EventHandler $eventHandler, AttributeHandler $attributeHandler,
+                                IndividualNameHandler $individualNameHandler, SourceDataHandler $sourceDataHandler,
+                                MultimediaRecordHandler $multimediaRecordHandler, EntityManagerInterface $entityManager)
     {
-        $this->individualNameHandler = $individualNameHandler;
         $this->eventHandler = $eventHandler;
         $this->attributeHandler = $attributeHandler;
+        $this->individualNameHandler = $individualNameHandler;
         $this->sourceDataHandler = $sourceDataHandler;
         $this->multimediaRecordHandler = $multimediaRecordHandler;
+        $this->entityManager = $entityManager;
     }
 
 
@@ -163,7 +171,7 @@ class IndividualHandler
             }
             $q++;
         }
-
+        $this->getEntityManager()->persist($individual);
         return $individual;
     }
 
@@ -205,5 +213,13 @@ class IndividualHandler
     public function getMultimediaRecordHandler(): MultimediaRecordHandler
     {
         return $this->multimediaRecordHandler;
+    }
+
+    /**
+     * @return EntityManagerInterface
+     */
+    public function getEntityManager(): EntityManagerInterface
+    {
+        return $this->entityManager;
     }
 }
