@@ -1,0 +1,15 @@
+{% trans_default_domain 'messages' %}
+
+{% extends "base.html.twig" %}
+
+{% set date_format = 'l, jS F Y' %}
+{% block body %}
+    <h1>{{ 'WikiTree Biography Generator'|trans }}</h1>
+    <p class="important">
+        {{ 'You will need to sign in to Wikitree to obtain the best results.'|trans }}
+    </p>
+    {% if result.error is defined %}
+        <p style="color: red; font-weight: bold;">{{ result.error|trans }}</p>
+    {% endif %}
+    {{ form(form) }}
+{% endblock %}

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserReferenceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 /**
  * Class UserReference
@@ -18,8 +19,9 @@ class UserReference
     /**
      * @var string|null
      * @ORM\Id()
-     * @ORM\Column(type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)    
      */
     private string $id;
 

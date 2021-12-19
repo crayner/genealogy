@@ -14,7 +14,7 @@
 
 namespace App\Controller;
 
-use App\Manager\DataManager;
+use App\Entity\Individual;
 use App\Manager\FileNameDiscriminator;
 use App\Manager\GedFileHandler;
 use App\Manager\ParameterManager;
@@ -39,6 +39,11 @@ class DefaultController extends AbstractController
      */
     public function home(FileNameDiscriminator $fileNameDiscriminator, GedFileHandler $handler, ParameterManager $parameterManager): Response
     {
+        $individuals = $this->getDoctrine()->getManager()->getRepository(Individual::class)->findAll();
+
+        if (count($individuals) > 1) {
+            return $this->redirectToRoute('ready');
+        }
         $file = $fileNameDiscriminator->execute();
 
         $handler->setFileName($file);
@@ -46,6 +51,21 @@ class DefaultController extends AbstractController
         return $this->render('base.html.twig',
             [
                 'stuff' => $handler->parse(),
+            ]
+        );
+    }
+
+    /**
+     * @Route("/ready/",name="ready")
+     *
+     */
+    public function ready()
+    {
+        $individuals = $this->getDoctrine()->getManager()->getRepository(Individual::class)->findAll();
+
+        return $this->render('base.html.twig',
+            [
+                'stuff' => $individuals,
             ]
         );
     }

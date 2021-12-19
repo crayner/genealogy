@@ -22,12 +22,29 @@ namespace App\Manager;
  */
 class FileNameDiscriminator
 {
+    private static bool $merge = false;
     /**
      * @return string
      */
     public function execute(): string
     {
         return 'F:\websites\crayner\genealogy\880m5j_8814100z7k3665f88w882c.ged';
-//        return 'F:\websites\crayner\genealogy\Rayner 5.5.ged';
+    }
+
+    /**
+     * @return string
+     */
+    public function merge(): string
+    {
+        self::$merge = true;
+        return 'F:\websites\crayner\genealogy\Rayner 5.5.ged';
+    }
+
+    /**
+     * @return bool
+     */
+    public static function getMerge(): bool
+    {
+        return self::$merge;
     }
 }

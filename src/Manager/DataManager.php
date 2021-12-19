@@ -57,6 +57,20 @@ class DataManager
     private ArrayCollection $repositories;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
+    /**
+     * DataManager constructor.
+     * @param EntityManagerInterface $entityManager
+     */
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
+    /**
      * @return ArrayCollection
      */
     public function getIndividuals(): ArrayCollection
@@ -82,6 +96,14 @@ class DataManager
     {
         if ($identifier === '') throw new ParseException(__METHOD__, __CLASS__);
         if ($this->getIndividuals()->containsKey($identifier)) return $this->individuals->get($identifier);
+
+        if (FileNameDiscriminator::getMerge()) {
+            $individual = $this->getEntityManager()->getRepository(Individual::class)->findOneByIdentifier($identifier);
+            if ($individual instanceof Individual) {
+                $this->addIndividual($individual);
+                return $individual;
+            }
+        }
 
         $individual = new Individual($identifier);
 
@@ -233,5 +255,13 @@ class DataManager
         $this->repositories->set($identifier, $repository);
 
         return $repository;
+    }
+
+    /**
+     * @return EntityManagerInterface
+     */
+    public function getEntityManager(): EntityManagerInterface
+    {
+        return $this->entityManager;
     }
 }

@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Exception\MultiMediaRecordException;
 use App\Repository\MultimediaRecordRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
+
 
 /**
  * Class MultimediaRecord
@@ -19,8 +21,9 @@ class MultimediaRecord
     /**
      * @var string|null
      * @ORM\Id()
-     * @ORM\Column(type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)    
      */
     private string $id;
 
@@ -32,7 +35,7 @@ class MultimediaRecord
 
     /**
      * @var MultimediaFile|null
-     * @ORM\ManyToOne(targetEntity=MultimediaFile::class,cascade="persist")
+     * @ORM\ManyToOne(targetEntity=MultimediaFile::class,cascade={"persist"})
      * @ORM\JoinTable(name="multimedia_record_filr",
      *      joinColumns={@ORM\JoinColumn(name="record_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="file_id", referencedColumnName="id")}

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Exception\SourceDataException;
 use App\Repository\SourceDataRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 /**
  * Class SourceData
@@ -21,14 +22,15 @@ class SourceData
     /**
      * @var string|null
      * @ORM\Id()
-     * @ORM\Column(type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)    
      */
     private string $id;
 
     /**
      * @var Source
-     * @ORM\ManyToOne(targetEntity=Source::class,cascade="persist")
+     * @ORM\ManyToOne(targetEntity=Source::class,cascade={"persist"})
      * @ORM\JoinColumn(name="source",nullable=true)
      */
     private Source $source;
@@ -58,7 +60,7 @@ for bias for example, an autobiography)',
 
     /**
      * @var Data
-     * @ORM\OneToOne(targetEntity=Data::class,inversedBy="sourceData",cascade="persist")
+     * @ORM\OneToOne(targetEntity=Data::class,inversedBy="sourceData",cascade={"persist"})
      * @ORM\JoinColumn(name="data")
      */
     private Data $data;

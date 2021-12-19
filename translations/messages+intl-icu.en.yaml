@@ -1,0 +1,65 @@
+birth:
+    sentence: >-
+        { gender, select,
+            male { {name} was born on {date}, the son of {father} and {mother}, at {location}.}
+            female { {name} was born on {date}, the daughter of {father} and {mother}, at {location}. }
+            not_stated { {name} was born on {date}, the child of {father} and {mother}, at {location}.}
+            other { This is a translation error and should never happen! }
+        }
+    unknown:
+        father: Unknown Father
+        mother: Unknown Mother
+Data: Data
+Nothing done yet.: Nothing done yet.
+Login & Generate Biography: Login & Generate Biography
+Generate Biography: Generate Biography
+WikiTree Biography Generator: WikiTree Biography Generator
+Use the Wikitree ID of the profile for which you are creating a biography.: Use the Wikitree ID of the profile for which you are creating a biography.
+You will need to sign in to Wikitree to obtain the best results.: You will need to sign in to Wikitree to obtain the best results.
+You have not logged into the Wikitree site.: You have not logged into the Wikitree site.
+marriage:
+    sentence: '{preferred} married {spouse} on {date} in {location}.'
+    children: >-
+        { count, plural,
+            =0 {No Issue.}
+            one {Together they had one child.}
+            other {Together they had # children.}
+        }
+death:
+    sentence: >-
+        { tense, select,
+            on {{preferred} passed away on {date} at {location}}
+            before {{preferred} passed away before {date} at {location}}
+            after {{preferred} passed away after {date} at {location}}
+            other {Maybe {preferred} will live forever, or the system has failed.}
+        }
+    age:
+        years: >-
+            { count, plural,
+                =0 {}
+                one {1 year}
+                other {# years}
+            }
+        months: >-
+            { count, plural,
+                =0 {}
+                one {1 month}
+                other {# months}
+            }
+        days: >-
+            { count, plural,
+                =0 {}
+                one {1 day}
+                other {# days}
+            }
+        display: , aged {age}
+        calculation: , age calulation was not performed
+WikiTree User name: WikiTree User name
+Usually an email address: Usually an email address
+WikiTree Password: WikiTree Password
+WikiTree User ID: WikiTree User ID
+The WikiTree User ID for which you are creating a biography: The WikiTree User ID for which you are creating a biography
+Privacy: Privacy
+Trusted List Access: Trusted List Access
+Not Set: Not Set
+Biography: Biography

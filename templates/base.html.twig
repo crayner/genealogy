@@ -2,14 +2,20 @@
 <html>
     <head>
         <meta charset="UTF-8">
+        <meta name="description" content="Genealogy Project">
+        <meta name="keywords" content="Genealogy,gedcom">
+        <meta name="author" content="Craig Rayner">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Genealogy Project{% endblock %}</title>
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
     </head>
     <body>
-        {% block body %}This is it{% endblock %}
-        {{ dump(stuff) }}
+        {% block body %}
+            This is it
+            {{ dump(stuff) }}
+        {% endblock %}
 
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}

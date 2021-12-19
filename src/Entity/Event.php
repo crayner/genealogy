@@ -6,6 +6,7 @@ use App\Exception\EventException;
 use App\Repository\EventRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 /**
  * @ORM\Entity(repositoryClass=EventRepository::class)
@@ -19,8 +20,9 @@ class Event
     /**
      * @var string|null
      * @ORM\Id()
-     * @ORM\Column(type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
     private string $id;
 
@@ -61,7 +63,7 @@ class Event
 
     /**
      * @var Place
-     * @ORM\OneToOne(targetEntity="App\Entity\Place",cascade="persist")
+     * @ORM\OneToOne(targetEntity="App\Entity\Place",cascade={"persist"})
      * @ORM\JoinColumn(name="place",nullable=true)
      */
     private ?Place $place;
@@ -104,7 +106,7 @@ class Event
 
     /**
      * @var SourceData|null
-     * @ORM\ManyToOne(targetEntity=SourceData::class,cascade="persist")
+     * @ORM\ManyToOne(targetEntity=SourceData::class,cascade={"persist"})
      * @ORM\JoinColumn(name="source",nullable=true)
      */
     private ?SourceData $source;

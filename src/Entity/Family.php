@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -24,8 +25,9 @@ class Family
     /**
      * @var string|null
      * @ORM\Id()
-     * @ORM\Column(type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)    
      */
     private string $id;
 
@@ -37,7 +39,7 @@ class Family
 
     /**
      * @var Collection
-     * @ORM\ManyToMany(targetEntity=Event::class,cascade="persist")
+     * @ORM\ManyToMany(targetEntity=Event::class,cascade={"persist"})
      * @ORM\JoinTable(name="family_events",
      *      joinColumns={@ORM\JoinColumn(name="family_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id")}
@@ -47,7 +49,7 @@ class Family
 
     /**
      * @var Collection
-     * @ORM\OneToMany(targetEntity=IndividualFamily::class, mappedBy="family",cascade="persist")
+     * @ORM\OneToMany(targetEntity=IndividualFamily::class, mappedBy="family",cascade={"persist"})
      */
     private Collection $individuals;
 
@@ -71,7 +73,7 @@ class Family
 
     /**
      * @var Collection
-     * @ORM\ManyToMany(targetEntity=MultimediaRecord::class,cascade="persist")
+     * @ORM\ManyToMany(targetEntity=MultimediaRecord::class,cascade={"persist"})
      * @ORM\JoinTable(name="family_multimedia_records",
      *      joinColumns={@ORM\JoinColumn(name="family_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="multimedia_record_id", referencedColumnName="id")}

@@ -20,7 +20,6 @@ use App\Entity\IndividualFamily;
 use App\Entity\RepositoryRecord;
 use App\Entity\Source;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
@@ -107,8 +106,7 @@ class GedFileHandler
         $firstChar = substr($line, 0, 1);
         switch ($firstChar) {
             case '0':
-                $this->createNewSection($line);
-                break;
+                return $this->createNewSection($line);
             default:
                 return $this->addLine($line);
         }

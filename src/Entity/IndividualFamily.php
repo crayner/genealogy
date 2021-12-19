@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
-use App\Exception\FamilyException;
 use App\Exception\RelationshipException;
 use App\Repository\IndividualFamilyRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -22,19 +22,20 @@ class IndividualFamily
     /**
      * @var string|null
      * @ORM\Id()
-     * @ORM\Column(type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)    
      */
     private string $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Individual::class, inversedBy="families",cascade="persist")
+     * @ORM\ManyToOne(targetEntity=Individual::class, inversedBy="families",cascade={"persist"})
      * @ORM\JoinColumn(nullable=false, name="individual")
      */
     private Individual $individual;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Family::class, inversedBy="individuals",cascade="persist")
+     * @ORM\ManyToOne(targetEntity=Family::class, inversedBy="individuals",cascade={"persist"})
      * @ORM\JoinColumn(nullable=false, name="family")
      */
     private Family $family;

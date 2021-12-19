@@ -81,22 +81,29 @@ class IndividualHandler
 
 
     /**
-     * @param ArrayCollection $individualDetails
+     * @param ArrayCollection $details
      * @return Individual
      */
-    public function parse(ArrayCollection $individualDetails): Individual
+    public function parse(ArrayCollection $details): Individual
     {
-        $line = LineManager::getLineDetails($individualDetails->get(0));
+        $line = LineManager::getLineDetails($details->get(0));
         extract($line);
-        $identifier = trim($tag, '@');
-        $individual = GedFileHandler::getIndividual($identifier);
+        if (!FileNameDiscriminator::getMerge()) {
+            $identifier = trim($tag, '@');
+            $individual = GedFileHandler::getIndividual($identifier);
+        } else {
+            $identifier = trim($tag, '@');
+            If (mb_substr($identifier,0,1) === 'P') $identifier = 'I' . mb_substr($identifier, 1);
+            $individual = GedFileHandler::getIndividual($identifier);
+            dd($identifier, $individual,$details);
+        }
 
         $q = 1;
-        while ($individualDetails->containsKey($q)) {
-            extract(LineManager::getLineDetails($individualDetails->get($q)));
+        while ($details->containsKey($q)) {
+            extract(LineManager::getLineDetails($details->get($q)));
             switch ($tag) {
                 case 'NAME':
-                    $name = ItemHandler::getSubItem($q, $individualDetails);
+                    $name = ItemHandler::getSubItem($q, $details);
                     $individualName = $this->getIndividualNameHandler()->parse($name, $individual);
                     $individual->addName($individualName);
                     $q += $name->count() - 1;
@@ -113,13 +120,13 @@ class IndividualHandler
                 case 'CHR':
                 case 'EDUC':
                 case 'BIRT':
-                    $event = ItemHandler::getSubItem($q, $individualDetails);
+                    $event = ItemHandler::getSubItem($q, $details);
                     $q += $event->count() - 1;
                     $event = $this->getEventHandler()->parse($event, 'Individual');
                     $individual->addEvent($event);
                     break;
                 case 'RESI':
-                    $attribute = ItemHandler::getSubItem($q, $individualDetails);
+                    $attribute = ItemHandler::getSubItem($q, $details);
                     $attribute = $this->getAttributeHandler()->parse($attribute, 'Individual');
                     $q += $attribute->getOffset() - 1;
                     break;
@@ -136,7 +143,7 @@ class IndividualHandler
                 case 'SOUR':
                     $sourceData = new SourceData();
                     $individual->addSource($sourceData);
-                    $source = ItemHandler::getSubItem($q, $individualDetails);
+                    $source = ItemHandler::getSubItem($q, $details);
                     $q += $source->count() - 1;
                     $this->getSourceDataHandler()->parse($source, $sourceData);
                     break;
@@ -156,7 +163,7 @@ class IndividualHandler
                     $individual->concatNote($content);
                     break;
                 case 'OBJE':
-                    $object = ItemHandler::getSubItem($q, $individualDetails);
+                    $object = ItemHandler::getSubItem($q, $details);
                     $q += $object->count() - 1;
                     $record = $this->getMultimediaRecordHandler()->parse($object);
                     $individual->addMultimediaRecord($record);
@@ -166,7 +173,7 @@ class IndividualHandler
                     break;
                 default:
                     dump(sprintf('I don\'t know how to handle a "%s" in "%s"', $tag, __CLASS__));
-                    dd($individualDetails, $individual);
+                    dd($details, $individual);
 
             }
             $q++;

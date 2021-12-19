@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\RepositoryRecordRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 /**
  * Class RepositoryRecord
@@ -18,8 +19,9 @@ class RepositoryRecord
     /**
      * @var string|null
      * @ORM\Id()
-     * @ORM\Column(type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)    
      */
     private ?string $id;
 
@@ -43,7 +45,7 @@ class RepositoryRecord
 
     /**
      * @var Address|null
-     * @ORM\OneToOne(targetEntity="App\Entity\Address",cascade="persist")
+     * @ORM\OneToOne(targetEntity="App\Entity\Address",cascade={"persist"})
      * @ORM\JoinColumn(name="address",nullable=true)
      */
     private ?Address $address;

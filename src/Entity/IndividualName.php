@@ -18,6 +18,7 @@ use App\Exception\IndividualNameException;
 use App\Manager\ParameterManager;
 use App\Repository\IndividualNameRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 /**
  * Class IndividualName
@@ -32,14 +33,15 @@ class IndividualName
     /**
      * @var string|null
      * @ORM\Id()
-     * @ORM\Column(type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)    
      */
     private ?string $id;
 
     /**
      * @var Individual
-     * @ORM\ManyToOne(targetEntity="App\Entity\Individual",inversedBy="names",cascade="persist")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Individual",inversedBy="names",cascade={"persist"})
      * @ORM\JoinColumn(name="individual")
      */
     private Individual $individual;
@@ -111,7 +113,7 @@ class IndividualName
 
     /**
      * @var SourceData|null
-     * @ORM\OneToOne(targetEntity="App\Entity\SourceData",cascade="persist")
+     * @ORM\OneToOne(targetEntity="App\Entity\SourceData",cascade={"persist"})
      * @ORM\JoinColumn(nullable=true,name="source")
      */
     private ?SourceData $source;

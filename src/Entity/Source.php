@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Exception\SourceException;
 use App\Repository\SourceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 /**
  * Class Source
@@ -19,8 +20,9 @@ class Source
     /**
      * @var string|null
      * @ORM\Id()
-     * @ORM\Column(type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)    
      */
     private string $id;
 
@@ -74,7 +76,7 @@ class Source
 
     /**
      * @var RepositoryRecord|null
-     * @ORM\ManyToOne(targetEntity="App\Entity\RepositoryRecord",cascade="persist")
+     * @ORM\ManyToOne(targetEntity="App\Entity\RepositoryRecord",cascade={"persist"})
      * @ORM\JoinColumn(name="repository_record",nullable=true)
      */
     private ?RepositoryRecord $repositoryRecord;
