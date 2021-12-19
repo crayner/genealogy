@@ -39,7 +39,7 @@ class WikiTreeController extends AbstractController
     public function biography(RequestStack $stack, WikiTreeManager $manager): Response
     {
         $request = $stack->getCurrentRequest();
-        $form = $this->createForm(WikiTreeLoginType::class, ['wikiTreeUser' => 'craig@craigrayner.com', 'wikiTreePassword' => '%u5nXl7tK5u4', 'wikiTreeUserID' => 'Rayner-2081']);
+        $form = $this->createForm(WikiTreeLoginType::class);
         $form->handleRequest($request);
         $result = [];
         $result['valid'] = false;
