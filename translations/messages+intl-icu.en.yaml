@@ -17,6 +17,7 @@ WikiTree Biography Generator: WikiTree Biography Generator
 Use the Wikitree ID of the profile for which you are creating a biography.: Use the Wikitree ID of the profile for which you are creating a biography.
 You will need to sign in to Wikitree to obtain the best results.: You will need to sign in to Wikitree to obtain the best results.
 You have not logged into the Wikitree site.: You have not logged into the Wikitree site.
+Sources: Sources
 marriage:
     sentence: '{preferred} married {spouse} on {date} in {location}.'
     children: >-

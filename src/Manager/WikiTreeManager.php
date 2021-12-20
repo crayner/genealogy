@@ -14,7 +14,6 @@
 
 namespace App\Manager;
 
-use Symfony\Component\BrowserKit\CookieJar;
 use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -376,7 +375,6 @@ class WikiTreeManager
         $session->set('cookieJar',$cookieJar);
         $session->set('result', $result);
         $session->save();
-        dump($result);
         return $result;
     }
 }
