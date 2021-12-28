@@ -40,6 +40,8 @@ class WikiTreeManager
         });
 
         $result = [];
+        $result['children'] = [];
+
         foreach($content as $element) {
             $span = $element->filterXPath('//span[contains(@itemprop, "givenName")]')->evaluate('count(@itemprop)');
             if ($span !== []) {
@@ -113,14 +115,35 @@ class WikiTreeManager
                 $result['spouse'][$q]['location'] = trim(mb_substr($result['spouse'][$q]['location'], 1));
                 $result['spouse'][$q]['date'] = substr($result['spouse'][$q]['location'], 0, 11);
             }
+
             $span = $element->filterXPath('//span[contains(@itemprop, "children")]')->evaluate('count(@itemprop)');
             if ($span !== []) {
-                $result['children'] = [];
                 foreach($element->filterXPath('//span[contains(@itemprop, "children")]') as $q=>$sibling) {
                     $result['children'][$q]['name'] = $sibling->textContent;
                     $result['children'][$q]['ID'] = str_replace('/wiki/', '', $sibling->firstChild->getAttribute('href'));
                 }
             }
+
+            $span = $element->filterXPath('//span[starts-with(@title, "Daughter")]')->evaluate('count(@title)');
+            if ($span !== []) {
+                $w = count($result['children']);
+                foreach($element->filterXPath('//span[starts-with(@title, "Daughter")]') as $q=>$sibling) {
+                    $result['children'][$w + $q]['name'] = $sibling->textContent;
+                    $result['children'][$w + $q]['ID'] = 'Private Daughter';
+                    $result['hints']['private children'] = true;
+                }
+            }
+
+            $span = $element->filterXPath('//span[starts-with(@title, "Son")]')->evaluate('count(@title)');
+            if ($span !== []) {
+                $w = count($result['children']);
+                foreach($element->filterXPath('//span[starts-with(@title, "Son")]') as $q=>$sibling) {
+                    $result['children'][$w + $q]['name'] = $sibling->textContent;
+                    $result['children'][$w + $q]['ID'] = 'Private Son';
+                    $result['hints']['private children'] = true;
+                }
+            }
+
 
             $span = $element->filterXPath('//time[contains(@itemprop, "deathDate")]')->evaluate('count(@itemprop)');
             if ($span !== []) {
@@ -168,6 +191,7 @@ class WikiTreeManager
                 'death' => [],
                 'join' => '',
                 'privacy' => '',
+                'hints' => [],
             ]
         );
         $resolver->setAllowedValues('gender', ['male','female','','unknown']);
@@ -370,6 +394,9 @@ class WikiTreeManager
         }
 
         $result = $this->parseWikiTreeData($crawler->html());
+
+        $result['interredSite'] = $data['interredSite'] ?: '';
+
         $result['didLogin'] = $didLogin;
         $result['cookieJar'] = $cookieJar;
         $session->set('cookieJar',$cookieJar);

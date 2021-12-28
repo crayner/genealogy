@@ -56,6 +56,13 @@ class WikiTreeBiographyType extends AbstractType
                     'required' => true,
                 ]
             )
+            ->add('interredSite', TextType::class,
+                [
+                    'label' => 'Interred @',
+                    'help' => 'An entry here will add interment details to the biography.',
+                    'required' => false,
+                ]
+            )
             ->add('submit', SubmitType::class,
                 [
                     'label' => 'Generate Biography',

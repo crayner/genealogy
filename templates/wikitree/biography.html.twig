@@ -22,6 +22,7 @@
         {% if gender is same as('') %}{% set gender = 'not_stated' %}{% endif %}
         {% if result.father.ID is not same as('') %}{% set father = '[[' ~ result.father.ID ~ '|' ~ result.father.name ~ ']]' %}{% else %}{% set father = 'birth.unknown.father'|trans %}{% endif %}
         {% if result.mother.ID is not same as('') %}{% set mother = '[[' ~ result.mother.ID ~ '|' ~ result.mother.name ~ ']]' %}{% else %}{% set mother = 'birth.unknown.mother'|trans %}{% endif %}
+        <p>{{ '{{Australia Sticker|New South Wales}}' }}{{ '{{ Australia Born in Colony|colony=Colony of New South Wales }}' }}</p>
         <p>{{ 'birth.sentence'|trans({'name': name, 'date': result.birth.date|date(date_format), gender: gender, '{location}': result.birth.location, '{father}': father, '{mother}': mother}) }}</p>
 
         {% if (result.spouse|length > 0) %}
@@ -46,14 +47,21 @@
                 <p># [[{{ child.ID }}|{{ child.name }}]]</p>
             {% endfor %}
         {% endif %}
+
         {% if result.death.date is not same as '' %}
+            {% if (result.age.y >= 100) %}
+                {{ '{{Centenarian
+                |age= ' ~ result.age.y ~ '
+                |living= no
+                }}' }}
+            {% endif %}
             {% set tense = 'on' %}
             {% if result.death.before is same as(true) %}{% set tense = 'before' %}{% endif %}
             {% if result.death.after is same as(true) %}{% set tense = 'after' %}{% endif %}
             {% set age = 'death.age.years'|trans({count: result.age.y}) ~ ', ' ~ 'death.age.months'|trans({count: result.age.m}) ~ ', ' ~ 'death.age.days'|trans({count: result.age.d}) %}
             {% set age = age|replace({', ,': ','}) %}
             {% if tense is not same as('on') %}{% set age = 'death.age.calculation'|trans %}{% else %}{% set age = 'death.age.display'|trans({age: age|trim(' ,')}) %}{% endif %}
-            <p>{{ 'death.sentence'|trans({tense: tense, '{preferred}': result.name.preferred, '{date}': result.death.date|date(date_format), '{location}': result.death.location}) }}{{ age }}.</p>
+            <p>{{ 'death.sentence'|trans({tense: tense, '{preferred}': result.name.preferred, '{date}': result.death.date|date(date_format), '{location}': result.death.location}) }}{{ age }}{% if result.interredSite is not same as('') %}, {{ 'and is interred at'|trans({'{site}': result.interredSite}) }}.</p>{% else %}.</p>{% endif %}
         {% endif %}
         <h2>== {{ 'Sources'|trans }} ==</h2>
         &lt;references /&gt;
@@ -61,5 +69,14 @@
         {% if result.error is defined %}
             <p style="color: red; font-weight: bold;">{{ result.error|trans }}</p>
         {% endif %}
+    {% endif %}
+    {% if result.hints is defined and result.hints is not same as ([]) %}
+        <hr/>
+        <h3>{{ 'hints.heading'|trans }}</h3>
+        <ul>
+        {% for name,value in result.hints %}
+            <li>{{ ('hints.' ~ name)|trans }}</li>
+        {% endfor %}
+        </ul>
     {% endif %}
 {% endblock %}

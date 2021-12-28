@@ -64,3 +64,9 @@ Privacy: Privacy
 Trusted List Access: Trusted List Access
 Not Set: Not Set
 Biography: Biography
+hints:
+    heading: Hints
+    private children: 'Use the "Show Descendants" button to reveal the identities of private children.'
+An entry here will add interment details to the biography.: An entry here will add interment details to the biography.
+Interred @: Interred @
+and is interred at: 'and is interred at {site}'
