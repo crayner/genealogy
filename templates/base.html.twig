@@ -9,14 +9,18 @@
         <title>{% block title %}Genealogy Project{% endblock %}</title>
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
+            <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css"/>
         {% endblock %}
     </head>
     <body>
-        {% block body %}
-            This is it
-            {{ dump(stuff) }}
-        {% endblock %}
-
+        <div class="body">
+            <div class="container">
+                {% block body %}
+                    This is it
+                    {{ dump(stuff) }}
+                {% endblock %}
+            </div>
+        </div>
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}

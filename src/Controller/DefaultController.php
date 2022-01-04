@@ -31,13 +31,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends AbstractController
 {
     /**
-     * @Route("/",name="home")
+     * @Route("/importer/",name="importer")
      * @param FileNameDiscriminator $fileNameDiscriminator
      * @param GedFileHandler $handler
      * @param ParameterManager $parameterManager
      * @return Response
      */
-    public function home(FileNameDiscriminator $fileNameDiscriminator, GedFileHandler $handler, ParameterManager $parameterManager): Response
+    public function importer(FileNameDiscriminator $fileNameDiscriminator, GedFileHandler $handler, ParameterManager $parameterManager): Response
     {
         $individuals = $this->getDoctrine()->getManager()->getRepository(Individual::class)->findAll();
 
@@ -56,7 +56,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/ready/",name="ready")
+     * @Route("/importer/ready/",name="importer_ready")
      *
      */
     public function ready()
@@ -68,5 +68,13 @@ class DefaultController extends AbstractController
                 'stuff' => $individuals,
             ]
         );
+    }
+
+    /**
+     * @Route("/",name="home")
+     * @return Response
+     */
+    public function home() {
+        return $this->redirectToRoute('wikitree_biography');
     }
 }

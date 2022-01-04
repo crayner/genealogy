@@ -4,16 +4,56 @@
 
 {% set date_format = 'l, jS F Y' %}
 {% block body %}
-    <h1>{{ 'WikiTree Biography Generator'|trans }}</h1>
-    <p class="important">
+    <h1 style="text-align: center">{{ 'WikiTree Biography Generator'|trans }}</h1>
+    <p class="important" style="text-align: center">
        {{ 'Use the Wikitree ID of the profile for which you are creating a biography.'|trans }}
     </p>
-    {{ form(form) }}
-    <hr/>
+    {{ form_start(form) }}
+    {% if 'hidden' not in form.wikiTreeUser.vars.block_prefixes %}
+    <div class="formElement">
+        <div class="formLabel">
+            <div class="formWidget">{{ form_widget(form.wikiTreeUser) }}</div>
+            <p class="formLabel">{{ form_label(form.wikiTreeUser) }}</p>
+            <p class="formHelp">{{ form_help(form.wikiTreeUser) }}</p>
+        </div>
+    </div>
+    <div class="formElement">
+        <div class="formLabel">
+            <div class="formWidget">{{ form_widget(form.wikiTreePassword) }}</div>
+            <p class="formLabel">{{ form_label(form.wikiTreePassword) }}</p>
+            <p class="formHelp">{{ form_help(form.wikiTreePassword) }}</p>
+        </div>
+    </div>
+    {% endif %}
+    <div class="formElement">
+        <div class="formLabel">
+            <div class="formWidget">{{ form_widget(form.wikiTreeUserID) }}</div>
+            <p class="formLabel">{{ form_label(form.wikiTreeUserID) }}</p>
+            <p class="formHelp">{{ form_help(form.wikiTreeUserID) }}</p>
+        </div>
+    </div>
+    <div class="formElement">
+        <div class="formLabel">
+            <div class="formWidget">{{ form_widget(form.interredSite) }}</div>
+            <p class="formLabel">{{ form_label(form.interredSite) }}</p>
+            <p class="formHelp">{{ form_help(form.interredSite) }}</p>
+        </div>
+    </div>
+    <div class="formElement">
+        <div class="formLabel">
+            <div class="formWidget">{{ form_widget(form.submit) }}</div>
+            <p class="formLabel">{{ form_label(form.submit) }}</p>
+            <p class="formHelp"></p>
+        </div>
+    </div>
+
+    {{ form_end(form) }}
+    <hr style="clear: both" />
     <p>{{ 'Privacy'|trans }}: {{ result.privacy|default('Not Set'|trans) }}</p>
     <p>{{ "Trusted List Access"|trans }}: {{ result.join|default('Not Set'|trans) }}</p>
     <hr/>
     {% if result.valid is same as true %}
+        <div class="copyData">
         <h2>== {{ 'Biography'|trans }} ==</h2>
         {% set name = result.name.given %}
         {% if result.name.additional is not same as('') %}{% set name = name ~ ' ' ~ result.name.additional %}{% endif %}
@@ -65,6 +105,7 @@
         {% endif %}
         <h2>== {{ 'Sources'|trans }} ==</h2>
         &lt;references /&gt;
+        </div>
     {% else %}
         {% if result.error is defined %}
             <p style="color: red; font-weight: bold;">{{ result.error|trans }}</p>

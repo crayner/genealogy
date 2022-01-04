@@ -1,0 +1,31 @@
+.body {
+    align-content: center;
+}
+.container {
+    width: 1200px;
+    border: solid 1px black;
+}
+.formElement {
+    border: solid 1px black;
+}
+.formLabel {
+    text-align: left;
+}
+.formWidget {
+    width: 45%;
+    float: right;
+}
+.formWidget input, .formWidget textarea {
+    width: 95%;
+}
+.formWidget button {
+    float: right;
+    margin-right: 30px;
+}
+.formLabel {}
+.help-text {
+    font-style: italic;
+}
+.copyData {
+    color: blue;
+}
