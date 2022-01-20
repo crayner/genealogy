@@ -14,11 +14,17 @@
 
 namespace App\Form;
 
+use App\Manager\WikiTreeManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class WikiTreeBiographyType
@@ -28,6 +34,50 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class WikiTreeBiographyType extends AbstractType
 {
+    var WikiTreeManager $manager;
+
+    /**
+     * @param WikiTreeManager $manager
+     */
+    public function __construct(WikiTreeManager $manager)
+    {
+        $this->manager = $manager;
+    }
+
+    /**
+     * @return WikiTreeManager
+     */
+    public function getManager(): WikiTreeManager
+    {
+        return $this->manager;
+    }
+
+    /**
+     * @return array
+     */
+    private function getCemeteryChoices(): array
+    {
+        $result = [];
+        foreach ($this->getManager()->getCemeteries() as $q=>$w)
+            $result[$q] = $q;
+        ksort($result);
+
+        return $result;
+    }
+
+    /**
+     * @return array
+     */
+    private function getCongregationChoices(): array
+    {
+        $result = [];
+        foreach ($this->getManager()->getCongregations() as $q=>$w)
+            $result[$q] = $q;
+        ksort($result);
+
+        return $result;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -35,31 +85,91 @@ class WikiTreeBiographyType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('wikiTreeUser', HiddenType::class,
-                [
-                    'label' => 'WikiTree User name',
-                    'help' => 'Usually an email address',
-                    'required' => true,
-                ]
-            )
-            ->add('wikiTreePassword', HiddenType::class,
-                [
-                    'label' => 'WikiTree Password',
-                    'required' => true,
-                ]
-            )
-            ->add('wikiTreeUserID', TextType::class,
+        if ($options['show_login']) {
+            $builder
+                ->add('wikiTreeUser', TextType::class,
+                    [
+                        'label' => 'WikiTree User name',
+                        'help' => 'Usually an email address',
+                        'required' => true,
+                    ]
+                )
+                ->add('wikiTreePassword', TextType::class,
+                    [
+                        'label' => 'WikiTree Password',
+                        'required' => true,
+                    ]
+                );
+        } else {
+            $builder
+                ->add('wikiTreeUser', HiddenType::class,
+                    [
+                        'label' => 'WikiTree User name',
+                        'help' => 'Usually an email address',
+                        'required' => true,
+                    ]
+                )
+                ->add('wikiTreePassword', HiddenType::class,
+                    [
+                        'label' => 'WikiTree Password',
+                        'required' => true,
+                    ]
+                );
+        }
+        $builder->add('wikiTreeUserID', TextType::class,
                 [
                     'label' => 'WikiTree User ID',
                     'help' => 'The WikiTree User ID for which you are creating a biography',
                     'required' => true,
                 ]
             )
-            ->add('interredSite', TextType::class,
+            ->add('interredCemetery', ChoiceType::class,
                 [
-                    'label' => 'Interred @',
+                    'label' => 'Cemetery Name',
                     'help' => 'An entry here will add interment details to the biography.',
+                    'choices' => $this->getCemeteryChoices(),
+                    'required' => false,
+                    'choice_translation_domain' => false,
+                ]
+            )
+            ->add('interredLocation', TextType::class,
+                [
+                    'label' => 'Location in Cemetery',
+                    'help' => 'Additional information to find the grave in the cemetery.',
+                    'required' => false,
+                ]
+            )
+            ->add('baptismDate', DateType::class,
+                [
+                    'label' => 'Date of Baptism',
+                    'help' => 'Can be left blank.',
+                    'required' => false,
+                    'widget' => 'single_text',
+                    'input' => 'datetime_immutable',
+                ]
+            )
+            ->add('baptismLocation', TextType::class,
+                [
+                    'label' => 'Location of Baptism',
+                    'help' => 'Can be left blank.',
+                    'required' => false,
+                ]
+            )
+            ->add('congregations', ChoiceType::class,
+                [
+                    'label' => 'Congregations',
+                    'help' => 'Add one of more congregation categories to your record.',
+                    'choices' => $this->getCongregationChoices(),
+                    'required' => false,
+                    'multiple' => true,
+                    'choice_translation_domain' => false,
+                    'placeholder' => 'No Congregation Selected',
+                ]
+            )
+            ->add('raynerPage', IntegerType::class,
+                [
+                    'label' => 'Rayner Book Page',
+                    'help' => 'Where does this person appear in the Rayner book?',
                     'required' => false,
                 ]
             )
@@ -77,5 +187,14 @@ class WikiTreeBiographyType extends AbstractType
     public function getBlockPrefix()
     {
         return 'wikitreebiography';
+    }
+
+    /**
+     * @param OptionsResolver $resolver
+     * @return void
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefault('show_login', false);
     }
 }

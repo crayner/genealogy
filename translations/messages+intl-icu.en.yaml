@@ -1,10 +1,16 @@
 birth:
-    sentence: >-
+    gender: >-
         { gender, select,
-            male { {name} was born on {date}, the son of {father} and {mother}, at {location}.}
-            female { {name} was born on {date}, the daughter of {father} and {mother}, at {location}. }
-            not_stated { {name} was born on {date}, the child of {father} and {mother}, at {location}.}
-            other { This is a translation error and should never happen! }
+            male {son}
+            female {daughter}
+            other {child}
+        }
+    sentence: >- 
+        { date_status, select, 
+            full {{name} was born on {date}, the {gender} of {father} and {mother}, in {location}.}
+            year {{name} was born in {date}, the {gender} of {father} and {mother}, in {location}.}
+            monthYear {{name} was born in {date}, the {gender} of {father} and {mother}, in {location}.}
+            other {{name} was born, the {gender} of {father} and {mother}, in {location}.}
         }
     unknown:
         father: Unknown Father
@@ -19,7 +25,13 @@ You will need to sign in to Wikitree to obtain the best results.: You will need 
 You have not logged into the Wikitree site.: You have not logged into the Wikitree site.
 Sources: Sources
 marriage:
-    sentence: '{preferred} married {spouse} on {date} in {location}.'
+    sentence: >-
+        { date_format, select,
+            full {{preferred} married {spouse} on {date} at {location}.}
+            monthYear {{preferred} married {spouse} in {date} at {location}.}
+            Year {{preferred} married {spouse} in {date} at {location}.}
+            other {{preferred} married {spouse} at {location}.}
+        }
     children: >-
         { count, plural,
             =0 {No Issue.}
@@ -30,8 +42,10 @@ death:
     sentence: >-
         { tense, select,
             on {{preferred} passed away on {date} at {location}}
+            in {{preferred} passed away in {date} at {location}}
             before {{preferred} passed away before {date} at {location}}
             after {{preferred} passed away after {date} at {location}}
+            about {{preferred} passed away about {date} at {location}}
             other {Maybe {preferred} will live forever, or the system has failed.}
         }
     age:
@@ -55,6 +69,7 @@ death:
             }
         display: , aged {age}
         calculation: , age calulation was not performed
+    unknown: "{name} passed away{citation}..."
 WikiTree User name: WikiTree User name
 Usually an email address: Usually an email address
 WikiTree Password: WikiTree Password
@@ -70,3 +85,15 @@ hints:
 An entry here will add interment details to the biography.: An entry here will add interment details to the biography.
 Interred @: Interred @
 and is interred at: 'and is interred at {site}'
+Cemetery Name: Cemetery Name
+Location in Cemetery: Location in Cemetery
+Additional information to find the grave in the cemetery.: Additional information to find the grave in the cemetery.
+Congregations: Congregations
+Add one of more congregation categories to your record.: Add one of more congregation categories to your record.
+baptism:
+    sentence: '{name} was baptised on {date}, at {location}.'
+Date of Baptism: Date of Baptism
+Can be left blank.: Can be left blank.
+Location of Baptism: Location of Baptism
+Rayner Book Page: Rayner Book Page
+Where does this person appear in the Rayner book?: Where does this person appear in the Rayner book?

@@ -15,7 +15,7 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -26,7 +26,7 @@ use Symfony\Component\Form\FormBuilderInterface;
  * @author  Craig Rayner <craig@craigrayner.com>
  * 19/12/2021 07:38
  */
-class WikiTreeLoginType extends AbstractType
+class WikiTreeLoginType extends WikiTreeBiographyType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -35,40 +35,9 @@ class WikiTreeLoginType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('wikiTreeUser', TextType::class,
-                [
-                    'label' => 'WikiTree User name',
-                    'help' => 'Usually an email address',
-                    'required' => true,
-                ]
-            )
-            ->add('wikiTreePassword', TextType::class,
-                [
-                    'label' => 'WikiTree Password',
-                    'required' => true,
-                ]
-            )
-            ->add('wikiTreeUserID', TextType::class,
-                [
-                    'label' => 'WikiTree User ID',
-                    'help' => 'The WikiTree User ID for which you are creating a biography',
-                    'required' => true,
-                ]
-            )
-            ->add('interredSite', TextType::class,
-                [
-                    'label' => 'Interred @',
-                    'help' => 'An entry here will add interment details to the biography.',
-                    'required' => false,
-                ]
-            )
-            ->add('submit', SubmitType::class,
-                [
-                    'label' => 'Login & Generate Biography',
-                ]
-            )
-        ;
+        $options['show_login'] = true;
+
+        parent::buildForm($builder, $options);
     }
 
     /**

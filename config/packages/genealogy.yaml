@@ -5,3 +5,169 @@ parameters:
         - immigration
         - maiden
         - married
+    cemeteries:
+        Bathurst Cemetery: Bathurst Cemetery, Bathurst, New South Wales
+        Binnaway General Cemetery: Binnaway General Cemetery, Binnaway, New South Wales
+        Bong Bong Anglican Cemetery: Bong Bong Church Cemetery, Moss Vale, New South Wales
+        Bong Bong Presbyterian Cemetery: Bong Bong Church Cemetery, Moss Vale, New South Wales
+        Brisbane South Cemetery: South Brisbane Cemetery, Dutton Park, Queensland
+        Coolah Cemetery: Coolah Cemetery, Coolah, New South Wales
+        Cudgegong Cemetery: Cudgegong General Cemetery, Cudgegong, New South Wales
+        Coonabarabran Anglican Cemetery: Coonabarabran Anglican Cemetery, Coonabarabran, New South Wales
+        Delungra Cemetery: Delungra Cemetery, Delungra, New South Wales
+        Dunedoo Cemetery: Dunedoo Cemetery, Dunedoo, New South Wales
+        Eastern Suburbs Memorial Park: Eastern Suburbs Memorial Park, Matraville, New South Wales
+        Gulgong General Cemetery: Gulgong General Cemetery, Gulgong, New South Wales
+        Innes Gardens Memorial Park, Port Macquarie: Innes Gardens Memorial Park, Port Macquarie, New South Wales
+        Killarney Cemetery: Killarney Cemetery, Killarney, Queensland
+        Killarney Lawn Cemetery: Killarney Cemetery, Killarney, Queensland
+        Macquarie Park Cemetery and Crematorium: Macquarie Park Cemetery and Crematorium, North Ryde, New South Wales
+        Bungendore Cemetery: Bungendore Cemetery, Bungendore, New South Wales
+        Mudgee General Cemetery: Mudgee General Cemetery, Mudgee, New South Wales
+        Mudgee Lawn Cemetery: Mudgee Lawn Cemetery, Buckaroo, New South Wales
+        Myall Remembrance Park: Myall Remembrance Park, Dalby, Queensland
+        Picton General Cemetery: Picton General Cemetery, Picton, New South Wales
+        Pinnaroo Lawn Cemetery, Queensland: Pinnaroo Lawn Cemetery, Bridgeman Downs, Queensland
+        Port Macquarie General Cemetery: Port Macquarie General Cemetery, Port Macquarie, New South Wales
+        Queanbeyan Lawn Cemetery: Queanbeyan Lawn Cemetery and Memorial Gardens, Jerrabomberra, New South Wales
+        Rookwood General Cemetery: Rookwood General Cemetery, Rookwood, New South Wales
+        Rookwood Memorial Gardens and Crematorium: Rookwood Memorial Gardens and Crematorium, Rookwood, New South Wales
+        Rookwood Anglican Cemetery: Rookwood Anglican Cemetery, Rookwood, New South Wales
+        Sandgate Cemetery: Sandgate Cemetery, Sandgate, New South Wales
+        Scarborough Wombarra Cemetery: Scarborough Wombarra Cemetery, Wombarra, New South Wales
+        Warialda General Cemetery: Warialda General Cemetery, Warialda, New South Wales
+        Windsor, St Matthew Anglican Cemetery: "St Matthew's Anglican Cemetery, Windsor, New South Wales"
+        Woden Cemetery, Phillip, ACT: Woden Cemetery, Phillip, Australian Capital Territory
+        Wollongong Memorial Gardens: Wollongong Memorial Gardens, Unanderra, New South Wales
+        Woronora Memorial Park: Woronora Memorial Park, Sutherland, New South Wales
+        Mendooran Cemetery: Mendooran Cemetery, Mendooran, New South Wales
+        Forest Lawn Memorial Park, Leppington: Forest Lawn Memorial Park, Leppington, New South Wales
+        Laurieton Cemetery: Laurieton Cemetery, Laurieton, New South Wales
+        Noraville Cemetery: Noraville Cemetery, Wyong, New South Wales
+        St Marys Cemetery: St Marys General Cemetery, St Marys, New South Wales
+        Portland Cemetery: Portland General Cemetery, Portland, New South Wales
+        Forbes Cemetery: Forbes Cemetery, Forbes, New South Wales
+        Appin Catholic Cemetery: St Bede's Catholic Cemetery, Appin, New South Wales
+        Parkes Cemetery: Parkes General Cemetery, Parkes, New South Wales
+    congregations:
+        Mascot Catholic St Therese:
+            name: "St Therese's Catholic Church"
+            category: "St Therese's Catholic Church, Rosebery, New South Wales"
+        Tallawang Catholic St Joseph:
+            name: "St Joseph's Catholic Church"
+            category: "St Joseph's Catholic Church, Tallawang, New South Wales"
+        Strathfield Catholic St Martha:
+            name: "St Martha's Catholic Church"
+            category: "St Martha's Catholic Church, Strathfield, New South Wales"
+        Rylstone Catholic St Malachy:
+            name: "St Malachy's Catholic Church"
+            category: "St Malarchy's Catholic Church, Rylstone, New South Wales"
+        Marrickville Church of England St Clement:
+            name: St Clement's Church of England
+            category: "St Clement's Anglican Church, Marrickville, New South Wales"
+        Inverell Church of England, St Augustine:
+            name: St Augustine's Church of England
+            category: "St Augustine's Anglican Church, Inverell, New South Wales"
+        Inverell Anglican, St Augustine: 
+            name: St Augustine's Anglican Church
+            category: "St Augustine's Anglican Church, Inverell, New South Wales"
+        Inverell Presbyterian: 
+            name: Inverell Presbyterian Church
+            category: Inverell Presbyterian Church, Inverell, New South Wales
+        Inverell Catholic Sacred Heart: 
+            name: Sacred Heart Catholic Church
+            category: Sacred Heart Catholic Church, Inverell, New South Wales
+        Delungra Presbyterian St Stephen: 
+            name: "St Stephen's Presbyterian Church"
+            category: "St Stephen's Presbyterian Church, Delungra, New South Wales"
+        Mullamuddy Union:    
+            name: Mullamuddy Union Church
+            category: Union Church, Mullamuddy, New South Wales
+        Binnaway Union:    
+            name: Binnaway Union Church
+            category: Binnaway Union Church, Binnaway, New South Wales
+        Campsie Methodist:
+            name: Campsie Methodist Church
+            category: Campsie Uniting Church, Campsie, New South Wales
+        Campsie Uniting:
+            name: Campsie Uniting Church
+            category: Campsie Uniting Church, Campsie, New South Wales
+        Granville Anglican St Mark:
+            name: "St Mark's Anglican Church"
+            category: "St Mark's Anglican Church, Granville, New South Wales"
+        Granville Church of England St Mark:
+            name: "St Mark's Church of Engalnd"
+            category: "St Mark's Anglican Church, Granville, New South Wales"
+        Mudgee Anglican St John:
+            name: St John the Baptist Anglican, Mudgee
+            category: St John the Baptist Anglican Church, Mudgee, New South Wales
+        Mudgee Church of England St John:
+            name: St John the Baptist Church of England, Mudgee
+            category: St John the Baptist Anglican Church, Mudgee, New South Wales
+        Mudgee Catholic St Mary:    
+            name: "St Mary's Catholic Church, Mudgee"
+            category: "St Mary's Catholic Church, Mudgee, New South Wales"
+        Mudgee Methodist Church:
+            name: Mudgee Methodist Church
+            category: Mudgee Uniting Church, Mudgee, New South Wales
+        Mudgee Presbyterian: 
+            name: "St Paul's Presbyterian Church"
+            category: "St Paul's Presbyterian Church, Mudgee, New South Wales"
+        Toronto Methodist:
+            name: Toronto Methodist Church
+            category: Toronto Uniting Church, Toronto, New South Wales
+        Toronto Uniting:
+            name: Toronto Uniting Church
+            category: Toronto Uniting Church, Toronto, New South Wales
+        Wagga Wagga Anglican St John:
+            name: "St John's Evangelist Anglican, Wagga Wagga"
+            category: "St John's Evangelist Anglican Church, Wagga Wagga, New South Wales"
+        Wagga Wagga Church of England St John: 
+            name: "St John's Evangelist Church of England, Wagga Wagga"
+            category: "St John's Evangelist Anglican Church, Wagga Wagga, New South Wales"
+        Goolma Church of England St Mark:
+            name: "St Mark's Church of England"
+            category: "St Mark's Anglican Church, Goolma, New South Wales"
+        Goolma Anglican St Mark:
+            name: "St Mark's Anglican Church"
+            category: "St Mark's Anglican Church, Goolma, New South Wales"
+        Wellington Anglican St John:
+            name: St John the Baptist Anglican, Wellington
+            category: St John the Baptist Anglican Church, Wellington, New South Wales
+        Wellington Church of England St John:
+            name: St John the Baptist Church of England, Wellington
+            category: St John the Baptist Anglican Church, Wellington, New South Wales
+        Manly Presbyterian St Andrew:
+            name: "St Andrew's Presbyterian Church"
+            category: "St Andrew's Presbyterian Church, Manly, New South Wales"
+        Sydney Church of England St James:  
+            name: "St James' Church of England"
+            category: "St James' Anglican Church, Sydney, New South Wales"        
+        Sydney Church of England St Phillip: 
+            name: St Phillip's Church of England
+            category: St Philip's Anglican Church, Sydney, New South Wales
+        Sydney Anglican St James:  
+            name: "St James' Anglican Church"
+            category: "St James' Anglican Church, Sydney, New South Wales"
+        Bathurst Anglican St Barnabas:
+            name: "St Barnabas' Anglican Church"
+            category: "St Barnabas' Anglican Church, Bathurst, New South Wales"        
+        Bathurst Church of England St Barnabas:
+            name: "St Barnabas' Church of England"
+            category: "St Barnabas' Anglican Church, Bathurst, New South Wales"
+        Sydney Presbyterian St Stephen:
+            name: "St Stephen's Presbyterian Church"
+            category: "St Stephen's Uniting Church, Sydney, New South Wales"
+        Redfern Congregational Church:
+            name: Redfern Congregational Church
+            category: Waterloo Congregational Church, Waterloo, New South Wales
+        Penshurst Catholic St Declan:
+            name: "St Declan's Catholic Church"
+            category: "St Declan's Catholic Church, Penshurst, New South Wales"
+        Gulgong Church of England St Luke:
+            name: "St Luke's Church of England"
+            category: St Luke's Anglican Church, Gulgong, New South Wales"
+        Hurlstone Park Baptist:
+            name: Hurlstone Park Baptist Church
+            category: Hurlstone Park Baptist Church, Hurlstone Park, New South Wales
+            

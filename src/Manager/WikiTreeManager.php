@@ -28,6 +28,41 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class WikiTreeManager
 {
     /**
+     * @var array
+     */
+    var array $cemeteries = [];
+
+    /**
+     * @var array
+     */
+    var array $congregations = [];
+
+    /**
+     * @param array $cemeteries
+     */
+    public function __construct(array $cemeteries, array $congregations)
+    {
+        $this->cemeteries = $cemeteries;
+        $this->congregations = $congregations;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCemeteries(): array
+    {
+        return $this->cemeteries;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCongregations(): array
+    {
+        return $this->congregations;
+    }
+
+    /**
      * @param string $data
      * @return void
      */
@@ -41,6 +76,9 @@ class WikiTreeManager
 
         $result = [];
         $result['children'] = [];
+        $result['categories'] = [];
+        $result['templates'] = [];
+        $result['hints']['private children'] = false;
 
         foreach($content as $element) {
             $span = $element->filterXPath('//span[contains(@itemprop, "givenName")]')->evaluate('count(@itemprop)');
@@ -65,6 +103,7 @@ class WikiTreeManager
                 $result['name']['full'] = trim(str_replace(["\r","\n"], ' ', $parents->first()->extract(['_text'])[0]));
             }
             $span = $element->filterXPath('//time[contains(@itemprop, "birthDate")]')->evaluate('count(@itemprop)');
+            $birthDate = false;
             if ($span !== []) {
                 $span =  $element->filterXPath('//time[contains(@itemprop, "birthDate")]');
                 $parents = $span->ancestors();
@@ -75,7 +114,24 @@ class WikiTreeManager
                         break;
                     }
                 }
-                $result['birth']['date'] = str_replace('-00', -'01', $span->attr('datetime'));
+                $result['birth']['source'] = $span->attr('datetime');
+                $result['birth']['date'] = str_replace('-00', '', $span->attr('datetime'));
+                $result['birth']['location'] = $vital ? $vital->textContent : '';
+                $birthDate = true;
+            }
+            $span = $element->filterXPath('//a[contains(@href, "birth-date")]')->evaluate('count(@href)');
+            if ($span !== [] && !$birthDate) {
+                $span =  $element->filterXPath('//a[contains(@href, "birth-date")]');
+                $parents = $span->ancestors();
+                $vital = null;
+                foreach ($parents as $node) {
+                    if ($node->getAttribute('class') === 'VITALS') {
+                        $vital = $node;
+                        break;
+                    }
+                }
+                $result['birth']['source'] = '';
+                $result['birth']['date'] = '';
                 $result['birth']['location'] = $vital ? $vital->textContent : '';
             }
             $span = $element->filterXPath('//meta[contains(@itemprop, "gender")]')->evaluate('count(@itemprop)');
@@ -113,7 +169,24 @@ class WikiTreeManager
                 $parents = $spouse->ancestors();
                 $result['spouse'][$q]['location'] = trim(str_replace([$result['spouse'][$q]['name'], 'Husband of', "\n", "\r", "Wife of", 'married', ' in', ' at'], '', $parents->first()->extract(['_text'])[0]));
                 $result['spouse'][$q]['location'] = trim(mb_substr($result['spouse'][$q]['location'], 1));
-                $result['spouse'][$q]['date'] = substr($result['spouse'][$q]['location'], 0, 11);
+
+                $x = explode(' ', $result['spouse'][$q]['location']);
+                $date = '';
+                foreach ($x as $e=>$r) {
+                    if ($e === 0 && intval($r) >= 1) {
+                        $date = $r;
+                    } else if ($e === 1 && in_array($r, ['Jan','Feb','Mar','Apr','May',"Jun",'Jul','Aug','Sep','Oct','Nov','Dec'])) {
+                        $date .= ' ' . $r;
+                    } else if ($e === 0 && in_array($r, ['Jan','Feb','Mar','Apr','May',"Jun",'Jul','Aug','Sep','Oct','Nov','Dec'])) {
+                        $date .= $r;
+                    } else if ($e === 2 and intval($r) > 1770) {
+                        $date .= ' ' . $r;
+                    } else if ($e === 1 and intval($r) > 1770) {
+                        $date .= ' ' . $r;
+                    }
+                }
+                $result['spouse'][$q]['date'] = trim($date);
+                $result['spouse'][$q]['location'] = trim(str_replace([trim($date),"[marriage date?]"], '', $result['spouse'][$q]['location']));
             }
 
             $span = $element->filterXPath('//span[contains(@itemprop, "children")]')->evaluate('count(@itemprop)');
@@ -146,6 +219,7 @@ class WikiTreeManager
 
 
             $span = $element->filterXPath('//time[contains(@itemprop, "deathDate")]')->evaluate('count(@itemprop)');
+            $deathDate = false;
             if ($span !== []) {
                 $span =  $element->filterXPath('//time[contains(@itemprop, "deathDate")]');
                 $parents = $span->ancestors();
@@ -156,12 +230,26 @@ class WikiTreeManager
                         break;
                     }
                 }
-
-                $result['death']['date'] = str_replace('-00', -'01', $span->attr('datetime'));
+                $result['death']['source'] = $span->attr('datetime');
+                $result['death']['date'] = str_replace('-00', '', $span->attr('datetime'));
+                $result['death']['location'] = $vital ? $vital->textContent : '';
+                $deathDate = true;
+            }
+            $span = $element->filterXPath('//a[contains(@href, "death-date")]')->evaluate('count(@href)');
+            if ($span !== [] && !$deathDate) {
+                $span =  $element->filterXPath('//a[contains(@href, "death-date")]');
+                $parents = $span->ancestors();
+                $vital = null;
+                foreach ($parents as $node) {
+                    if ($node->getAttribute('class') === 'VITALS') {
+                        $vital = $node;
+                        break;
+                    }
+                }
+                $result['death']['source'] = '';
+                $result['death']['date'] = '';
                 $result['death']['location'] = $vital ? $vital->textContent : '';
             }
-
-
         }
         $privacy = $crawler->filterXPath('//img[contains(@title, "Privacy ")]')->evaluate('substring-after(@title, "Privacy ")');
 
@@ -192,6 +280,8 @@ class WikiTreeManager
                 'join' => '',
                 'privacy' => '',
                 'hints' => [],
+                'categories' => [],
+                'templates' => [],
             ]
         );
         $resolver->setAllowedValues('gender', ['male','female','','unknown']);
@@ -203,17 +293,22 @@ class WikiTreeManager
         $resolver->setAllowedTypes('name',  'array');
         $resolver->setAllowedTypes('siblings',  'array');
         $resolver->setAllowedTypes('spouse',  'array');
+        $resolver->setAllowedTypes('categories',  'array');
+        $resolver->setAllowedTypes('templates',  'array');
         $result = $resolver->resolve($result);
         $resolver->clear();
         $resolver->setDefaults(
             [
                 'date' => '',
+                'source' => '',
                 'location' => '',
                 'before' => false,
                 'after' => false,
+                'about' => false,
             ]
         );
-        $resolver->setAllowedTypes('date', 'string');
+        $resolver->setAllowedTypes('date', ['string', \DateTimeImmutable::class]);
+        $resolver->setAllowedTypes('source', 'string');
         $resolver->setAllowedTypes('location', 'string');
         $resolver->setAllowedTypes('before', 'boolean');
         $resolver->setAllowedTypes('after', 'boolean');
@@ -270,38 +365,102 @@ class WikiTreeManager
             $result['siblings'][$q] = $resolver->resolve($sibling);
         }
         $resolver->setDefault('date', '');
+        $resolver->setDefault('source', '');
+        $resolver->setDefault('dateStatus', 'invalid');
         $resolver->setDefault('location', '');
         $resolver->setDefault('children', []);
-        $resolver->setAllowedTypes('date', 'string');
+        $resolver->setAllowedTypes('date', ['string', \DateTimeImmutable::class]);
+        $resolver->setAllowedTypes('source', 'string');
+        $resolver->setAllowedTypes('dateStatus', 'string');
         $resolver->setAllowedTypes('location', 'string');
         $resolver->setAllowedTypes('children', 'array');
         foreach($result['spouse'] as $q=>$spouse) {
             $result['spouse'][$q] = $resolver->resolve($spouse);
 
             if (strtotime($result['spouse'][$q]['date']) !== false) {
-                $result['spouse'][$q]['location'] = str_replace($result['spouse'][$q]['date'], '', $result['spouse'][$q]['location']);
-                $result['spouse'][$q]['date'] = new \DateTimeImmutable($result['spouse'][$q]['date']);
+
+                $result['spouse'][$q]['source'] = $result['spouse'][$q]['date'];
+                $marriageDate = $result['spouse'][$q]['date'] = new \DateTimeImmutable($result['spouse'][$q]['source']);
+                $result['spouse'][$q]['dateStatus'] = 'invalid';
+                if ($marriageDate->format('d M Y') === $result['spouse'][$q]['source']) {
+                    $result['spouse'][$q]['dateStatus'] = 'full';
+                } else if ($marriageDate->format('M Y') === $result['spouse'][$q]['source']) {
+                    $result['spouse'][$q]['dateStatus'] = 'monthYear';
+                } else if ($marriageDate->format('Y') === $result['spouse'][$q]['source']) {
+                    $result['spouse'][$q]['dateStatus'] = 'Year';
+                }
             } else {
                 $result['spouse'][$q]['date'] = '';
             }
         }
-        if (strtotime($result['birth']['date']) !== false) {
-            $result['birth']['date'] = new \DateTimeImmutable($result['birth']['date']);
+
+        $birthDate = explode('-',$result['birth']['source']);
+        $result['birth']['dateStatus'] = 'invalid';
+        $result['birth']['date'] = '';
+        $xxx = '';
+        if (count($birthDate) === 3) {
+            if (intval($birthDate[2] > 0)) {
+                $result['birth']['dateStatus'] = 'full';
+                $result['birth']['date'] = date('l, jS F Y', strtotime($result['birth']['source']));
+                $xxx = date('j M Y', strtotime($result['birth']['source']));
+            } else if (intval($birthDate[1] > 0)) {
+                $result['birth']['dateStatus'] = 'monthYear';
+                $result['birth']['date'] = date('F Y', strtotime(str_replace('-00', '', $result['birth']['source'])));
+                $xxx = date('M Y', strtotime(str_replace('-00', '', $result['birth']['source'])));
+            } else if (intval($birthDate[0] > 1769)) {
+                $result['birth']['dateStatus'] = 'year';
+                $result['birth']['date'] = str_replace('-00', '', $result['birth']['source']);
+                $xxx = str_replace('-00', '', $result['birth']['source']);
+            }
             if (str_contains($result['birth']['location'], 'before')) $result['birth']['before'] = true;
             if (str_contains($result['birth']['location'], 'after')) $result['birth']['after'] = true;
-            $result['birth']['location'] = trim(str_replace(["\r","\n",'Born','before', 'in ', $result['birth']['date']->format('j M Y')],'', $result['birth']['location']), ' -0123456789');
         }
+        $result['birth']['location'] = trim(str_replace(["\r","\n",'Born','before','after','[birth date?]','in','about','[uncertain]', $xxx], '', $result['birth']['location']));
 
-
-        if (strtotime($result['death']['date']) !== false) {
+        $result['death']['status'] = false;
+        if (str_contains($result['death']['location'], 'Died')) {
+            $result['death']['status'] = true;
+        }
+        $deathDate = explode('-',$result['death']['source']);
+        $result['death']['dateStatus'] = 'invalid';
+        $result['death']['date'] = '';
+        $xxx = '';
+        if (count($deathDate) === 3) {
+            if (intval($deathDate[2] > 0)) {
+                $result['death']['dateStatus'] = 'full';
+                $result['death']['date'] = date('l, jS F Y', strtotime($result['death']['source']));
+                $xxx = date('j M Y', strtotime($result['death']['source']));
+            } else if (intval($deathDate[1] > 0)) {
+                $result['death']['dateStatus'] = 'monthYear';
+                $result['death']['date'] = date('F Y', strtotime(str_replace('-00', '', $result['death']['source'])));
+                $xxx = date('M Y', strtotime(str_replace('-00', '', $result['death']['source'])));
+            } else if (intval($deathDate[0] > 1769)) {
+                $result['death']['dateStatus'] = 'year';
+                $result['death']['date'] = str_replace('-00', '', $result['death']['source']);
+                $xxx = str_replace('-00', '', $result['death']['source']);
+            }
             if (str_contains($result['death']['location'], 'before')) $result['death']['before'] = true;
             if (str_contains($result['death']['location'], 'after')) $result['death']['after'] = true;
-            $result['death']['date'] = new \DateTimeImmutable($result['death']['date']);
-            $result['death']['location'] = trim(str_replace(["\r","\n",'Died','before', 'in ', $result['death']['date']->format('j M Y')],'', $result['death']['location']), ' -0123456789');
-            $age = $result['death']['date']->diff($result['birth']['date']);
+            if (str_contains($result['death']['location'], 'about')) $result['death']['about'] = true;
+        }
+        $result['death']['location'] = trim(str_replace(['[uncertain]',"\r","\n",'Died','before','after','about','[death date?]','in', $xxx],'', $result['death']['location']));
+
+        $result['age']['status'] = false;
+        $result['age']['y'] = 0;
+        $result['age']['m'] = 0;
+        $result['age']['d'] = 0;
+        if ($result['death']['dateStatus'] === 'full' && $result['birth']['dateStatus'] === 'full') {
+            $death = new \DateTimeImmutable($result['death']['source']);
+            $birth = new \DateTimeImmutable($result['birth']['source']);
+            $age = $death->diff($birth);
             $result['age']['y'] = $age->format('%y');
             $result['age']['m'] = $age->format('%m');
             $result['age']['d'] = $age->format('%d');
+            $result['age']['status'] = true;
+        }
+        if (!$result['age']['status'] && $result['death']['dateStatus'] !== 'invalid' && $result['birth']['dateStatus'] !== 'invalid'){
+            $result['age']['y'] = intval(substr($result['death']['source'],0,4)) - intval(substr($result['birth']['source'],0,4));
+            $result['age']['status'] = true;
         }
 
         if ($result['name']['preferred'] === '') {
@@ -337,7 +496,31 @@ class WikiTreeManager
         }
 
         if ($result['name']['atBirth'] === '' && $result['name']['currentLast'] !== '') $result['name']['atBirth'] = $result['name']['currentLast'];
-
+        if ($result['age']['valid']) {
+            if ($result['birth']['date']->format('Ymd') >= date('Ymd', strtotime('1901-01-01'))) {
+                $result['templates'][] = '{{Australia Sticker|New South Wales}}';
+            } else {
+                $result['templates'][] = '{{Australia Born in Colony|colony=Colony of New South Wales}}';
+            }
+            if ($result['age']['y'] >= 100) {
+                $result['templates'][] = '{{Centenarian |age= 100 |living= no }}';
+            }
+            if ($result['age']['y'] < 18) {
+                $result['templates'][] = '{{Died Young}}';
+                if ($result['age']['y'] < 1) {
+                    $result['categories'][] = '[[Category:New South Wales, Infant Mortality]]';
+                } else {
+                    $result['categories'][] = '[[Category:New South Wales, Child Mortality]]';
+                }
+            }
+            if ($result['spouse'] === [] && $result['age']['y'] >= 30) {
+                $result['categories'][] = '[[Category: Unmarried]]';
+            }
+        } else if ($result['birth']['date'] instanceof \DateTimeImmutable && $result['birth']['date']->format('Ymd') >= date('Ymd', strtotime('1901-01-01'))) {
+            $result['templates'][] = '{{Australia Sticker|New South Wales}}';
+        } else if ($result['birth']['date'] instanceof \DateTimeImmutable && $result['birth']['date']->format('Ymd') < date('Ymd', strtotime('1901-01-01'))) {
+            $result['templates'][] = '{{Australia Born in Colony|colony=Colony of New South Wales}}';
+        }
         $result['valid'] = true;
         return $result;
     }
@@ -395,13 +578,94 @@ class WikiTreeManager
 
         $result = $this->parseWikiTreeData($crawler->html());
 
-        $result['interredSite'] = $data['interredSite'] ?: '';
+        if ($result['hints']['private children']) {
+            $result = $this->parseWikiTreeFamilyData($result, $data['wikiTreeUserID'], $cookieJar);
+        }
 
+        if (!is_null($data['interredCemetery'])) {
+            $result['interredSite'] = trim(trim($data['interredCemetery'] ?: '') . ", " . trim($data['interredLocation'] ?: ''), " ,.");
+            if (key_exists($data['interredCemetery'], $this->getCemeteries()))
+                $result['categories'][] = '[[Category: '.$this->getCemeteries()[$data['interredCemetery']].']]';
+        } else {
+            $result['interredSite'] = '';
+        }
+        foreach ($data['congregations'] as $congregation) {
+            $category = '[[Category: '.$this->getCongregation($congregation).']]';
+            if (array_search($category, $result['categories']) === false) {
+                $result['categories'][] = $category;
+            }
+        }
+
+        $result['page'] = intval($data['raynerPage'] ?: '0');
+        $result['baptism']['date'] = $data['baptismDate'] instanceof \DateTimeImmutable ? $data['baptismDate'] : null;
+        $result['baptism']['location'] = $data['baptismLocation'] === '' ? null : $data['baptismLocation'];
         $result['didLogin'] = $didLogin;
         $result['cookieJar'] = $cookieJar;
         $session->set('cookieJar',$cookieJar);
         $session->set('result', $result);
         $session->save();
         return $result;
+    }
+
+    /**
+     * @param $result
+     * @param $wikitreeID
+     * @return array
+     */
+    private function parseWikiTreeFamilyData(array $result, string $wikitreeID, $cookieJar): array
+    {
+        $wikitreeID = implode('-Family-Tree-', explode('-', $wikitreeID));
+
+        $client = new HttpBrowser(null, null, $cookieJar);
+        $url = 'https://www.wikitree.com/genealogy/' . $wikitreeID;
+        $crawler = $client->request("GET", $url);
+        $content = $crawler->filter('body')->filter('div.container')->filter('p')->each(function ($tr, $i) {
+            return $tr;
+        });
+        $children = [];
+
+        foreach($content as $element) {
+            $text = $element->extract(['_text']);
+            if (str_contains($text[0], 'Mother of') || str_contains($text[0], 'Father of')) {
+
+                $id = $element->filterXPath('//a[contains(@title, "Go to Profile for ")]')->evaluate('substring-after(@title, "Go to Profile for ")');
+                foreach ($id as $q=>$w) {
+                    $children[$q]['ID'] = $w;
+                    $children[$q]['name'] = $element->filterXPath('//a[contains(@title, "Go to Profile for ")]')->extract(['_text'])[$q];
+                }
+                break;
+            }
+        }
+        foreach ($children as $q=>$child) {
+            if ($child === null) unset($children[$q]);
+        }
+
+        if (count($children) >= count($result['children'])) {
+            foreach ($result['children'] as $e => $r) {
+                $result['children'][$e] = array_shift($children);
+            }
+        }
+
+        foreach ($result['spouse'] as $q=>$spouse) {
+            if (count($children) >= count($spouse['children'])) {
+                foreach ($spouse['children'] as $w => $child) {
+                    $result['spouse'][$q]['children'][$w] = array_shift($children);
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $congregation
+     * @return string
+     */
+    private function getCongregation(string $congregation): string
+    {
+        if (key_exists($congregation, $this->getCongregations())) {
+            return $this->getCongregations()[$congregation]['category'];
+        }
+        return '';
     }
 }

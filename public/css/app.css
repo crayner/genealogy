@@ -15,8 +15,12 @@
     width: 45%;
     float: right;
 }
-.formWidget input, .formWidget textarea {
+.formWidget input, .formWidget textarea, .formWidget select {
     width: 95%;
+}
+.formWidget select {
+    min-width: 98%;
+    max-width: 98%;
 }
 .formWidget button {
     float: right;
@@ -28,4 +32,12 @@
 }
 .copyData {
     color: blue;
+}
+.right_half {
+    float: right;
+    max-width: 40%;
+    width: 40%
+}
+.left-half {
+    float:left;
 }
