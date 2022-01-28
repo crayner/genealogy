@@ -34,3 +34,4 @@ services:
         arguments:
             $cemeteries: '%cemeteries%'
             $congregations: '%congregations%'
+            $locations: '%locations%'

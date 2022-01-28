@@ -158,15 +158,34 @@ class WikiTreeBiographyType extends AbstractType
             ->add('congregations', ChoiceType::class,
                 [
                     'label' => 'Congregations',
-                    'help' => 'Add one of more congregation categories to your record.',
+                    'help' => 'Add one or more congregation categories to your record.',
                     'choices' => $this->getCongregationChoices(),
                     'required' => false,
                     'multiple' => true,
                     'choice_translation_domain' => false,
                     'placeholder' => 'No Congregation Selected',
+                    'attr' => [
+                        'rows' => 10,
+                        'class' => 'multipleChoice',
+                    ],
                 ]
             )
-            ->add('raynerPage', IntegerType::class,
+            ->add('locations', ChoiceType::class,
+                [
+                    'label' => 'Locations',
+                    'help' => 'Add one or more location categories to your record.',
+                    'choices' => $this->getLocationChoices(),
+                    'required' => false,
+                    'multiple' => true,
+                    'choice_translation_domain' => false,
+                    'placeholder' => 'No Location Selected',
+                    'attr' => [
+                        'rows' => 10,
+                        'class' => 'multipleChoice',
+                    ],
+                ]
+            )
+            ->add('raynerPage', TextType::class,
                 [
                     'label' => 'Rayner Book Page',
                     'help' => 'Where does this person appear in the Rayner book?',
@@ -196,5 +215,19 @@ class WikiTreeBiographyType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefault('show_login', false);
+    }
+
+    /**
+     * @return array
+     */
+    private function getLocations(): array {
+        return $this->getManager()->getLocations();
+    }
+
+    private function getLocationChoices(): array
+    {
+        $result = [];
+        foreach($this->getLocations() as $location) $result[$location] = $location;
+        return $result;
     }
 }

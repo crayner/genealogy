@@ -38,12 +38,25 @@ class WikiTreeManager
     var array $congregations = [];
 
     /**
+     * @var array
+     */
+    var array $locations = [];
+
+    /**
      * @param array $cemeteries
      */
-    public function __construct(array $cemeteries, array $congregations)
+    public function __construct(array $cemeteries, array $congregations, array $locations)
     {
+        foreach($cemeteries as $name=>$details) {
+            if (!key_exists('name', $details)) {
+                $cemeteries[$name]['name'] = $details['category'];
+            }
+        }
+
         $this->cemeteries = $cemeteries;
         $this->congregations = $congregations;
+        sort($locations);
+        $this->locations = $locations;
     }
 
     /**
@@ -52,6 +65,24 @@ class WikiTreeManager
     public function getCemeteries(): array
     {
         return $this->cemeteries;
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    public function getCemeteryCategory(string $name): string
+    {
+        return key_exists($name, $this->cemeteries) ? $this->cemeteries[$name]['category'] : 'No cemetery selected.';
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    public function getCemeteryName(string $name): string
+    {
+        return key_exists($name, $this->cemeteries) ? $this->cemeteries[$name]['name'] : 'No cemetery selected.';
     }
 
     /**
@@ -374,23 +405,32 @@ class WikiTreeManager
         $resolver->setAllowedTypes('dateStatus', 'string');
         $resolver->setAllowedTypes('location', 'string');
         $resolver->setAllowedTypes('children', 'array');
+
+
         foreach($result['spouse'] as $q=>$spouse) {
             $result['spouse'][$q] = $resolver->resolve($spouse);
 
             if (strtotime($result['spouse'][$q]['date']) !== false) {
-
                 $result['spouse'][$q]['source'] = $result['spouse'][$q]['date'];
                 $marriageDate = $result['spouse'][$q]['date'] = new \DateTimeImmutable($result['spouse'][$q]['source']);
                 $result['spouse'][$q]['dateStatus'] = 'invalid';
-                if ($marriageDate->format('d M Y') === $result['spouse'][$q]['source']) {
+                if ($marriageDate->format('j M Y') === $result['spouse'][$q]['source']) {
                     $result['spouse'][$q]['dateStatus'] = 'full';
+                    $result['spouse'][$q]['date'] = $marriageDate->format('l, jS F Y');
                 } else if ($marriageDate->format('M Y') === $result['spouse'][$q]['source']) {
                     $result['spouse'][$q]['dateStatus'] = 'monthYear';
+                    $result['spouse'][$q]['date'] = $marriageDate->format('M Y');
                 } else if ($marriageDate->format('Y') === $result['spouse'][$q]['source']) {
                     $result['spouse'][$q]['dateStatus'] = 'Year';
+                    $result['spouse'][$q]['date'] = $marriageDate->format('Y');
                 }
             } else {
                 $result['spouse'][$q]['date'] = '';
+                $result['spouse'][$q]['dateStatus'] = 'invalid';
+            }
+            if ($result['spouse'][$q]['date'] instanceof \DateTimeImmutable) {
+                $result['spouse'][$q]['date'] = '';
+                $result['spouse'][$q]['dateStatus'] = 'invalid';
             }
         }
 
@@ -415,7 +455,7 @@ class WikiTreeManager
             if (str_contains($result['birth']['location'], 'before')) $result['birth']['before'] = true;
             if (str_contains($result['birth']['location'], 'after')) $result['birth']['after'] = true;
         }
-        $result['birth']['location'] = trim(str_replace(["\r","\n",'Born','before','after','[birth date?]','in','about','[uncertain]', $xxx], '', $result['birth']['location']));
+        $result['birth']['location'] = trim(str_replace(["\r","\n",'Born','before','after','[birth date?]','in ','about','[uncertain]', $xxx], '', $result['birth']['location']));
 
         $result['death']['status'] = false;
         if (str_contains($result['death']['location'], 'Died')) {
@@ -443,7 +483,7 @@ class WikiTreeManager
             if (str_contains($result['death']['location'], 'after')) $result['death']['after'] = true;
             if (str_contains($result['death']['location'], 'about')) $result['death']['about'] = true;
         }
-        $result['death']['location'] = trim(str_replace(['[uncertain]',"\r","\n",'Died','before','after','about','[death date?]','in', $xxx],'', $result['death']['location']));
+        $result['death']['location'] = trim(str_replace(['[uncertain]',"\r","\n",'Died','before','after','about','[death date?]','in ', $xxx],'', $result['death']['location']));
 
         $result['age']['status'] = false;
         $result['age']['y'] = 0;
@@ -488,20 +528,27 @@ class WikiTreeManager
             }
         }
 
-        $result['age']['valid'] = false;
-        if ($result['birth']['date'] instanceof \DateTimeImmutable && $result['death']['date'] instanceof \DateTimeImmutable) {
-            if ($result['birth']['before'] === false && $result['birth']['after'] === false) {
-                if ($result['death']['before'] === false && $result['death']['after'] === false) $result['age']['valid'] = true;
-            }
-        }
 
         if ($result['name']['atBirth'] === '' && $result['name']['currentLast'] !== '') $result['name']['atBirth'] = $result['name']['currentLast'];
-        if ($result['age']['valid']) {
-            if ($result['birth']['date']->format('Ymd') >= date('Ymd', strtotime('1901-01-01'))) {
-                $result['templates'][] = '{{Australia Sticker|New South Wales}}';
-            } else {
-                $result['templates'][] = '{{Australia Born in Colony|colony=Colony of New South Wales}}';
+
+        $states = ['New South Wales','Victoria','South Australia','Western Australia','Tasmania','Queensland','Northern Territory','Australian Capital Territory'];
+        $location = '';
+
+
+        if ($result['age']['status'] || $result['birth']['dateStatus'] !== 'invalid') {
+            foreach(explode(',', $result['birth']['location']) as $value) {
+                if (in_array(trim($value), $states)) {
+                    $location = trim($value);
+                    break;
+                }
             }
+            if (intval(substr($result['birth']['source'], 0, 4)) >= 1901) {
+                $result['templates'][] = '{{Australia Sticker|'.$location.'}}';
+            } else {
+                $result['templates'][] = '{{Australia Born in Colony|colony=Colony of '.$location.'}}';
+            }
+        }
+        if ($result['age']['status']) {
             if ($result['age']['y'] >= 100) {
                 $result['templates'][] = '{{Centenarian |age= 100 |living= no }}';
             }
@@ -583,9 +630,12 @@ class WikiTreeManager
         }
 
         if (!is_null($data['interredCemetery'])) {
-            $result['interredSite'] = trim(trim($data['interredCemetery'] ?: '') . ", " . trim($data['interredLocation'] ?: ''), " ,.");
-            if (key_exists($data['interredCemetery'], $this->getCemeteries()))
-                $result['categories'][] = '[[Category: '.$this->getCemeteries()[$data['interredCemetery']].']]';
+            dump($data);
+            if (key_exists($data['interredCemetery'], $this->getCemeteries())) {
+                $name = trim($data['interredCemetery']);
+                $result['categories'][] = '[[Category: ' . $this->getCemeteryCategory($name) . ']]';
+                $result['interredSite'] = trim($this->getCemeteryName($name) . ', ' . $data['interredLocation'], " ,.");
+            }
         } else {
             $result['interredSite'] = '';
         }
@@ -596,8 +646,15 @@ class WikiTreeManager
             }
         }
 
-        $result['page'] = intval($data['raynerPage'] ?: '0');
-        $result['baptism']['date'] = $data['baptismDate'] instanceof \DateTimeImmutable ? $data['baptismDate'] : null;
+        foreach ($data['locations'] as $location) {
+            $category = '[[Category: '.$location.']]';
+            if (array_search($category, $result['categories']) === false) {
+                $result['categories'][] = $category;
+            }
+        }
+
+        $result['page'] = $data['raynerPage'] ?: null;
+        $result['baptism']['date'] = $data['baptismDate'] instanceof \DateTimeImmutable ? $data['baptismDate']->format('l, jS F Y') : null;
         $result['baptism']['location'] = $data['baptismLocation'] === '' ? null : $data['baptismLocation'];
         $result['didLogin'] = $didLogin;
         $result['cookieJar'] = $cookieJar;
@@ -667,5 +724,13 @@ class WikiTreeManager
             return $this->getCongregations()[$congregation]['category'];
         }
         return '';
+    }
+
+    /**
+     * @return array
+     */
+    public function getLocations(): array
+    {
+        return $this->locations ?: [];
     }
 }

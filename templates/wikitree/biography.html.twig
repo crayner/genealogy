@@ -2,7 +2,6 @@
 
 {% extends "base.html.twig" %}
 
-{% set date_format = 'l, jS F Y' %}
 {% block body %}
     <h1 style="text-align: center">{{ 'WikiTree Biography Generator'|trans }}</h1>
     <p class="important" style="text-align: center">
@@ -60,11 +59,18 @@
                 <p class="formHelp">{{ form_help(form.interredLocation) }}</p>
             </div>
         </div>
-        <div class="formElement">
+        <div class="formElement" style="height: 250px">
+            <div class="formWidget" style="width: 75%">{{ form_widget(form.congregations) }}</div>
             <div class="formLabel">
-                <div class="formWidget">{{ form_widget(form.congregations) }}</div>
                 <p class="formLabel">{{ form_label(form.congregations) }}</p>
                 <p class="formHelp">{{ form_help(form.congregations) }}</p>
+            </div>
+        </div>
+        <div class="formElement" style="height: 250px">
+            <div class="formWidget" style="width: 75%">{{ form_widget(form.locations) }}</div>
+            <div class="formLabel">
+                <p class="formLabel">{{ form_label(form.locations) }}</p>
+                <p class="formHelp">{{ form_help(form.locations) }}</p>
             </div>
         </div>
         <div class="formElement">
@@ -108,16 +114,15 @@
             {{ 'birth.sentence'|trans({'name': name, 'date': result.birth.date, '{gender}': gender, date_status: result.birth.dateStatus, '{location}': result.birth.location, '{father}': father, '{mother}': mother}) }}
 {# Baptism Sentance #}
         {% if result.baptism.date is not same as(null) or result.baptism.location is not same as(null) %}
-            {{ ' ' ~ 'baptism.sentence'|trans({'name': result.name.preferred, 'date': result.baptism.date|date(date_format), '{location}': result.baptism.location}) }}
+            {{ ' ' ~ 'baptism.sentence'|trans({'name': result.name.preferred, 'date': result.baptism.date, '{location}': result.baptism.location}) }}
         {% endif %}
         </p>
         {% if (result.spouse|length > 0) %}
             {% for spouse in result.spouse %}
-                {% set date_string = spouse.date|date(date_format) %}
                 {% if spouse.dateStatus is not same as('full') %}{% set date_string = spouse.source %}{% endif %}
                 <p>{{ 'marriage.sentence'|trans({'{preferred}': result.name.preferred,
                         '{spouse}': '[[' ~ spouse.ID ~ '|'~ spouse.name ~ ']]',
-                        '{date}': date_string,
+                        '{date}': spouse.date,
                         '{location}': spouse.location, 'date_format': spouse.dateStatus }) }}
                     {{ 'marriage.children'|trans({'{count}}': spouse.children|length}) }}</p>
                 {% if spouse.children|length > 0 %}
@@ -156,7 +161,7 @@
         {% endif %}
         <h2>== {{ 'Sources'|trans }} ==</h2>
         <p>
-            {% if result.page > 0 %}
+            {% if result.page|length > 0 %}
            {{ '* [https://www.wikitree.com/wiki/Space:The_Rayner_Roots_Branches_and_Twigs_1740_~_1987 The Rayner Roots, Branches & Twigs 1740 ~ 1987 Harold and Frances Atkins] Page ' ~ result.page ~ '.' }}<br />
         {% endif %}
         {{ '&lt;references /&gt;' }}</p>

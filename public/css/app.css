@@ -22,6 +22,10 @@
     min-width: 98%;
     max-width: 98%;
 }
+.formWidget select.multipleChoice {
+    height: 240px;
+    margin-top: 5px;
+}
 .formWidget button {
     float: right;
     margin-right: 30px;
