@@ -35,3 +35,4 @@ services:
             $cemeteries: '%cemeteries%'
             $congregations: '%congregations%'
             $locations: '%locations%'
+            $doTheSort: '%do_the_sort%'

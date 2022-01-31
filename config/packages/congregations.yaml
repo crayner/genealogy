@@ -1,0 +1,178 @@
+parameters:
+    congregations:
+        'Bathurst Anglican St Barnabas':
+            name: 'St Barnabas'' Anglican Church'
+            category: 'St Barnabas'' Anglican Church, Bathurst, New South Wales'
+        'Bathurst Church of England St Barnabas':
+            name: 'St Barnabas'' Church of England'
+            category: 'St Barnabas'' Anglican Church, Bathurst, New South Wales'
+        'Bathurst Methodist Church':
+            name: 'Bathurst Methodist Church'
+            category: 'Bathurst Uniting Church, Bathurst, New South Wales'
+        'Bellevue Hill Church of England St Stephen':
+            name: 'St Stephen''s Church of England'
+            category: 'St Stephen''s Anglican Church, Bellevue Hill, New South Wales'
+        'Binnaway Union':
+            name: 'Binnaway Union Church'
+            category: 'Binnaway Union Church, Binnaway, New South Wales'
+        'Campsie Methodist':
+            name: 'Campsie Methodist Church'
+            category: 'Campsie Uniting Church, Campsie, New South Wales'
+        'Campsie Uniting':
+            name: 'Campsie Uniting Church'
+            category: 'Campsie Uniting Church, Campsie, New South Wales'
+        'Chatswood Church of England, St Barnabas':
+            category: 'St Barnabas'' Anglican Church, Roseville, New South Wales'
+            name: 'St Barnabas'' Church of England'
+        'Darlinghurst Catholic Sacred Heart':
+            name: 'Sacred Heart Catholic Church'
+            category: 'Sacred Heart Catholic Church, Darlinghurst, New South Wales'
+        'Delungra Presbyterian St Stephen':
+            name: 'St Stephen''s Presbyterian Church'
+            category: 'St Stephen''s Presbyterian Church, Delungra, New South Wales'
+        'Enfield Church of England St Thomas':
+            name: 'St Thomas'' Church of England'
+            category: 'St Thomas'' Anglican Church, Enfield, New South Wales'
+        'Footscray Church of England St John':
+            category: 'St John''s Anglican Church, Footscray, Victoria'
+            name: 'St John''s Church of England'
+        'Goolma Anglican St Mark':
+            name: 'St Mark''s Anglican Church'
+            category: 'St Mark''s Anglican Church, Goolma, New South Wales'
+        'Goolma Church of England St Mark':
+            name: 'St Mark''s Church of England'
+            category: 'St Mark''s Anglican Church, Goolma, New South Wales'
+        'Granville Anglican St Mark':
+            name: 'St Mark''s Anglican Church'
+            category: 'St Mark''s Anglican Church, Granville, New South Wales'
+        'Granville Church of England St Mark':
+            name: 'St Mark''s Church of Engalnd'
+            category: 'St Mark''s Anglican Church, Granville, New South Wales'
+        'Gulgong Church of England St Luke':
+            name: 'St Luke''s Church of England'
+            category: 'St Luke''s Anglican Church, Gulgong, New South Wales"'
+        'Hurlstone Park Baptist':
+            name: 'Hurlstone Park Baptist Church'
+            category: 'Hurlstone Park Baptist Church, Hurlstone Park, New South Wales'
+        'Inverell Anglican, St Augustine':
+            name: 'St Augustine''s Anglican Church'
+            category: 'St Augustine''s Anglican Church, Inverell, New South Wales'
+        'Inverell Catholic Sacred Heart':
+            name: 'Sacred Heart Catholic Church'
+            category: 'Sacred Heart Catholic Church, Inverell, New South Wales'
+        'Inverell Church of England, St Augustine':
+            name: 'St Augustine''s Church of England'
+            category: 'St Augustine''s Anglican Church, Inverell, New South Wales'
+        'Inverell Presbyterian':
+            name: 'Inverell Presbyterian Church'
+            category: 'Inverell Presbyterian Church, Inverell, New South Wales'
+        'Limestone Flat Methodist Wesleyan':
+            category: 'Wesleyan Chapel, Limestone Flat, New South Wales'
+            name: 'Limestone Flat Methodist Church'
+        'Manly Presbyterian St Andrew':
+            name: 'St Andrew''s Presbyterian Church'
+            category: 'St Andrew''s Presbyterian Church, Manly, New South Wales'
+        'Marrickville Church of England St Clement':
+            name: 'St Clement''s Church of England'
+            category: 'St Clement''s Anglican Church, Marrickville, New South Wales'
+        'Mascot Catholic St Therese':
+            name: 'St Therese''s Catholic Church'
+            category: 'St Therese''s Catholic Church, Rosebery, New South Wales'
+        'Millthorpe Church of England St Mark':
+            category: 'St Mark the Evangelist Anglican Church, Millthorpe, New South Wales'
+            name: 'St Mark the Evangelist Church of England'
+        'Mudgee Anglican St John':
+            name: 'St John the Baptist Anglican, Mudgee'
+            category: 'St John the Baptist Anglican Church, Mudgee, New South Wales'
+        'Mudgee Catholic St Mary':
+            name: 'St Mary''s Catholic Church, Mudgee'
+            category: 'St Mary''s Catholic Church, Mudgee, New South Wales'
+        'Mudgee Church of England St John':
+            name: 'St John the Baptist Church of England, Mudgee'
+            category: 'St John the Baptist Anglican Church, Mudgee, New South Wales'
+        'Mudgee Methodist Church':
+            name: 'Mudgee Methodist Church'
+            category: 'Mudgee Uniting Church, Mudgee, New South Wales'
+        'Mudgee Presbyterian':
+            category: 'St Paul''s Presbyterian Church, Mudgee, New South Wales'
+        'Mullamuddy Union':
+            name: 'Mullamuddy Union Church'
+            category: 'Union Church, Mullamuddy, New South Wales'
+        'Neutral Bay Catholic St Joseph':
+            name: 'St Joseph''s Catholic Church'
+            category: 'St Joseph''s Catholic Church, Neutral Bay, New South Wales'
+        'North Parramatta Church of Engand All Saints':
+            category: 'All Saints Anglican Church, North Parramatta, New South Wales'
+            name: 'All Saints Church of England'
+        'Parramatta Church of Engand All Saints':
+            category: 'All Saints Anglican Church, North Parramatta, New South Wales'
+            name: 'All Saints Church of England'
+        'Parramatta Church of England St John':
+            category: 'St John''s Anglican Cathedral, Parramatta, New South Wales'
+            name: 'St John''s Church of England Cathedral'
+        'Penshurst Catholic St Declan':
+            name: 'St Declan''s Catholic Church'
+            category: 'St Declan''s Catholic Church, Penshurst, New South Wales'
+        'Redfern Congregational Church':
+            name: 'Redfern Congregational Church'
+            category: 'Waterloo Congregational Church, Waterloo, New South Wales'
+        'Roseville Church of England':
+            category: 'St Barnabas'' Anglican Church, Roseville, New South Wales'
+            name: 'St Barnabas'' Church of England, Roseville, New South Wales'
+        'Ryde Church of England':
+            category: 'St Anne''s Anglican Church, Ryde, New South Wales'
+            name: 'St Anne''s Church of England'
+        'Rylstone Methodist Church':
+            name: 'Rylstone Mthodist Church'
+            category: 'Rylstone Uniting Church, Rylstone, New South Wales'
+        'Rylstone St Malachy Catholic Church':
+            name: 'St Malachy''s Catholic Church'
+            category: 'St Malarchy''s Catholic Church, Rylstone, New South Wales'
+        'Strathfield Catholic St Martha':
+            name: 'St Martha''s Catholic Church'
+            category: 'St Martha''s Catholic Church, Strathfield, New South Wales'
+        'Sydney Anglican St James':
+            name: 'St James'' Anglican Church'
+            category: 'St James'' Anglican Church, Sydney, New South Wales'
+        'Sydney Catholic St Patrick':
+            name: 'St Patrick''s Catholic Church'
+            category: 'St Patrick''s Catholic Church, Sydney, New South Wales'
+        'Sydney Church of England St James':
+            name: 'St James'' Church of England'
+            category: 'St James'' Anglican Church, Sydney, New South Wales'
+        'Sydney Church of England St Phillip':
+            name: 'St Phillip''s Church of England'
+            category: 'St Philip''s Anglican Church, Sydney, New South Wales'
+        'Sydney Presbyterian St Stephen':
+            name: 'St Stephen''s Presbyterian Church'
+            category: 'St Stephen''s Uniting Church, Sydney, New South Wales'
+        'Tallawang Catholic St Joseph':
+            name: 'St Joseph''s Catholic Church'
+            category: 'St Joseph''s Catholic Church, Tallawang, New South Wales'
+        'Toronto Methodist':
+            name: 'Toronto Methodist Church'
+            category: 'Toronto Uniting Church, Toronto, New South Wales'
+        'Toronto Uniting':
+            name: 'Toronto Uniting Church'
+            category: 'Toronto Uniting Church, Toronto, New South Wales'
+        'Wagga Wagga Anglican St John':
+            name: 'St John''s Evangelist Anglican, Wagga Wagga'
+            category: 'St John''s Evangelist Anglican Church, Wagga Wagga, New South Wales'
+        'Wagga Wagga Church of England St John':
+            name: 'St John''s Evangelist Church of England, Wagga Wagga'
+            category: 'St John''s Evangelist Anglican Church, Wagga Wagga, New South Wales'
+        'Waverley Methodist Church':
+            name: 'Waverley Methodist Church'
+            category: 'Waverley Methodist Church, Waverley, New South Wales'
+        'Wellington Anglican St John':
+            name: 'St John the Baptist Anglican, Wellington'
+            category: 'St John the Baptist Anglican Church, Wellington, New South Wales'
+        'Wellington Catholic St Patrick':
+            name: 'St Patrick''s Catholic Church'
+            category: 'St Patrick''s Catholic Church, Wellington, New South Wales'
+        'Wellington Church of England St John':
+            name: 'St John the Baptist Church of England, Wellington'
+            category: 'St John the Baptist Anglican Church, Wellington, New South Wales'
+        'Windeyer Catholic St Killian':
+            category: 'St Killian''s Catholic Church, Windeyer, New South Wales'
+            name: 'St Killian''s Catholic Church'

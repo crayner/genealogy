@@ -1,0 +1,170 @@
+parameters:
+    cemeteries:
+        'Appin Catholic Cemetery St Bede':
+            category: 'St Bede''s Catholic Cemetery, Appin, New South Wales'
+            name: 'St Bede''s Catholic Cemetery, Appin, New South Wales'
+        'Bathurst Cemetery':
+            category: 'Bathurst Cemetery, Bathurst, New South Wales'
+            name: 'Bathurst Cemetery, Bathurst, New South Wales'
+        'Bega Cemetery':
+            category: 'Bega Cemetery, Bega, New South Wales'
+            name: 'Bega Cemetery, Bega, New South Wales'
+        'Binnaway General Cemetery':
+            category: 'Binnaway General Cemetery, Binnaway, New South Wales'
+            name: 'Binnaway General Cemetery, Binnaway, New South Wales'
+        'Bong Bong Anglican Cemetery':
+            category: 'Bong Bong Church Cemetery, Moss Vale, New South Wales'
+            name: 'Bong Bong Anglican Cemetery, Moss Vale, New South Wales'
+        'Bong Bong Presbyterian Cemetery':
+            category: 'Bong Bong Church Cemetery, Moss Vale, New South Wales'
+            name: 'Bong Bong Presbyterian Cemetery, Moss Vale, New South Wales'
+        'Brisbane South Cemetery':
+            category: 'South Brisbane Cemetery, Dutton Park, Queensland'
+            name: 'South Brisbane Cemetery, Dutton Park, Queensland'
+        'Bungendore Cemetery':
+            category: 'Bungendore Cemetery, Bungendore, New South Wales'
+            name: 'Bungendore Cemetery, Bungendore, New South Wales'
+        'Coolah Cemetery':
+            category: 'Coolah Cemetery, Coolah, New South Wales'
+            name: 'Coolah Cemetery, Coolah, New South Wales'
+        'Coonabarabran Anglican Cemetery':
+            category: 'Coonabarabran Anglican Cemetery, Coonabarabran, New South Wales'
+            name: 'Coonabarabran Anglican Cemetery, Coonabarabran, New South Wales'
+        'Cudgegong Cemetery':
+            category: 'Cudgegong General Cemetery, Cudgegong, New South Wales'
+            name: 'Cudgegong General Cemetery, Cudgegong, New South Wales'
+        'Delungra Cemetery':
+            category: 'Delungra Cemetery, Delungra, New South Wales'
+            name: 'Delungra Cemetery, Delungra, New South Wales'
+        'Dunedoo Cemetery':
+            category: 'Dunedoo Cemetery, Dunedoo, New South Wales'
+            name: 'Dunedoo Cemetery, Dunedoo, New South Wales'
+        'Eastern Suburbs Memorial Park':
+            category: 'Eastern Suburbs Memorial Park, Matraville, New South Wales'
+            name: 'Eastern Suburbs Memorial Park, Matraville, New South Wales'
+        'Enfield Anglican Cemetery St Thomas':
+            category: 'St Thomas'' Anglican Cemetery, Enfield, New South Wales'
+            name: 'St Thomas'' Anglican Cemetery, Enfield, New South Wales'
+        'Forbes Cemetery':
+            category: 'Forbes Cemetery, Forbes, New South Wales'
+            name: 'Forbes Cemetery, Forbes, New South Wales'
+        'Forest Lawn Memorial Park, Leppington':
+            category: 'Forest Lawn Memorial Park, Leppington, New South Wales'
+            name: 'Forest Lawn Memorial Park, Leppington, New South Wales'
+        'Gulgong General Cemetery':
+            category: 'Gulgong General Cemetery, Gulgong, New South Wales'
+            name: 'Gulgong General Cemetery, Gulgong, New South Wales'
+        'Innes Gardens Memorial Park, Port Macquarie':
+            category: 'Innes Gardens Memorial Park, Port Macquarie, New South Wales'
+            name: 'Innes Gardens Memorial Park, Port Macquarie, New South Wales'
+        'Jilliby Cemetery':
+            category: 'Jilliby Cemetery, Jilliby, New South Wales'
+            name: 'Jilliby Cemetery, Jilliby, New South Wales'
+        'Killarney Cemetery':
+            category: 'Killarney Cemetery, Killarney, Queensland'
+            name: 'Killarney Cemetery, Killarney, Queensland'
+        'Killarney Lawn Cemetery':
+            category: 'Killarney Cemetery, Killarney, Queensland'
+            name: 'Killarney Cemetery, Killarney, Queensland'
+        'Laurieton Cemetery':
+            category: 'Laurieton Cemetery, Laurieton, New South Wales'
+            name: 'Laurieton Cemetery, Laurieton, New South Wales'
+        'Lilydale Memorial Park':
+            category: 'Lilydale Memorial Park, Lilydale, Victoria'
+            name: 'Lilydale Memorial Park, Lilydale, Victoria'
+        'Macquarie Park Cemetery':
+            category: 'Macquarie Park Cemetery and Crematorium, North Ryde, New South Wales'
+            name: 'Macquarie Park Cemetery and Crematorium, North Ryde, New South Wales'
+        'Macquarie Park Cemetery and Crematorium':
+            category: 'Macquarie Park Cemetery and Crematorium, North Ryde, New South Wales'
+            name: 'Macquarie Park Cemetery and Crematorium, North Ryde, New South Wales'
+        'Mendooran Cemetery':
+            category: 'Mendooran Cemetery, Mendooran, New South Wales'
+            name: 'Mendooran Cemetery, Mendooran, New South Wales'
+        'Menindee Cemetery':
+            category: 'Menindee Cemetery, Menindee, New South Wales'
+            name: 'Menindee Cemetery, Menindee, New South Wales'
+        'Mudgee General Cemetery':
+            category: 'Mudgee General Cemetery, Mudgee, New South Wales'
+            name: 'Mudgee General Cemetery, Mudgee, New South Wales'
+        'Mudgee Lawn Cemetery':
+            category: 'Mudgee Lawn Cemetery, Buckaroo, New South Wales'
+            name: 'Mudgee Lawn Cemetery, Buckaroo, New South Wales'
+        'Myall Remembrance Park':
+            category: 'Myall Remembrance Park, Dalby, Queensland'
+            name: 'Myall Remembrance Park, Dalby, Queensland'
+        'Noraville Cemetery':
+            category: 'Noraville Cemetery, Wyong, New South Wales'
+            name: 'Noraville Cemetery, Wyong, New South Wales'
+        'Northern Suburbs Crematorium':
+            category: 'Northern Suburbs Memorial Gardens and Crematorium, North Ryde, New South Wales'
+            name: 'Northern Suburbs Memorial Gardens and Crematorium, North Ryde, New South Wales'
+        'Orange Cemetery':
+            category: 'Orange Cemetery, Orange, New South Wales'
+            name: 'Orange Cemetery, Orange, New South Wales'
+        'Palmdale Cemetery':
+            category: 'Palmdale Lawn Cemetery and Memorial Park, Palmdale, New South Wales'
+            name: 'Palmdale Lawn Cemetery and Memorial Park, Palmdale, New South Wales'
+        'Parkes Cemetery':
+            category: 'Parkes General Cemetery, Parkes, New South Wales'
+            name: 'Parkes General Cemetery, Parkes, New South Wales'
+        'Picton General Cemetery':
+            category: 'Picton General Cemetery, Picton, New South Wales'
+            name: 'Picton General Cemetery, Picton, New South Wales'
+        'Pinnaroo Lawn Cemetery, Queensland':
+            category: 'Pinnaroo Lawn Cemetery, Bridgeman Downs, Queensland'
+            name: 'Pinnaroo Lawn Cemetery, Bridgeman Downs, Queensland'
+        'Port Macquarie General Cemetery':
+            category: 'Port Macquarie General Cemetery, Port Macquarie, New South Wales'
+            name: 'Port Macquarie General Cemetery, Port Macquarie, New South Wales'
+        'Portland Cemetery':
+            category: 'Portland General Cemetery, Portland, New South Wales'
+            name: 'Portland General Cemetery, Portland, New South Wales'
+        'Prospect Cemetery St Bartholomew':
+            category: 'St Bartholomew''s Anglican Cemetery, Prospect, New South Wales'
+            name: 'St Bartholomew''s Anglican Cemetery, Prospect, New South Wales'
+        'Queanbeyan Lawn Cemetery':
+            category: 'Queanbeyan Lawn Cemetery and Memorial Gardens, Jerrabomberra, New South Wales'
+            name: 'Queanbeyan Lawn Cemetery and Memorial Gardens, Jerrabomberra, New South Wales'
+        'Rookwood Anglican Cemetery':
+            category: 'Rookwood Anglican Cemetery, Rookwood, New South Wales'
+            name: 'Rookwood Anglican Cemetery, Rookwood, New South Wales'
+        'Rookwood General Cemetery':
+            category: 'Rookwood General Cemetery, Rookwood, New South Wales'
+            name: 'Rookwood General Cemetery, Rookwood, New South Wales'
+        'Rookwood Memorial Gardens and Crematorium':
+            category: 'Rookwood Memorial Gardens and Crematorium, Rookwood, New South Wales'
+            name: 'Rookwood Memorial Gardens and Crematorium, Rookwood, New South Wales'
+        'Sandgate Cemetery':
+            category: 'Sandgate Cemetery, Sandgate, New South Wales'
+            name: 'Sandgate Cemetery, Sandgate, New South Wales'
+        'Scarborough Wombarra Cemetery':
+            category: 'Scarborough Wombarra Cemetery, Wombarra, New South Wales'
+            name: 'Scarborough Wombarra Cemetery, Wombarra, New South Wales'
+        'Springwood Cemetery':
+            category: 'Springwood Cemetery, Springwood, New South Wales'
+            name: 'Springwood Cemetery, Springwood, New South Wales'
+        'St Marys Cemetery':
+            category: 'St Marys General Cemetery, St Marys, New South Wales'
+            name: 'St Marys General Cemetery, St Marys, New South Wales'
+        'Tweed Heads Old Cemetery':
+            category: 'Tweed Heads Old General Cemetery, Tweed Heads, New South Wales'
+            name: 'Tweed Heads Old General Cemetery, Tweed Heads, New South Wales'
+        'Warialda General Cemetery':
+            category: 'Warialda General Cemetery, Warialda, New South Wales'
+            name: 'Warialda General Cemetery, Warialda, New South Wales'
+        'Windeyer Catholic Cemetery':
+            category: 'Windeyer Catholic Cemetery, Windeyer, New South Wales'
+            name: 'Windeyer Catholic Cemetery, Windeyer, New South Wales'
+        'Windsor, St Matthew Anglican Cemetery':
+            category: 'St Matthew''s Anglican Cemetery, Windsor, New South Wales'
+            name: 'St Matthew''s Anglican Cemetery, Windsor, New South Wales'
+        'Woden Cemetery, Phillip, ACT':
+            category: 'Woden Cemetery, Phillip, Australian Capital Territory'
+            name: 'Woden Cemetery, Phillip, Australian Capital Territory'
+        'Wollongong Memorial Gardens':
+            category: 'Wollongong Memorial Gardens, Unanderra, New South Wales'
+            name: 'Wollongong Memorial Gardens, Unanderra, New South Wales'
+        'Woronora Memorial Park':
+            category: 'Woronora Memorial Park, Sutherland, New South Wales'
+            name: 'Woronora Memorial Park, Sutherland, New South Wales'

@@ -18,6 +18,7 @@ use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class WikiTreeManager
@@ -42,10 +43,15 @@ class WikiTreeManager
      */
     var array $locations = [];
 
+    var bool $doTheSort = false;
+
     /**
      * @param array $cemeteries
+     * @param array $congregations
+     * @param array $locations
+     * @param bool $doTheSort
      */
-    public function __construct(array $cemeteries, array $congregations, array $locations)
+    public function __construct(array $cemeteries, array $congregations, array $locations, bool $doTheSort)
     {
         foreach($cemeteries as $name=>$details) {
             if (!key_exists('name', $details)) {
@@ -53,10 +59,14 @@ class WikiTreeManager
             }
         }
 
+        $this->setDoTheSort($doTheSort);
         $this->cemeteries = $cemeteries;
         $this->congregations = $congregations;
         sort($locations);
         $this->locations = $locations;
+        if ($this->isDoTheSort()) {
+            $this->writeParameters();
+        }
     }
 
     /**
@@ -732,5 +742,41 @@ class WikiTreeManager
     public function getLocations(): array
     {
         return $this->locations ?: [];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDoTheSort(): bool
+    {
+        return $this->doTheSort;
+    }
+
+    /**
+     * @param bool $doTheSort
+     * @return WikiTreeManager
+     */
+    public function setDoTheSort(bool $doTheSort): WikiTreeManager
+    {
+        $this->doTheSort = $doTheSort;
+        return $this;
+    }
+
+    private function writeParameters()
+    {
+        $result = [];
+        $result['parameters']['locations'] = $this->getLocations();
+        file_put_contents(__DIR__ . '/../../config/packages/locations.yaml', Yaml::dump($result, 8, 4));
+
+        $result = [];
+        $result['parameters']['congregations'] = $this->getCongregations();
+        ksort($result['parameters']['congregations']);
+        file_put_contents(__DIR__ . '/../../config/packages/congregations.yaml', Yaml::dump($result, 8, 4));
+
+        $result = [];
+        $result['parameters']['cemeteries'] = $this->getCemeteries();
+        ksort($result['parameters']['cemeteries']);
+        file_put_contents(__DIR__ . '/../../config/packages/cemeteries.yaml', Yaml::dump($result, 8, 4));
+
     }
 }
