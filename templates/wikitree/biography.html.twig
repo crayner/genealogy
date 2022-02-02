@@ -82,9 +82,10 @@
         </div>
         <div class="formElement">
             <div class="formLabel">
+
                 <div class="formWidget">{{ form_widget(form.submit) }}</div>
                 <p class="formLabel">{{ form_label(form.submit) }}</p>
-                <p class="formHelp"></p>
+                <p class="formHelp">{{ form_widget(form.reset) }}</p>
             </div>
         </div>
 

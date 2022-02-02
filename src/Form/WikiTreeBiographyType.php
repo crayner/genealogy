@@ -197,6 +197,11 @@ class WikiTreeBiographyType extends AbstractType
                     'label' => 'Generate Biography',
                 ]
             )
+            ->add('reset', SubmitType::class,
+                [
+                    'label' => 'Reset Biography',
+                ]
+            )
         ;
     }
 

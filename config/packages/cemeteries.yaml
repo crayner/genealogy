@@ -11,7 +11,7 @@ parameters:
             name: 'Bega Cemetery, Bega, New South Wales'
         'Binnaway General Cemetery':
             category: 'Binnaway General Cemetery, Binnaway, New South Wales'
-            name: 'Binnaway General Cemetery, Binnaway, New South Wales'
+            name: 'Binnaway Cemetery, Binnaway, New South Wales'
         'Bong Bong Anglican Cemetery':
             category: 'Bong Bong Church Cemetery, Moss Vale, New South Wales'
             name: 'Bong Bong Anglican Cemetery, Moss Vale, New South Wales'
@@ -32,7 +32,7 @@ parameters:
             name: 'Coonabarabran Anglican Cemetery, Coonabarabran, New South Wales'
         'Cudgegong Cemetery':
             category: 'Cudgegong General Cemetery, Cudgegong, New South Wales'
-            name: 'Cudgegong General Cemetery, Cudgegong, New South Wales'
+            name: 'Cudgegong Cemetery, Cudgegong, New South Wales'
         'Delungra Cemetery':
             category: 'Delungra Cemetery, Delungra, New South Wales'
             name: 'Delungra Cemetery, Delungra, New South Wales'
@@ -42,9 +42,15 @@ parameters:
         'Eastern Suburbs Memorial Park':
             category: 'Eastern Suburbs Memorial Park, Matraville, New South Wales'
             name: 'Eastern Suburbs Memorial Park, Matraville, New South Wales'
+        'Ebenezer Uniting Cemetery':
+            category: 'Ebenezer Uniting Cemetery, Ebenezer, New South Wales'
+            name: 'Ebenezer Uniting Cemetery, Ebenezer, New South Wales'
         'Enfield Anglican Cemetery St Thomas':
             category: 'St Thomas'' Anglican Cemetery, Enfield, New South Wales'
             name: 'St Thomas'' Anglican Cemetery, Enfield, New South Wales'
+        'Evans Head Cemetery':
+            category: 'Evans Head General Cemetery, Evans Head, New South Wales'
+            name: 'Evans Head Cemetery, Evans Head, New South Wales'
         'Forbes Cemetery':
             category: 'Forbes Cemetery, Forbes, New South Wales'
             name: 'Forbes Cemetery, Forbes, New South Wales'
@@ -53,10 +59,7 @@ parameters:
             name: 'Forest Lawn Memorial Park, Leppington, New South Wales'
         'Gulgong General Cemetery':
             category: 'Gulgong General Cemetery, Gulgong, New South Wales'
-            name: 'Gulgong General Cemetery, Gulgong, New South Wales'
-        'Innes Gardens Memorial Park, Port Macquarie':
-            category: 'Innes Gardens Memorial Park, Port Macquarie, New South Wales'
-            name: 'Innes Gardens Memorial Park, Port Macquarie, New South Wales'
+            name: 'Gulgong Cemetery, Gulgong, New South Wales'
         'Jilliby Cemetery':
             category: 'Jilliby Cemetery, Jilliby, New South Wales'
             name: 'Jilliby Cemetery, Jilliby, New South Wales'
@@ -72,27 +75,30 @@ parameters:
         'Lilydale Memorial Park':
             category: 'Lilydale Memorial Park, Lilydale, Victoria'
             name: 'Lilydale Memorial Park, Lilydale, Victoria'
-        'Macquarie Park Cemetery':
-            category: 'Macquarie Park Cemetery and Crematorium, North Ryde, New South Wales'
-            name: 'Macquarie Park Cemetery and Crematorium, North Ryde, New South Wales'
         'Macquarie Park Cemetery and Crematorium':
             category: 'Macquarie Park Cemetery and Crematorium, North Ryde, New South Wales'
             name: 'Macquarie Park Cemetery and Crematorium, North Ryde, New South Wales'
+        'Maryborough Cemetery QLD':
+            category: 'Maryborough Cemetery, Maryborough, Queensland'
+            name: 'Maryborough Cemetery, Maryborough, Queensland'
         'Mendooran Cemetery':
             category: 'Mendooran Cemetery, Mendooran, New South Wales'
             name: 'Mendooran Cemetery, Mendooran, New South Wales'
         'Menindee Cemetery':
             category: 'Menindee Cemetery, Menindee, New South Wales'
             name: 'Menindee Cemetery, Menindee, New South Wales'
-        'Mudgee General Cemetery':
+        'Mudgee Cemetery':
             category: 'Mudgee General Cemetery, Mudgee, New South Wales'
-            name: 'Mudgee General Cemetery, Mudgee, New South Wales'
+            name: 'Mudgee Cemetery, Mudgee, New South Wales'
         'Mudgee Lawn Cemetery':
             category: 'Mudgee Lawn Cemetery, Buckaroo, New South Wales'
             name: 'Mudgee Lawn Cemetery, Buckaroo, New South Wales'
         'Myall Remembrance Park':
             category: 'Myall Remembrance Park, Dalby, Queensland'
             name: 'Myall Remembrance Park, Dalby, Queensland'
+        'Newcastle Memorial Park':
+            category: 'Newcastle Memorial Park, Beresfield, New South Wales'
+            name: 'Newcastle Memorial Park, Beresfield, New South Wales'
         'Noraville Cemetery':
             category: 'Noraville Cemetery, Wyong, New South Wales'
             name: 'Noraville Cemetery, Wyong, New South Wales'
@@ -107,58 +113,76 @@ parameters:
             name: 'Palmdale Lawn Cemetery and Memorial Park, Palmdale, New South Wales'
         'Parkes Cemetery':
             category: 'Parkes General Cemetery, Parkes, New South Wales'
-            name: 'Parkes General Cemetery, Parkes, New South Wales'
+            name: 'Parkes Cemetery, Parkes, New South Wales'
         'Picton General Cemetery':
             category: 'Picton General Cemetery, Picton, New South Wales'
-            name: 'Picton General Cemetery, Picton, New South Wales'
+            name: 'Picton Cemetery, Picton, New South Wales'
         'Pinnaroo Lawn Cemetery, Queensland':
             category: 'Pinnaroo Lawn Cemetery, Bridgeman Downs, Queensland'
             name: 'Pinnaroo Lawn Cemetery, Bridgeman Downs, Queensland'
+        'Port Macquarie - Innes Gardens Memorial Park':
+            category: 'Innes Gardens Memorial Park, Port Macquarie, New South Wales'
+            name: 'Innes Gardens Memorial Park, Port Macquarie, New South Wales'
         'Port Macquarie General Cemetery':
             category: 'Port Macquarie General Cemetery, Port Macquarie, New South Wales'
-            name: 'Port Macquarie General Cemetery, Port Macquarie, New South Wales'
+            name: 'Port Macquarie Cemetery, Port Macquarie, New South Wales'
         'Portland Cemetery':
             category: 'Portland General Cemetery, Portland, New South Wales'
-            name: 'Portland General Cemetery, Portland, New South Wales'
+            name: 'Portland Cemetery, Portland, New South Wales'
         'Prospect Cemetery St Bartholomew':
             category: 'St Bartholomew''s Anglican Cemetery, Prospect, New South Wales'
             name: 'St Bartholomew''s Anglican Cemetery, Prospect, New South Wales'
         'Queanbeyan Lawn Cemetery':
             category: 'Queanbeyan Lawn Cemetery and Memorial Gardens, Jerrabomberra, New South Wales'
             name: 'Queanbeyan Lawn Cemetery and Memorial Gardens, Jerrabomberra, New South Wales'
+        'Queensland Garden of Remembrance, Bridgeman Downs, Queensland':
+            category: 'Queensland Garden of Remembrance, Bridgeman Downs, Queensland'
+            name: 'Queensland Garden of Remembrance, Bridgeman Downs, Queensland'
         'Rookwood Anglican Cemetery':
             category: 'Rookwood Anglican Cemetery, Rookwood, New South Wales'
             name: 'Rookwood Anglican Cemetery, Rookwood, New South Wales'
-        'Rookwood General Cemetery':
+        'Rookwood Cemetery':
             category: 'Rookwood General Cemetery, Rookwood, New South Wales'
-            name: 'Rookwood General Cemetery, Rookwood, New South Wales'
+            name: 'Rookwood Cemetery, Rookwood, New South Wales'
         'Rookwood Memorial Gardens and Crematorium':
             category: 'Rookwood Memorial Gardens and Crematorium, Rookwood, New South Wales'
             name: 'Rookwood Memorial Gardens and Crematorium, Rookwood, New South Wales'
+        'Sackville Cemetery':
+            category: 'Sackville Cemetery, Sackville, New South Wales'
+            name: 'Sackville Cemetery, Sackville, New South Wales'
         'Sandgate Cemetery':
             category: 'Sandgate Cemetery, Sandgate, New South Wales'
             name: 'Sandgate Cemetery, Sandgate, New South Wales'
         'Scarborough Wombarra Cemetery':
             category: 'Scarborough Wombarra Cemetery, Wombarra, New South Wales'
             name: 'Scarborough Wombarra Cemetery, Wombarra, New South Wales'
+        'Shellharbour Cemetery':
+            category: 'Shellharbour Cemetery, Shellharbour, New South Wales'
+            name: 'Shellharbour Cemetery, Shellharbour, New South Wales'
         'Springwood Cemetery':
             category: 'Springwood Cemetery, Springwood, New South Wales'
             name: 'Springwood Cemetery, Springwood, New South Wales'
         'St Marys Cemetery':
             category: 'St Marys General Cemetery, St Marys, New South Wales'
-            name: 'St Marys General Cemetery, St Marys, New South Wales'
+            name: 'St Marys Cemetery, St Marys, New South Wales'
         'Tweed Heads Old Cemetery':
             category: 'Tweed Heads Old General Cemetery, Tweed Heads, New South Wales'
-            name: 'Tweed Heads Old General Cemetery, Tweed Heads, New South Wales'
+            name: 'Tweed Heads Old Cemetery, Tweed Heads, New South Wales'
         'Warialda General Cemetery':
             category: 'Warialda General Cemetery, Warialda, New South Wales'
-            name: 'Warialda General Cemetery, Warialda, New South Wales'
+            name: 'Warialda Cemetery, Warialda, New South Wales'
+        'Werris Creek Cemetery':
+            category: 'Werris Creek General Cemetery, Werris Creek, New South Wales'
+            name: 'Werris Creek Cemetery, Werris Creek, New South Wales'
         'Windeyer Catholic Cemetery':
             category: 'Windeyer Catholic Cemetery, Windeyer, New South Wales'
             name: 'Windeyer Catholic Cemetery, Windeyer, New South Wales'
         'Windsor, St Matthew Anglican Cemetery':
             category: 'St Matthew''s Anglican Cemetery, Windsor, New South Wales'
             name: 'St Matthew''s Anglican Cemetery, Windsor, New South Wales'
+        'Wingham Presbyterian Columbarium':
+            category: 'Wingham Presbyterian Columbarium, Wingham, New South Wales'
+            name: 'Wingham Presbyterian Columbarium, Wingham, New South Wales'
         'Woden Cemetery, Phillip, ACT':
             category: 'Woden Cemetery, Phillip, Australian Capital Territory'
             name: 'Woden Cemetery, Phillip, Australian Capital Territory'

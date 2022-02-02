@@ -30,6 +30,9 @@ parameters:
         'Delungra Presbyterian St Stephen':
             name: 'St Stephen''s Presbyterian Church'
             category: 'St Stephen''s Presbyterian Church, Delungra, New South Wales'
+        'Earlwood Church of England St George':
+            category: 'St George''s Anglican Church, Earlwood, New South Wales'
+            name: 'St George''s Church of England, Earlwood, New South Wales'
         'Enfield Church of England St Thomas':
             name: 'St Thomas'' Church of England'
             category: 'St Thomas'' Anglican Church, Enfield, New South Wales'
@@ -69,6 +72,9 @@ parameters:
         'Limestone Flat Methodist Wesleyan':
             category: 'Wesleyan Chapel, Limestone Flat, New South Wales'
             name: 'Limestone Flat Methodist Church'
+        'Malvern Hill Methodist Church':
+            category: 'Malvern Hill Uniting Church, Croydon, New South Wales'
+            name: 'Malvern Hill Methodist Church, Croydon, New South Wales'
         'Manly Presbyterian St Andrew':
             name: 'St Andrew''s Presbyterian Church'
             category: 'St Andrew''s Presbyterian Church, Manly, New South Wales'
@@ -104,6 +110,9 @@ parameters:
         'North Parramatta Church of Engand All Saints':
             category: 'All Saints Anglican Church, North Parramatta, New South Wales'
             name: 'All Saints Church of England'
+        'North Richmond Church of England St Stephen':
+            category: 'St Stephen''s Anglican Church, Kurrajong New South Wales'
+            name: 'St Stephen''s Church of England, Kurrajong, New South Wales'
         'Parramatta Church of Engand All Saints':
             category: 'All Saints Anglican Church, North Parramatta, New South Wales'
             name: 'All Saints Church of England'
@@ -113,6 +122,9 @@ parameters:
         'Penshurst Catholic St Declan':
             name: 'St Declan''s Catholic Church'
             category: 'St Declan''s Catholic Church, Penshurst, New South Wales'
+        'Redfern Church of England St Paul':
+            category: 'St Paul''s Anglican Church, Redfern, New South Wales'
+            name: 'St Paul''s Church of England, Redfern, New South Wales'
         'Redfern Congregational Church':
             name: 'Redfern Congregational Church'
             category: 'Waterloo Congregational Church, Waterloo, New South Wales'
@@ -132,47 +144,42 @@ parameters:
             name: 'St Martha''s Catholic Church'
             category: 'St Martha''s Catholic Church, Strathfield, New South Wales'
         'Sydney Anglican St James':
-            name: 'St James'' Anglican Church'
             category: 'St James'' Anglican Church, Sydney, New South Wales'
         'Sydney Catholic St Patrick':
-            name: 'St Patrick''s Catholic Church'
             category: 'St Patrick''s Catholic Church, Sydney, New South Wales'
         'Sydney Church of England St James':
-            name: 'St James'' Church of England'
+            name: 'St James'' Church of England, Sydeny, New South Wales'
             category: 'St James'' Anglican Church, Sydney, New South Wales'
         'Sydney Church of England St Phillip':
-            name: 'St Phillip''s Church of England'
+            name: 'St Phillip''s Church of England, Sydney, New South Wales'
             category: 'St Philip''s Anglican Church, Sydney, New South Wales'
         'Sydney Presbyterian St Stephen':
-            name: 'St Stephen''s Presbyterian Church'
             category: 'St Stephen''s Uniting Church, Sydney, New South Wales'
         'Tallawang Catholic St Joseph':
-            name: 'St Joseph''s Catholic Church'
             category: 'St Joseph''s Catholic Church, Tallawang, New South Wales'
+        'Tamworth Church of England St John':
+            category: 'St John the Evangelist Anglican Church, Tamworth, New South Wales'
+            name: 'St Hohn the Evangelist Church of England, Tamworth, New South Wales'
         'Toronto Methodist':
-            name: 'Toronto Methodist Church'
             category: 'Toronto Uniting Church, Toronto, New South Wales'
         'Toronto Uniting':
-            name: 'Toronto Uniting Church'
             category: 'Toronto Uniting Church, Toronto, New South Wales'
         'Wagga Wagga Anglican St John':
             name: 'St John''s Evangelist Anglican, Wagga Wagga'
             category: 'St John''s Evangelist Anglican Church, Wagga Wagga, New South Wales'
         'Wagga Wagga Church of England St John':
-            name: 'St John''s Evangelist Church of England, Wagga Wagga'
             category: 'St John''s Evangelist Anglican Church, Wagga Wagga, New South Wales'
         'Waverley Methodist Church':
-            name: 'Waverley Methodist Church'
-            category: 'Waverley Methodist Church, Waverley, New South Wales'
+            category: 'Waverley Methodist Church, Bondi Junction, New South Wales'
         'Wellington Anglican St John':
             name: 'St John the Baptist Anglican, Wellington'
             category: 'St John the Baptist Anglican Church, Wellington, New South Wales'
         'Wellington Catholic St Patrick':
-            name: 'St Patrick''s Catholic Church'
             category: 'St Patrick''s Catholic Church, Wellington, New South Wales'
         'Wellington Church of England St John':
-            name: 'St John the Baptist Church of England, Wellington'
+            name: 'St John the Baptist Church of England, Wellington, New South Wales'
             category: 'St John the Baptist Anglican Church, Wellington, New South Wales'
         'Windeyer Catholic St Killian':
             category: 'St Killian''s Catholic Church, Windeyer, New South Wales'
-            name: 'St Killian''s Catholic Church'
+        'Wollongong Catholic St Francis Xavier':
+            category: 'St Francis Xavier''s Catholic Cathedral, Wollongong, New South Wales'

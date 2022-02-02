@@ -47,9 +47,21 @@ class WikiTreeController extends AbstractController
 
         if ($form->isSubmitted()) {
             $data = $form->getData();
+
+            if ($form->get('reset')->isClicked()) {
+                $data["interredCemetery"] = null;
+                $data["interredLocation"] = null;
+                $data["baptismDate"] = null;
+                $data["baptismLocation"] = null;
+                $data["congregations"] = [];
+                $data["locations"] = [];
+                $data["raynerPage"] = null;
+            }
+
             $result = $manager->login($data, $stack->getSession());
             if ($result['valid'])
                 $form = $this->createForm(WikiTreeBiographyType::class, $data);
+
         }
 
         return $this->render('wikitree/biography.html.twig',
