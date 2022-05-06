@@ -18,7 +18,7 @@ use App\Entity\Individual;
 
 /**
  * Class IndividualException
- * @package App\Exception
+ * @selectPure App\Exception
  * @author  Craig Rayner <craig@craigrayner.com>
  * 30/03/2021 09:06
  */

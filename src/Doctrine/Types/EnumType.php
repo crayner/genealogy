@@ -19,7 +19,7 @@ use Doctrine\DBAL\Types\StringType;
 
 /**
  * Class EnumType
- * @package App\Doctrine\Types
+ * @selectPure App\Doctrine\Types
  * @author  Craig Rayner <craig@craigrayner.com>
  * 27/03/2021 09:36
  */

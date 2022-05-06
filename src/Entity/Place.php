@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 /**
  * Class Place
- * @package App\Entity
+ * @selectPure App\Entity
  * @author  Craig Rayner <craig@craigrayner.com>
  * 31/03/2021 17:04
  * @ORM\Entity(repositoryClass=PlaceRepository::class)

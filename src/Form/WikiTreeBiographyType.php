@@ -17,10 +17,8 @@ namespace App\Form;
 use App\Manager\WikiTreeManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,7 +26,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class WikiTreeBiographyType
- * @package App\Form
+ * @selectPure App\Form
  * @author  Craig Rayner <craig@craigrayner.com>
  * 19/12/2021 07:38
  */
@@ -165,8 +163,8 @@ class WikiTreeBiographyType extends AbstractType
                     'choice_translation_domain' => false,
                     'placeholder' => 'No Congregation Selected',
                     'attr' => [
-                        'rows' => 10,
-                        'class' => 'multipleChoice',
+  //                      'rows' => 10,
+  //                      'class' => 'multipleChoice',
                     ],
                 ]
             )
@@ -180,8 +178,8 @@ class WikiTreeBiographyType extends AbstractType
                     'choice_translation_domain' => false,
                     'placeholder' => 'No Location Selected',
                     'attr' => [
-                        'rows' => 10,
-                        'class' => 'multipleChoice',
+ //                       'rows' => 10,
+ //                       'class' => 'multipleChoice',
                     ],
                 ]
             )

@@ -8,7 +8,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * Class AddressRepository
- * @package App\Repository
+ * @selectPure App\Repository
  * @author  Craig Rayner <craig@craigrayner.com>
  * 3/04/2021 16:32
  */

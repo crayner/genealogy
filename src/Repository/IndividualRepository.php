@@ -21,7 +21,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * Class IndividualRepository
- * @package App\Repository
+ * @selectPure App\Repository
  * @author  Craig Rayner <craig@craigrayner.com>
  * 30/03/2021 08:59
  */

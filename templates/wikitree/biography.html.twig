@@ -59,15 +59,15 @@
                 <p class="formHelp">{{ form_help(form.interredLocation) }}</p>
             </div>
         </div>
-        <div class="formElement" style="height: 250px">
-            <div class="formWidget" style="width: 75%">{{ form_widget(form.congregations) }}</div>
+        <div class="formElement" >
+            <div style="float: right; margin-right: 80px;"> {{ form_widget(form.congregations) }}</div>
             <div class="formLabel">
                 <p class="formLabel">{{ form_label(form.congregations) }}</p>
                 <p class="formHelp">{{ form_help(form.congregations) }}</p>
             </div>
         </div>
-        <div class="formElement" style="height: 250px">
-            <div class="formWidget" style="width: 75%">{{ form_widget(form.locations) }}</div>
+        <div class="formElement">
+            <div style="float: right; margin-right: 80px;"> {{ form_widget(form.locations) }}</div>
             <div class="formLabel">
                 <p class="formLabel">{{ form_label(form.locations) }}</p>
                 <p class="formHelp">{{ form_help(form.locations) }}</p>
@@ -112,6 +112,7 @@
                 {{ template }}
             {% endfor %}
             {% set gender = 'birth.gender'|trans({gender: gender}) %}
+            {% set name = "'''" ~ name ~ "'''" %}
             {{ 'birth.sentence'|trans({'name': name, 'date': result.birth.date, '{gender}': gender, date_status: result.birth.dateStatus, '{location}': result.birth.location, '{father}': father, '{mother}': mother}) }}
 {# Baptism Sentance #}
         {% if result.baptism.date is not same as(null) or result.baptism.location is not same as(null) %}
@@ -163,7 +164,7 @@
         <h2>== {{ 'Sources'|trans }} ==</h2>
         <p>
             {% if result.page|length > 0 %}
-           {{ '* [https://www.wikitree.com/wiki/Space:The_Rayner_Roots_Branches_and_Twigs_1740_~_1987 The Rayner Roots, Branches & Twigs 1740 ~ 1987 Harold and Frances Atkins] Page ' ~ result.page ~ '.' }}<br />
+           {{ '* [[Space: The Rayner Roots Branches and Twigs 1740 ~ 1987]] by Harold and Frances Atkins. Page ' ~ result.page ~ '.' }}<br />
         {% endif %}
         {{ '&lt;references /&gt;' }}</p>
         </div>
@@ -172,14 +173,29 @@
             <p style="color: red; font-weight: bold;">{{ result.error|trans }}</p>
         {% endif %}
     {% endif %}
-    {% if result.hints is defined and result.hints is not same as ([]) %}
-        <hr/>
-        <h3>{{ 'hints.heading'|trans }}</h3>
-        <ul>
-        {% for name,value in result.hints %}
-            <li>{{ ('hints.' ~ name)|trans }}</li>
-        {% endfor %}
-        </ul>
-    {% endif %}
     </div>
-{% endblock %}
+{% endblock body %}
+        {% block javascripts %}
+            {{ parent() }}
+            <script>
+                document.multiselect('#wikitreebiography_congregations');
+
+                function enable() {
+                    document.multiselect('#wikitreebiography_congregations').setIsEnabled(true);
+                }
+
+                function disable() {
+                    document.multiselect('#wikitreebiography_congregations').setIsEnabled(false);
+                }
+
+                document.multiselect('#wikitreebiography_locations');
+
+                function enable() {
+                    document.multiselect('#wikitreebiography_locations').setIsEnabled(true);
+                }
+
+                function disable() {
+                    document.multiselect('#wikitreebiography_locations').setIsEnabled(false);
+                }
+            </script>
+        {% endblock %}

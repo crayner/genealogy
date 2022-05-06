@@ -9,7 +9,7 @@ birth:
         { date_status, select, 
             full {{name} was born on {date}, the {gender} of {father} and {mother}, in {location}.}
             year {{name} was born in {date}, the {gender} of {father} and {mother}, in {location}.}
-            monthYear {{name} was born in {date}, the {gender} of {father} and {mother}, in {location}.}
+            monthYear {{name}was born in {date}, the {gender} of {father} and {mother}, in {location}.}
             other {{name} was born, the {gender} of {father} and {mother}, in {location}.}
         }
     unknown:
@@ -100,3 +100,15 @@ Where does this person appear in the Rayner book?: Where does this person appear
 Locations: Locations
 Add one or more location categories to your record.: Add one or more location categories to your record.
 Reset Biography: Reset Biography
+Type of search: Type of search
+Search for date of: Search for date of
+Find Date: Find Date
+Reset Finder: Reset Finder
+finder:
+    birth: Birth
+    marriage: Marriage
+    death: Death
+Registration: Registration Number
+Registration year: The Year of Registration
+Use the NSW BDM Registration to find the date of BDM.: Use the NSW BDM Registration to find the date of BDM.
+NSW BDM Date Finder: NSW BDM Date Finder

@@ -18,7 +18,7 @@ use App\Entity\Family;
 
 /**
  * Class FamilyException
- * @package App\Exception
+ * @selectPure App\Exception
  * @author  Craig Rayner <craig@craigrayner.com>
  * 1/04/2021 10:32
  */

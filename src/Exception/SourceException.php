@@ -18,7 +18,7 @@ use App\Entity\Source;
 
 /**
  * Class SourceException
- * @package App\Exception
+ * @selectPure App\Exception
  * @author  Craig Rayner <craig@craigrayner.com>
  * 3/04/2021 11:58
  */

@@ -23,7 +23,7 @@ use Symfony\Component\Intl\Languages;
 
 /**
  * Class Header
- * @package App\Entity
+ * @selectPure App\Entity
  * @author  Craig Rayner <craig@craigrayner.com>
  * 24/03/2021 11:55
  * @ORM\Entity(repositoryClass="App\Repository\HeaderRepository")

@@ -18,7 +18,7 @@ use Throwable;
 
 /**
  * Class ParseException
- * @package App\Exception
+ * @selectPure App\Exception
  * @author  Craig Rayner <craig@craigrayner.com>
  * 28/03/2021 09:30
  */

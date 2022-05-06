@@ -16,7 +16,7 @@ namespace App\Exception;
 
 /**
  * Class HeaderInvalidException
- * @package App\Exception
+ * @selectPure App\Exception
  * @author  Craig Rayner <craig@craigrayner.com>
  * 30/03/2021 08:17
  */

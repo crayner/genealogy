@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Class IndividualFamily
- * @package App\Entity
+ * @selectPure App\Entity
  * @author  Craig Rayner <craig@craigrayner.com>
  * 1/04/2021 10:58
  * @ORM\Entity(repositoryClass=IndividualFamilyRepository::class)

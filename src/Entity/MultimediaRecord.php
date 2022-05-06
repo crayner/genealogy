@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 /**
  * Class MultimediaRecord
- * @package App\Entity
+ * @selectPure App\Entity
  * @author  Craig Rayner <craig@craigrayner.com>
  * 2/04/2021 14:26
  * @ORM\Entity(repositoryClass=MultimediaRecordRepository::class)

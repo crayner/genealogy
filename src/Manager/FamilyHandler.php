@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class FamilyHandler
- * @package App\Manager
+ * @selectPure App\Manager
  * @author  Craig Rayner <craig@craigrayner.com>
  * 1/04/2021 10:29
  */

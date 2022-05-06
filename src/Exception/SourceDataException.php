@@ -18,7 +18,7 @@ use App\Entity\SourceData;
 
 /**
  * Class SourceDataException
- * @package App\Exception
+ * @selectPure App\Exception
  * @author  Craig Rayner <craig@craigrayner.com>
  * 1/04/2021 15:39
  */

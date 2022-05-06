@@ -22,7 +22,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 /**
  * Class IndividualName
- * @package App\Entity
+ * @selectPure App\Entity
  * @author  Craig Rayner <craig@craigrayner.com>
  * 30/03/2021 10:34
  * @ORM\Entity(repositoryClass=IndividualNameRepository::class)

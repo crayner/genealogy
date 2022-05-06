@@ -18,7 +18,7 @@ use App\Entity\IndividualFamily;
 
 /**
  * Class RelationshipException
- * @package App\Exception
+ * @selectPure App\Exception
  * @author  Craig Rayner <craig@craigrayner.com>
  * 1/04/2021 11:09
  */

@@ -18,7 +18,7 @@ use App\Entity\MultimediaRecord;
 
 /**
  * Class MultiMediaRecordException
- * @package App\Exception
+ * @selectPure App\Exception
  * @author  Craig Rayner <craig@craigrayner.com>
  * 2/04/2021 14:54
  */

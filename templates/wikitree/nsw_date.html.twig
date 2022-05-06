@@ -1,0 +1,42 @@
+{% trans_default_domain 'messages' %}
+
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1 style="text-align: center">{{ 'NSW BDM Date Finder'|trans }}</h1>
+    <p class="important" style="text-align: center">
+        {{ 'Use the NSW BDM Registration to find the date of BDM.'|trans }}
+    </p>
+    <hr />
+    {{ form_start(form) }}
+    <div class="formElement">
+        <div class="formLabel">
+            <div class="formWidget">{{ form_widget(form.searchIn) }}</div>
+            <p class="formLabel">{{ form_label(form.searchIn) }}</p>
+            <p class="formHelp">{{ form_help(form.searchIn) }}</p>
+        </div>
+    </div>
+    <div class="formElement">
+        <div class="formLabel">
+            <div class="formWidget">{{ form_widget(form.registration) }}</div>
+            <p class="formLabel">{{ form_label(form.registration) }}</p>
+            <p class="formHelp">{{ form_help(form.registration) }}</p>
+        </div>
+    </div>
+    <div class="formElement">
+        <div class="formLabel">
+            <div class="formWidget">{{ form_widget(form.registration_year) }}</div>
+            <p class="formLabel">{{ form_label(form.registration_year) }}</p>
+            <p class="formHelp">{{ form_help(form.registration_year) }}</p>
+        </div>
+    </div>
+    <div class="formElement">
+        <div class="formLabel">
+            <div class="formWidget">{{ form_widget(form.submit) }}</div>
+            <p class="formLabel">{{ form_label(form.submit) }}</p>
+            <p class="formHelp">{{ form_widget(form.reset) }}</p>
+        </div>
+    </div>
+    {{ form_end(form) }}
+    {{ dump(manager) }}
+{% endblock body %}

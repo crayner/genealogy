@@ -7,7 +7,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 /**
  * Class Address
- * @package App\Entity
+ * @selectPure App\Entity
  * @author  Craig Rayner <craig@craigrayner.com>
  * 3/04/2021 16:30
  * @ORM\Entity(repositoryClass="App\Repository\AddressRepository")

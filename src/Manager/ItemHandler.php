@@ -19,7 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class ItemHandler
- * @package App\Manager
+ * @selectPure App\Manager
  * @author  Craig Rayner <craig@craigrayner.com>
  * 23/03/2021 14:45
  */

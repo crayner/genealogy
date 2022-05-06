@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * Class ParameterManager
- * @package App\Manager
+ * @selectPure App\Manager
  * @author  Craig Rayner <craig@craigrayner.com>
  * 30/03/2021 14:13
  */

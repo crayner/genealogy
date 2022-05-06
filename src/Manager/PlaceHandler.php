@@ -19,7 +19,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class PlaceHandler
- * @package App\Manager
+ * @selectPure App\Manager
  * @author  Craig Rayner <craig@craigrayner.com>
  * 31/03/2021 17:01
  */

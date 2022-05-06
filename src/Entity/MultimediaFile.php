@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 /**
  * Class MultimediaFile
- * @package App\Entity
+ * @selectPure App\Entity
  * @author  Craig Rayner <craig@craigrayner.com>
  * 2/04/2021 14:24
  * @ORM\Entity(repositoryClass=MultimediaFileRepository::class)

@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class RepositoryHandler
- * @package App\Manager
+ * @selectPure App\Manager
  * @author  Craig Rayner <craig@craigrayner.com>
  * 3/04/2021 13:41
  */

@@ -22,7 +22,7 @@ use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class WikiTreeManager
- * @package App\Manager
+ * @selectPure App\Manager
  * @author  Craig Rayner <craig@craigrayner.com>
  * 16/12/2021 12:55
  */
@@ -142,6 +142,7 @@ class WikiTreeManager
             if ($span !== []) {
                 $parents = $element->filterXPath('//meta[contains(@itemprop, "familyName")]')->ancestors();
                 $result['name']['full'] = trim(str_replace(["\r","\n"], ' ', $parents->first()->extract(['_text'])[0]));
+                $result['name']['family'] = $element->filterXPath('//meta[contains(@itemprop, "familyName")]')->attr('content');
             }
             $span = $element->filterXPath('//time[contains(@itemprop, "birthDate")]')->evaluate('count(@itemprop)');
             $birthDate = false;
@@ -208,7 +209,7 @@ class WikiTreeManager
                 $result['spouse'][$q]['name'] = $anchor->extract(['_text'])[0];
                 $result['spouse'][$q]['ID'] = str_replace('/wiki/', '', $anchor->attr('href'));
                 $parents = $spouse->ancestors();
-                $result['spouse'][$q]['location'] = trim(str_replace([$result['spouse'][$q]['name'], 'Husband of', "\n", "\r", "Wife of", 'married', ' in', ' at'], '', $parents->first()->extract(['_text'])[0]));
+                $result['spouse'][$q]['location'] = trim(str_replace([$result['spouse'][$q]['name'], 'Husband of', 'husband of', "\n", "\r", "wife of", "Wife of", 'married', ' in', ' at'], '', $parents->first()->extract(['_text'])[0]));
                 $result['spouse'][$q]['location'] = trim(mb_substr($result['spouse'][$q]['location'], 1));
 
                 $x = explode(' ', $result['spouse'][$q]['location']);
@@ -366,6 +367,7 @@ class WikiTreeManager
                 "full" => "",
                 'nick' => '',
                 'preferred' => '',
+                'family' => '',
             ]
         );
         $resolver->setAllowedTypes('given', 'string');
@@ -375,6 +377,8 @@ class WikiTreeManager
         $resolver->setAllowedTypes('full', 'string');
         $resolver->setAllowedTypes('nick', 'string');
         $resolver->setAllowedTypes('preferred', 'string');
+        $resolver->setAllowedTypes('family', 'string');
+
 
         $result['name'] = $resolver->resolve($result['name']);
 
@@ -415,7 +419,6 @@ class WikiTreeManager
         $resolver->setAllowedTypes('dateStatus', 'string');
         $resolver->setAllowedTypes('location', 'string');
         $resolver->setAllowedTypes('children', 'array');
-
 
         foreach($result['spouse'] as $q=>$spouse) {
             $result['spouse'][$q] = $resolver->resolve($spouse);
@@ -539,7 +542,13 @@ class WikiTreeManager
         }
 
 
-        if ($result['name']['atBirth'] === '' && $result['name']['currentLast'] !== '') $result['name']['atBirth'] = $result['name']['currentLast'];
+        if ($result['name']['atBirth'] === '' && $result['name']['currentLast'] !== '') {
+            $result['name']['atBirth'] = $result['name']['currentLast'];
+        }
+
+        if ($result['name']['atBirth'] === '' && $result['name']['currentLast'] === '' && $result['name']['family'] !== '') {
+            $result['name']['atBirth'] = $result['name']['currentLast'] = $result['name']['family'];
+        }
 
         $states = ['New South Wales','Victoria','South Australia','Western Australia','Tasmania','Queensland','Northern Territory','Australian Capital Territory'];
         $location = '';
@@ -565,9 +574,9 @@ class WikiTreeManager
             if ($result['age']['y'] < 18) {
                 $result['templates'][] = '{{Died Young}}';
                 if ($result['age']['y'] < 1) {
-                    $result['categories'][] = '[[Category:New South Wales, Infant Mortality]]';
+                    $result['categories'][] = '[[Category: New South Wales, Infant Mortality]]';
                 } else {
-                    $result['categories'][] = '[[Category:New South Wales, Child Mortality]]';
+                    $result['categories'][] = '[[Category: New South Wales, Child Mortality]]';
                 }
             }
             if ($result['spouse'] === [] && $result['age']['y'] >= 30) {
@@ -640,7 +649,6 @@ class WikiTreeManager
         }
 
         if (!is_null($data['interredCemetery'])) {
-            dump($data);
             if (key_exists($data['interredCemetery'], $this->getCemeteries())) {
                 $name = trim($data['interredCemetery']);
                 $result['categories'][] = '[[Category: ' . $this->getCemeteryCategory($name) . ']]';
@@ -766,6 +774,7 @@ class WikiTreeManager
     {
         $result = [];
         $result['parameters']['locations'] = $this->getLocations();
+        $result['parameters']['locations'] = array_values(array_unique($result['parameters']['locations']));
         file_put_contents(__DIR__ . '/../../config/packages/locations.yaml', Yaml::dump($result, 8, 4));
 
         $result = [];

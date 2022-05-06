@@ -25,7 +25,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class DataManager
- * @package App\Manager
+ * @selectPure App\Manager
  * @author  Craig Rayner <craig@craigrayner.com>
  * 2/04/2021 13:23
  */

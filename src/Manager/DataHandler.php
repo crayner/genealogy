@@ -22,7 +22,7 @@ use Exception;
 
 /**
  * Class DataHandler
- * @package App\Manager
+ * @selectPure App\Manager
  * @author  Craig Rayner <craig@craigrayner.com>
  * 1/04/2021 16:06
  */

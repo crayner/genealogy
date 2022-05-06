@@ -18,7 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class AddressHandler
- * @package App\Manager
+ * @selectPure App\Manager
  * @author  Craig Rayner <craig@craigrayner.com>
  * 3/04/2021 16:32
  */

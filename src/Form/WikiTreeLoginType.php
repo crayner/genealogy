@@ -22,7 +22,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 /**
  * Class WikiTreeLoginType
- * @package App\Form
+ * @selectPure App\Form
  * @author  Craig Rayner <craig@craigrayner.com>
  * 19/12/2021 07:38
  */

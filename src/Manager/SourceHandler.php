@@ -19,7 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class SourceHandler
- * @package App\Manager
+ * @selectPure App\Manager
  * @author  Craig Rayner <craig@craigrayner.com>
  * 3/04/2021 11:43
  */

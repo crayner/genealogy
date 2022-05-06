@@ -10,6 +10,7 @@
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
             <link href="{{ asset('css/app.css') }}?version=7" rel="stylesheet" type="text/css"/>
+            <link href="{{ asset('multiselect-master/styles/multiselect.css') }}?version=8" rel="stylesheet" type="text/css"/>
         {% endblock %}
     </head>
     <body>
@@ -23,6 +24,7 @@
         </div>
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
+            <script src="{{ asset('multiselect-master/multiselect.min.js') }}"></script>
         {% endblock %}
     </body>
 </html>

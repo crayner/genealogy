@@ -18,7 +18,7 @@ use App\Entity\Event;
 
 /**
  * Class EventException
- * @package App\Exception
+ * @selectPure App\Exception
  * @author  Craig Rayner <craig@craigrayner.com>
  * 31/03/2021 11:38
  */
