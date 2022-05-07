@@ -381,6 +381,7 @@ class WikiTreeManager
                 "additional" => "",
                 "currentLast" => "",
                 "atBirth" => "",
+                "atBirthFull" => "",
                 "full" => "",
                 'nick' => '',
                 'preferred' => '',
@@ -391,6 +392,7 @@ class WikiTreeManager
         $resolver->setAllowedTypes('additional', 'string');
         $resolver->setAllowedTypes('currentLast', 'string');
         $resolver->setAllowedTypes('atBirth', 'string');
+        $resolver->setAllowedTypes('atBirthFull', 'string');
         $resolver->setAllowedTypes('full', 'string');
         $resolver->setAllowedTypes('nick', 'string');
         $resolver->setAllowedTypes('preferred', 'string');
