@@ -121,9 +121,10 @@
         </p>
         {% if (result.spouse|length > 0) %}
             {% for spouse in result.spouse %}
+
                 {% if spouse.dateStatus is not same as('full') %}{% set date_string = spouse.source %}{% endif %}
                 <p>{{ 'marriage.sentence'|trans({'{preferred}': result.name.preferred,
-                        '{spouse}': '[[' ~ spouse.ID ~ '|'~ spouse.name ~ ']]',
+                        '{spouse}': '[[' ~ spouse.ID ~ '|'~ spouse.nameAtBirth ~ ']]',
                         '{date}': spouse.date,
                         '{location}': spouse.location, 'date_format': spouse.dateStatus }) }}
                     {{ 'marriage.children'|trans({'{count}}': spouse.children|length}) }}</p>

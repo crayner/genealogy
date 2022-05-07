@@ -21,6 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class WikiTreeController
@@ -38,6 +39,7 @@ class WikiTreeController extends AbstractController
      */
     public function biography(RequestStack $stack, WikiTreeManager $manager): Response
     {
+
         $request = $stack->getCurrentRequest();
         $form = $this->createForm(WikiTreeLoginType::class);
         $form->handleRequest($request);

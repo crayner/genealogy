@@ -36,3 +36,4 @@ services:
             $congregations: '%congregations%'
             $locations: '%locations%'
             $doTheSort: '%do_the_sort%'
+            $profiles: '%profiles%'

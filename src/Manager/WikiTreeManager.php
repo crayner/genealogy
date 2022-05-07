@@ -43,6 +43,14 @@ class WikiTreeManager
      */
     var array $locations = [];
 
+    /**
+     * @var array
+     */
+    private array $profiles = [];
+
+    /**
+     * @var bool
+     */
     var bool $doTheSort = false;
 
     /**
@@ -51,7 +59,7 @@ class WikiTreeManager
      * @param array $locations
      * @param bool $doTheSort
      */
-    public function __construct(array $cemeteries, array $congregations, array $locations, bool $doTheSort)
+    public function __construct(array $cemeteries, array $congregations, array $locations, bool $doTheSort, array $profiles)
     {
         foreach($cemeteries as $name=>$details) {
             if (!key_exists('name', $details)) {
@@ -64,6 +72,7 @@ class WikiTreeManager
         $this->congregations = $congregations;
         sort($locations);
         $this->locations = $locations;
+        $this->profiles = $profiles;
         if ($this->isDoTheSort()) {
             $this->writeParameters();
         }
@@ -137,6 +146,7 @@ class WikiTreeManager
             $span = $element->filterXPath('//a[contains(@title, "Last Name at Birth")]')->evaluate('count(@title)');
             if ($span !== []) {
                 $result['name']['atBirth'] = $element->filterXPath('//a[contains(@title, "Last Name at Birth")]')->extract(['_text'])[0];
+                $result['name']['atBirthFull'] = implode(' ', [$result['name']['given'],$result['name']['additional'],$result['name']['atBirth']]);
             }
             $span = $element->filterXPath('//meta[contains(@itemprop, "familyName")]')->evaluate('count(@itemProp)');
             if ($span !== []) {
@@ -213,6 +223,13 @@ class WikiTreeManager
                 $result['spouse'][$q]['location'] = trim(mb_substr($result['spouse'][$q]['location'], 1));
 
                 $x = explode(' ', $result['spouse'][$q]['location']);
+                $result['spouse'][$q]['nameAtBirth'] =  $result['spouse'][$q]['name'];
+                if (str_contains($result['spouse'][$q]['nameAtBirth'], '(')) {
+                    $name = mb_substr($result['spouse'][$q]['nameAtBirth'], 0, strpos($result['spouse'][$q]['nameAtBirth'], ')'));
+
+                    $result['spouse'][$q]['nameAtBirth'] = str_replace('(', '', $name);
+                }
+
                 $date = '';
                 foreach ($x as $e=>$r) {
                     if ($e === 0 && intval($r) >= 1) {
@@ -397,10 +414,12 @@ class WikiTreeManager
             [
                 'ID' => '',
                 'name' => '',
+                'nameAtBirth' => '',
             ]
         );
         $resolver->setAllowedTypes('ID', 'string');
         $resolver->setAllowedTypes('name', 'string');
+        $resolver->setAllowedTypes('nameAtBirth', 'string');
         $result['father'] = $resolver->resolve($result['father']);
         $result['mother'] = $resolver->resolve($result['mother']);
         foreach($result['children'] as $q=>$child) {
@@ -643,6 +662,7 @@ class WikiTreeManager
         }
 
         $result = $this->parseWikiTreeData($crawler->html());
+        $result['id'] = $data['wikiTreeUserID'];
 
         if ($result['hints']['private children']) {
             $result = $this->parseWikiTreeFamilyData($result, $data['wikiTreeUserID'], $cookieJar);
@@ -679,6 +699,7 @@ class WikiTreeManager
         $session->set('cookieJar',$cookieJar);
         $session->set('result', $result);
         $session->save();
+        $this->writeProfile($result);
         return $result;
     }
 
@@ -728,7 +749,6 @@ class WikiTreeManager
                 }
             }
         }
-
         return $result;
     }
 
@@ -786,6 +806,86 @@ class WikiTreeManager
         $result['parameters']['cemeteries'] = $this->getCemeteries();
         ksort($result['parameters']['cemeteries']);
         file_put_contents(__DIR__ . '/../../config/packages/cemeteries.yaml', Yaml::dump($result, 8, 4));
+    }
 
+    /**
+     * @return array
+     */
+    public function getProfiles(): array
+    {
+        return $this->profiles;
+    }
+
+    /**
+     * @param array $profiles
+     */
+    public function setProfiles(array $profiles): void
+    {
+        $this->profiles = $profiles;
+    }
+
+    /**
+     * @param array $result
+     */
+    private function writeProfile(array $result)
+    {
+        $profile = $this->getProfile($result['id']);
+
+        $profile['name'] = $result['name']['full'];
+
+        $profiles = $this->getProfiles();
+        $profile['dob'] = $result['birth']['date'];
+        $profile['dod'] = $result['death']['date'];
+        foreach($result['spouse'] as $q=>$spouse) {
+            $profile['dom'][$spouse['ID']]['id'] = $spouse['ID'];
+            $profile['dom'][$spouse['ID']]['date'] = $spouse['date'];
+            $profile['dom'][$spouse['ID']]['name'] = $spouse['name'];
+        }
+        $profiles[$result['id']] = $profile;
+
+        $this->setProfiles($profiles);
+        $this->writeProfiles();
+    }
+
+    /**
+     * @param string $id
+     * @return array
+     */
+    private function getProfile(string $id): array
+    {
+        $profiles = $this->getProfiles();
+        $profile = key_exists($id, $profiles) ? $profiles[$id] : [];
+
+        $resolver = new OptionsResolver();
+        $resolver->setDefaults(
+            [
+                'id' => $id,
+                'name' => '',
+                'dob' => null,
+                'dom' => [],
+                'dod' => null,
+            ]
+        );
+
+        $resolver->setAllowedTypes('id', 'string');
+        $resolver->setAllowedTypes('name', 'string');
+        $resolver->setAllowedTypes('dod', ['null','string']);
+        $resolver->setAllowedTypes('dob', ['null','string']);
+        $resolver->setAllowedTypes('dom', ['null','array']);
+        $profile = $resolver->resolve($profile);
+        $profiles[$id] = $profile;
+        $this->setProfiles($profiles);
+
+        return $profile;
+    }
+
+    /**
+     * @return void
+     */
+    private function writeProfiles()
+    {
+        $profiles = [];
+        $profiles['parameters']['profiles'] = $this->getProfiles();
+        file_put_contents(__DIR__.'/../../config/packages/profiles.yaml', Yaml::dump($profiles, 8));
     }
 }
