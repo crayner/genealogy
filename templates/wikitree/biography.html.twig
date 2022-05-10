@@ -163,7 +163,7 @@
                 {% set age = age|replace({', ,': ','}) %}
                 {% set age = 'death.age.display'|trans({age: age|trim(' ,')}) %}
             {% endif %}
-            {% set joiner = form.children.passedAwayJoiner.vars.value|trans %}
+            {% set joiner = form.children.passedAwayJoiner.vars.value|default('in')|trans %}
             <p>{{ 'death.sentence'|trans({tense: tense, '{preferred}': result.name.preferred, '{date}': result.death.date, '{location}': result.death.location, '{joiner}': joiner}) }}{{ age }}{% if result.interredSite is not same as('') %}, {{ 'and is interred at'|trans({'{site}': result.interredSite}) }}.</p>{% else %}.</p>{% endif %}
         {% elseif result.death.status %}
             <p>{{ 'death.unknown'|trans({'{name}': result.name.preferred, '{citation}': "{{Citation Needed}}"}) }}</p>
