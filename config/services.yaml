@@ -37,3 +37,5 @@ services:
             $locations: '%locations%'
             $doTheSort: '%do_the_sort%'
             $profiles: '%profiles%'
+        calls:
+            - setJoiners: ['%joiners%']

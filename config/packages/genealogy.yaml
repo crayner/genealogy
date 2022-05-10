@@ -6,3 +6,8 @@ parameters:
         - maiden
         - married
     do_the_sort: false
+    joiners:
+        passed_away:
+            in: in
+            at: at
+            late of: late of

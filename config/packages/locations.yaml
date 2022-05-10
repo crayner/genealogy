@@ -220,7 +220,6 @@ parameters:
         - 'Guntawang, New South Wales'
         - 'Hamilton, New South Wales'
         - 'Harbord, New South Wales'
-        - 'Hardin, New South Wales'
         - 'Hargraves, New South Wales'
         - 'Hastings, Victoria'
         - 'Hawkesbury Hospital, Windsor, New South Wales'
@@ -265,7 +264,6 @@ parameters:
         - 'Lidsdale, New South Wales'
         - 'Lillimur, Victoria'
         - 'Limekilns, New South Wales'
-        - 'Limestone Flat, New South Wales'
         - 'Linburn, New South Wales'
         - 'Lindfield, New South Wales'
         - 'Lismore, New South Wales'
@@ -524,3 +522,10 @@ parameters:
         - Bankstown-Lidcombe Hospital, Bankstown, New South Wales
         - Dabee, New South Wales
         - Denistone West, New South Wales
+        - Haberfield, New South Wales
+        - Moruya, New South Wales
+        - Darlington, New South Wales
+        - Carcalgong, New South Wales
+        - Harden, New South Wales
+        - Brookvale, New South Wales
+        - Triamble, New South Wales

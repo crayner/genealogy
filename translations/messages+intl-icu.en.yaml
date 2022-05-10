@@ -41,11 +41,11 @@ marriage:
 death:
     sentence: >-
         { tense, select,
-            on {{preferred} passed away on {date} at {location}}
-            in {{preferred} passed away in {date} at {location}}
-            before {{preferred} passed away before {date} at {location}}
-            after {{preferred} passed away after {date} at {location}}
-            about {{preferred} passed away about {date} at {location}}
+            on {{preferred} passed away on {date}{joiner}{location}}
+            in {{preferred} passed away in {date}{joiner}{location}}
+            before {{preferred} passed away before {date}{joiner}{location}}
+            after {{preferred} passed away after {date}{joiner}{location}}
+            about {{preferred} passed away about {date}{joiner}{location}}
             other {Maybe {preferred} will live forever, or the system has failed.}
         }
     age:
@@ -112,3 +112,8 @@ Registration: Registration Number
 Registration year: The Year of Registration
 Use the NSW BDM Registration to find the date of BDM.: Use the NSW BDM Registration to find the date of BDM.
 NSW BDM Date Finder: NSW BDM Date Finder
+in: ' in '
+at: ' at '
+late of: ', late of '
+Passed away Joiner: Passed away Joiner
+Wording used for connection of the place where this person passed away.: Wording used for connection of the place where this person passed away.

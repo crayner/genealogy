@@ -53,6 +53,11 @@ class WikiTreeManager
     var bool $doTheSort = false;
 
     /**
+     * @var array
+     */
+    private array $joiners;
+
+    /**
      * @var WikitreeParser|null
      */
     private ?WikitreeParser $parser = null;
@@ -401,5 +406,29 @@ class WikiTreeManager
     public function getParser(): WikitreeParser
     {
         return $this->parser = $this->parser ?: new WikitreeParser();
+    }
+
+    /**
+     * @param string|null $type
+     * @return array
+     */
+    public function getJoiners(?string $type = null): array
+    {
+        switch ($type) {
+            case 'passedAway':
+                return $this->joiners['passed_away'];
+            default:
+                return $this->joiners;
+        }
+    }
+
+    /**
+     * @param array $joiners
+     * @return WikiTreeManager
+     */
+    public function setJoiners(array $joiners): WikiTreeManager
+    {
+        $this->joiners = $joiners;
+        return $this;
     }
 }

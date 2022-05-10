@@ -32,7 +32,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class WikiTreeBiographyType extends AbstractType
 {
-    var WikiTreeManager $manager;
+    /**
+     * @var WikiTreeManager
+     */
+    private WikiTreeManager $manager;
+
+    /**
+     * @var array
+     */
+    private array $passedAwayJoiners;
 
     /**
      * @param WikiTreeManager $manager
@@ -137,6 +145,15 @@ class WikiTreeBiographyType extends AbstractType
                     'required' => false,
                 ]
             )
+            ->add('passedAwayJoiner', ChoiceType::class,
+                [
+                    'label' => 'Passed away Joiner',
+                    'help' => 'Wording used for connection of the place where this person passed away.',
+                    'required' => false,
+                    'placeholder' => 'in',
+                    'choices' => $this->getPassedAwayJoiners(),
+                ]
+            )
             ->add('baptismDate', DateType::class,
                 [
                     'label' => 'Date of Baptism',
@@ -232,5 +249,14 @@ class WikiTreeBiographyType extends AbstractType
         $result = [];
         foreach($this->getLocations() as $location) $result[$location] = $location;
         return $result;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPassedAwayJoiners(): array
+    {
+        if (isset($this->passedAwayJoiners)) return $this->passedAwayJoiners;
+        return $this->passedAwayJoiners = $this->getManager()->getJoiners('passedAway');
     }
 }
