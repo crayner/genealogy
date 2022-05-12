@@ -26,8 +26,10 @@ parameters:
         'Bexley Church of England Christ Church':
             category: 'Christ Church Anglican Church, Bexley, New South Wales'
             name: 'Christ Church Church of England, Bexley, New South Wales'
-        'Biddon Methodist Lutheran Church':
+        'Biddon Lutheran Church':
             category: 'Lutheran Church, Biddon, New South Wales'
+        'Biddon Methodist Church':
+            category: 'Methodist Church, Biddon, New South Wales'
         'Binnaway Union':
             category: 'Binnaway Union Church, Binnaway, New South Wales'
         'Bondi Catholic St Anne':
@@ -195,8 +197,11 @@ parameters:
         'Lewisham Catholic St Thomas':
             category: 'St Thomas of Canterbury Catholic Church, Lewisham, New South Wales'
         'Limestone Flat Methodist Wesleyan':
-            category: 'Wesleyan Chapel, Limestone Flat, New South Wales'
-            name: 'Limestone Flat Methodist Church'
+            category: Limestone Flat - Gulgamree Wesleyan Chapel, Cudgegong, New South Wales
+            name: 'Limestone Flat Wesleyan Methodist Church'
+        'Gulgamree Methodist Wesleyan':
+            category: Limestone Flat - Gulgamree Wesleyan Chapel, Cudgegong, New South Wales
+            name: 'Gulgamree Wesleyan Methodist Church'
         'Lithgow Church of England St Paul':
             category: 'St Paul''s Anglican Church, Lithgow, New South Wales'
             name: 'St Paul''s Church of England, Lithgow, New South Wales'
@@ -420,3 +425,9 @@ parameters:
         Newtown Church of England St Stephen:
             category: St Stephen's Anglican Church, Newtown, New South Wales        
             name: St Stephen's Church of England, Newtown, New South Wales        
+        Bendigo Presbyterian Church, St Andrew:
+            category: St Andrew's Uniting Church, Bendigo, Victoria
+            name: St Andrew's Presbyterian Church, Bendigo, Victoria
+        Riverstone Presbyterian Church St Andrew:
+            category: St Andrew's Uniting Church, Riverstone, New South Wales
+            name: St Andrew's Presbyterian Church, Riverstone, New South Wales

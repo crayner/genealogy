@@ -373,8 +373,7 @@ parameters:
             category: 'Trangie General Cemetery, Trangie, New South Wales'
             name: 'Trangie Cemetery, Trangie, New South Wales'
         'Triangle Swamp Cemetery':
-            category: 'Triangle Swamp Cemetery, Triangle Swamp, New South Wales'
-            name: 'Triangle Swamp Cemetery, Triangle Swamp, New South Wales'
+            category: 'Triangle Swamp Cemetery, Bocoble, New South Wales'
         'Tweed Heads Old Cemetery':
             category: 'Tweed Heads Old General Cemetery, Tweed Heads, New South Wales'
             name: 'Tweed Heads Old Cemetery, Tweed Heads, New South Wales'
@@ -423,3 +422,12 @@ parameters:
             category: Forster Cemetery, Forster, New South Wales
         Windeyer Cemetery: 
             category: Windeyer Cemetery, Windeyer, New South Wales  
+        Clermont Cemetery,Queensland:
+            category: Clermont Cemetery, Clermont, Queensland
+        Glen Innes Cemetery:
+            category: Glen Innes General Cemetery, Glen Innes, New South Wales
+            name: Glen Innes Cemetery, Glen Innes, New South Wales
+        Buderim Crematorium and Memorial Gardens, Queensland:
+            category: Buderim Crematorium and Memorial Gardens, Buderim, Queensland  
+        Alamein Memorial, El Alamein, Egypt:
+            category: Alamein Memorial, El Alamein, Egypt

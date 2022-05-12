@@ -58,6 +58,7 @@ class WikiTreeController extends AbstractController
                 $data["congregations"] = [];
                 $data["locations"] = [];
                 $data["raynerPage"] = null;
+                $data['passedAwayJoiner'] = null;
             }
 
             $result = $manager->login($data, $stack->getSession());
