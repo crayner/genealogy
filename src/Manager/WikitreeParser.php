@@ -454,6 +454,22 @@ class WikitreeParser
             $result['age']['y'] = intval(substr($result['death']['source'],0,4)) - intval(substr($result['birth']['source'],0,4));
             $result['age']['status'] = true;
         }
+        if ($result['birth']['dateStatus'] !== 'invalid' && $result['death']['dateStatus'] === 'invalid') {
+            $death = new \DateTimeImmutable("today");
+            $birth = new \DateTimeImmutable($result['birth']['source']);
+            $age = $death->diff($birth);
+            $result['age']['y'] = $age->format('%y');
+            $result['age']['m'] = $age->format('%m');
+            $result['age']['d'] = $age->format('%d');
+            if ($result['age']['y'] < 90) {
+                $result['death']['status'] = false;
+            }
+        }
+
+        if ($result['death']['status'] && $result['death']['dateStatus'] === 'invalid') {
+            $result['categories'][] = '[[Category: Estimated Death Date]]';
+            $result['categories'][] = '[[Category: Australia, Needs Death Source Researched]]';
+        }
 
         if ($result['name']['preferred'] === '') {
             $result['name']['preferred'] = $result['name']['given'];
@@ -508,7 +524,7 @@ class WikitreeParser
         }
         if ($result['age']['status']) {
             if ($result['age']['y'] >= 100) {
-                $result['templates'][] = '{{Centenarian |age= 100 |living= no }}';
+                $result['templates'][] = '{{Centenarian | age= 100 }}';
             }
             if ($result['age']['y'] < 18) {
                 $result['templates'][] = '{{Died Young}}';
@@ -526,6 +542,10 @@ class WikitreeParser
         } else if ($result['birth']['date'] instanceof \DateTimeImmutable && $result['birth']['date']->format('Ymd') < date('Ymd', strtotime('1901-01-01'))) {
             $result['templates'][] = '{{Australia Born in Colony|colony=Colony of New South Wales}}';
         }
+        if ($result['birth']['date'] instanceof \DateTimeImmutable && $result['birth']['date']->format('Ymd') >= date('Ymd', strtotime("+100 Years"))) {
+            $result['templates'][] = '{{Centenarian | age= 100 | living = yes }}';
+        }
+
         $result['valid'] = true;
         $this->setResult($result);
         return $this->getResult();

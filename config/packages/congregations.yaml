@@ -13,8 +13,8 @@ parameters:
             name: 'St Barnabas'' Church of England'
             category: 'St Barnabas'' Anglican Church, Bathurst, New South Wales'
         'Bathurst Methodist Church':
-            name: 'Bathurst Methodist Church'
-            category: 'Bathurst Uniting Church, Bathurst, New South Wales'
+            name: 'Bathurst Methodist Church, Bathurst, New South Wales'
+            category: 'Uniting Church, Bathurst, New South Wales'
         'Bellevue Hill Church of England St Stephen':
             name: 'St Stephen''s Church of England'
             category: 'St Stephen''s Anglican Church, Bellevue Hill, New South Wales'
@@ -397,7 +397,7 @@ parameters:
             category: 'Waterloo Congregational Church, Waterloo, New South Wales'
         'Waverley Methodist Church':
             category: 'Waverley Methodist Church, Bondi Junction, New South Wales'
-        'Wayside Chapel':
+        'Wayside Chapel Bondi Beach':
             category: 'Wayside Chapel, Bondi Beach, New South Wales'
         'Wellington Anglican St John':
             name: 'St John the Baptist Anglican, Wellington'
@@ -431,3 +431,11 @@ parameters:
         Riverstone Presbyterian Church St Andrew:
             category: St Andrew's Uniting Church, Riverstone, New South Wales
             name: St Andrew's Presbyterian Church, Riverstone, New South Wales
+        'Cudgegong Church of England St James':
+            category: 'St James'' Church of England, Cudgegong, New South Wales'
+        Woollahra Catholic Church, Holy Cross:
+            category: Holy Cross Woollahra Catholic Church, Bondi Junction, New South Wales
+        Sydney Presbyterian Church,  St Stephen, Surry Hills:
+            category: St Stephen's Presbyterian Church, Surry Hills, New South Wales 
+        Auburn Presbyterian Church:
+            category: Auburn Presbyterian Church, Auburn, New South Wales             

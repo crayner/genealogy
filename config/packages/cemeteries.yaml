@@ -431,3 +431,20 @@ parameters:
             category: Buderim Crematorium and Memorial Gardens, Buderim, Queensland  
         Alamein Memorial, El Alamein, Egypt:
             category: Alamein Memorial, El Alamein, Egypt
+        Tannabutta Cemetery:
+            category: Tannabutta Cemetery, Apple Tree Flat, New South Wales  
+        Fawkner Memorial Park, Victoria:
+            category: Fawkner Memorial Park, Fawkner, Victoria
+        Pasadena, Centennial Park, SA:
+            category: Centennial Park Cemetery, Pasadena, South Australia 
+        Centennial Park Cemetery, Pasadena, SA:
+            category: Centennial Park Cemetery, Pasadena, South Australia 
+        Goonellabah Crematorium:
+            category: Lismore Memorial Gardens, Goonellabah, New South Wales  
+        Fouilloy, Somme, France Cemetery:
+            category: Villers-Bretonneux Military Cemetery, Fouilloy, Somme            
+            name: Villers-Bretonneux Military Cemetery, Fouilloy, Somme, France   
+        Bancourt British Cemetery:
+            category: Bancourt British Cemetery, Bancourt, Pas-de-Calais
+            name: Bancourt British Cemetery, Bancourt, Pas-de-Calais, France
+            
