@@ -212,6 +212,7 @@ class WikiTreeManager
         $session->set('result', $result);
         $session->save();
         $this->writeProfile($result);
+        dump($result);
         return $result;
     }
 
