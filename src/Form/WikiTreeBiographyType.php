@@ -136,6 +136,7 @@ class WikiTreeBiographyType extends AbstractType
                     'choices' => $this->getCemeteryChoices(),
                     'required' => false,
                     'choice_translation_domain' => false,
+                    'multiple' => true,
                 ]
             )
             ->add('interredLocation', TextType::class,
@@ -179,10 +180,6 @@ class WikiTreeBiographyType extends AbstractType
                     'multiple' => true,
                     'choice_translation_domain' => false,
                     'placeholder' => 'No Congregation Selected',
-                    'attr' => [
-  //                      'rows' => 10,
-  //                      'class' => 'multipleChoice',
-                    ],
                 ]
             )
             ->add('locations', ChoiceType::class,

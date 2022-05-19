@@ -179,9 +179,10 @@ class WikiTreeManager
             $result = $this->parseWikiTreeFamilyData($result, $data['wikiTreeUserID'], $cookieJar);
         }
 
-        if (!is_null($data['interredCemetery'])) {
-            if (key_exists($data['interredCemetery'], $this->getCemeteries())) {
-                $name = trim($data['interredCemetery']);
+        if (!empty($data['interredCemetery'])) {
+            $name = $data['interredCemetery'][0];
+            if (key_exists($name, $this->getCemeteries())) {
+                $name = trim($name);
                 $result['categories'][] = '[[Category: ' . $this->getCemeteryCategory($name) . ']]';
                 $result['interredSite'] = trim($this->getCemeteryName($name) . ', ' . $data['interredLocation'], " ,.");
             }
