@@ -440,4 +440,34 @@ parameters:
         Auburn Presbyterian Church:
             category: Auburn Presbyterian Church, Auburn, New South Wales      
         Glandore Black Forest Baptist Church, SA:
-            category: Black Forest Baptist Church, Glandore, South Australia   
+            category: Black Forest Baptist Church, Glandore, South Australia
+        Ulan Church of England, St Cuthbert:
+            category: St Cuthbert's Church of England, Ulan, New South Wales
+        Ulan Presbyterian:
+            category: Ulan Presbyterian Church, Ulan, New South Wales
+        Mudgee Salvation Army:
+            category: Mudgee Salvation Army Corps, Mudgee, New South Wales
+        Coffs Harbour Catholic Church, St Augustine:
+            category: St Augustine's Catholic Church, Coffs Harbour, New South Wales  
+        Moree Catholic St Francis Xavier:
+            category: St Francis Xavier's Catholic Church, Moree, New South Wales   
+        Garah Presbyterian Church:
+            category: Presbyterian Church, Garah, New South Wales            
+        Dubbo Salvation Army Corps:
+            category: Dubbo Salvation Army Corps, Dubbo, New South Wales
+        Dubbo Methodist Church:
+           category: Dubbo Uniting Church, Dubbo, New South Wales
+           name: Dubbo Methodist Church, Dubbo, New South Wales
+        Coffs Harbour Methodist Church:
+            category: Coffs Harbour Wesleyan Methodist Church, Coffs Harbour, New South Wales  
+        Taree Salvation Army:
+            category: Taree Salvation Army Corps, Taree, New South Wales
+        Forbes Church of England, St John:
+            category: St John's Anglican Church, Forbes, New South Wales
+            name: St John's Church of England, Forbes, New South Wales
+        North Rocks Methodist:
+            category: North Rocks Uniting Church, North Rocks, New South Wales
+            name: North Rocks Methodist Church, North Rocks, New South Wales
+        Fairfield Church of England, St Barnabas:
+            category: St Barnabas' Anglican Church, Fairfield, New South Wales
+            name: St Barnabas' Church of England, Fairfield, New South Wales
