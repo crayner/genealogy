@@ -1,6 +1,0 @@
-# The name and the category can be different.  The name is optional
-parameters:
-    congregations:
-        'Auburn Church of England St Phillip':
-            name: 'St Phillip''s Church of England, Auburn, New South Wales'
-            category: 'St Phillip''s Anglican Church, Auburn, New South Wales'
