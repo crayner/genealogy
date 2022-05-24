@@ -415,9 +415,12 @@ class WikiTreeManager
      */
     public function getJoiners(?string $type = null): array
     {
+        dump($this->joiners);
         switch ($type) {
             case 'passedAway':
                 return $this->joiners['passed_away'];
+            case 'marriage':
+                return $this->joiners['marriage'];
             default:
                 return $this->joiners;
         }

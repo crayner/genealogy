@@ -43,6 +43,11 @@ class WikiTreeBiographyType extends AbstractType
     private array $passedAwayJoiners;
 
     /**
+     * @var array
+     */
+    private array $marriageJoiners;
+
+    /**
      * @param WikiTreeManager $manager
      */
     public function __construct(WikiTreeManager $manager)
@@ -155,6 +160,15 @@ class WikiTreeBiographyType extends AbstractType
                     'choices' => $this->getPassedAwayJoiners(),
                 ]
             )
+            ->add('marriageJoiner', ChoiceType::class,
+                [
+                    'label' => 'Marriage Joiner',
+                    'help' => 'Wording used for connection of the place where this person was married.',
+                    'required' => false,
+                    'placeholder' => 'in',
+                    'choices' => $this->getMarriageJoiners(),
+                ]
+            )
             ->add('baptismDate', DateType::class,
                 [
                     'label' => 'Date of Baptism',
@@ -255,5 +269,14 @@ class WikiTreeBiographyType extends AbstractType
     {
         if (isset($this->passedAwayJoiners)) return $this->passedAwayJoiners;
         return $this->passedAwayJoiners = $this->getManager()->getJoiners('passedAway');
+    }
+
+    /**
+     * @return array
+     */
+    public function getMarriageJoiners(): array
+    {
+        if (isset($this->marriageJoiners)) return $this->marriageJoiners;
+        return $this->marriageJoiners = $this->getManager()->getJoiners('marriage');
     }
 }
