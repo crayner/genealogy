@@ -50,6 +50,10 @@ class WikiTreeController extends AbstractController
         if ($form->isSubmitted()) {
             $data = $form->getData();
 
+            if (is_array($data['interredCemetery']) && count($data['interredCemetery']) > 1) {
+                $data['interredCemetery'] = null;
+            }
+
             if ($form->get('reset')->isClicked()) {
                 $data["interredCemetery"] = null;
                 $data["interredLocation"] = null;
@@ -59,6 +63,7 @@ class WikiTreeController extends AbstractController
                 $data["locations"] = [];
                 $data["raynerPage"] = null;
                 $data['passedAwayJoiner'] = null;
+                $data['marriageJoiner'] = null;
             }
 
             $result = $manager->login($data, $stack->getSession());

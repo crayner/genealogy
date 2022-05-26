@@ -437,8 +437,8 @@ class WikitreeParser
         }
         $result['death']['location'] = trim(str_replace(['[uncertain]',"\r","\n",'Died','before','after','about','[death date?]', $xxx],'', $result['death']['location']));
         $result['death']['location'] = preg_replace('/^in /',"", $result['death']['location']);
-        $result['death']['location'] = preg_replace("/at([ ]{1,2})age([ ]{1,2})(\d.)in([ ]{1,2})/","", $result['death']['location']);
-        $result['death']['location'] = preg_replace("/at([ ]{1,2})age([ ]{1,2})(\d.)/","", $result['death']['location']);
+        $result['death']['location'] = preg_replace("/at([ ]{1,2})age([ ]{1,2})(\d.*)in([ ]{1,2})/","", $result['death']['location']);
+        $result['death']['location'] = preg_replace("/at([ ]{1,2})age([ ]{1,2})(\d.*)/","", $result['death']['location']);
 
         $result['age']['status'] = false;
         $result['age']['y'] = 0;
