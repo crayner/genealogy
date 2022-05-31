@@ -135,7 +135,7 @@
                 {% if spouse.dateStatus is not same as('full') %}{% set date_string = spouse.source %}{% endif %}
                 {% set joiner = form.children.marriageJoiner.vars.value|default('in')|trans %}
                 <p>{{ 'marriage.sentence'|trans({'{preferred}': result.name.preferred,
-                        '{spouse}': '[[' ~ spouse.ID ~ '|\'\'\''~ spouse.nameAtBirth ~ '\'\'\']]',
+                        '{spouse}': '\'\'\'[[' ~ spouse.ID ~ '|'~ spouse.nameAtBirth ~ ']]\'\'\'',
                         '{date}': spouse.date,
                         '{joiner}': joiner,
                         '{location}': spouse.location, 'date_format': spouse.dateStatus }) }}
