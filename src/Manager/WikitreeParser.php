@@ -508,23 +508,10 @@ class WikitreeParser
             $result['name']['atBirth'] = $result['name']['currentLast'] = $result['name']['family'];
         }
 
-        $states = ['New South Wales','Victoria','South Australia','Western Australia','Tasmania','Queensland','Northern Territory','Australian Capital Territory'];
-        $location = '';
+        $result = $this->generateBirthSticker($result);
 
 
-        if ($result['age']['status'] || $result['birth']['dateStatus'] !== 'invalid') {
-            foreach(explode(',', $result['birth']['location']) as $value) {
-                if (in_array(trim($value), $states)) {
-                    $location = trim($value);
-                    break;
-                }
-            }
-            if (intval(substr($result['birth']['source'], 0, 4)) >= 1901) {
-                $result['templates'][] = '{{Australia Sticker|'.$location.'}}';
-            } else {
-                $result['templates'][] = '{{Australia Born in Colony|colony=Colony of '.$location.'}}';
-            }
-        }
+
         if ($result['age']['status']) {
             if ($result['age']['y'] >= 100) {
                 $result['templates'][] = '{{Centenarian | age= 100 }}';
@@ -586,5 +573,34 @@ class WikitreeParser
     {
         $this->result = $result;
         return $this;
+    }
+
+    /**
+     * @param array $result
+     * @return array
+     */
+    private function generateBirthSticker(array $result): array
+    {
+        $location = '';
+
+        if ($result['age']['status'] || $result['birth']['dateStatus'] !== 'invalid') {
+
+            if (str_contains($result['birth']['location'], 'Australia')) {
+                $states = ['New South Wales','Victoria','South Australia','Western Australia','Tasmania','Queensland','Northern Territory','Australian Capital Territory'];
+                foreach (explode(',', $result['birth']['location']) as $value) {
+                    if (in_array(trim($value), $states)) {
+                        $location = trim($value);
+                        break;
+                    }
+                }
+
+                if (intval(substr($result['birth']['source'], 0, 4)) >= 1901) {
+                    $result['templates'][] = '{{Australia Sticker|' . $location . '}}';
+                } else {
+                    $result['templates'][] = '{{Australia Born in Colony|colony=Colony of ' . $location . '}}';
+                }
+            }
+        }
+        return $result;
     }
 }
