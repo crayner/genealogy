@@ -123,7 +123,13 @@
             {% endfor %}
             {% set gender = 'birth.gender'|trans({gender: gender}) %}
             {% set name = "'''" ~ name ~ "'''" %}
-            {{ 'birth.sentence'|trans({'name': name, 'date': result.birth.date, '{gender}': gender, date_status: result.birth.dateStatus, '{location}': result.birth.location, '{father}': father, '{mother}': mother}) }}
+            {% set joiner = 'in'|trans %}
+            {% set citation = '' %}
+            {% if result.birth.about %}
+                {% set joiner = 'about'|trans %}
+                {% set citation = '{{Citation Needed}}' %}
+            {% endif %}
+            {{ 'birth.sentence'|trans({'name': name, '{joiner}': joiner, '{citation}': citation, 'date': result.birth.date, '{gender}': gender, date_status: result.birth.dateStatus, '{location}': result.birth.location, '{father}': father, '{mother}': mother}) }}
 {# Baptism Sentence #}
         {% if result.baptism.date is not same as(null) or result.baptism.location is not same as(null) %}
             {{ ' ' ~ 'baptism.sentence'|trans({'name': result.name.preferred, 'date': result.baptism.date, '{location}': result.baptism.location}) }}

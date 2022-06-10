@@ -406,9 +406,9 @@ class WikitreeParser
             }
             if (str_contains($result['birth']['location'], 'before')) $result['birth']['before'] = true;
             if (str_contains($result['birth']['location'], 'after')) $result['birth']['after'] = true;
+            if (str_contains($result['birth']['location'], 'about')) $result['birth']['about'] = true;
         }
         $result['birth']['location'] = trim(str_replace(["\r","\n",'Born','before','after','[birth date?]','in ','about','[uncertain]', $xxx], '', $result['birth']['location']));
-
         $result['death']['status'] = false;
         if (str_contains($result['death']['location'], 'Died')) {
             $result['death']['status'] = true;
@@ -467,6 +467,10 @@ class WikitreeParser
             if ($result['age']['y'] < 90) {
                 $result['death']['status'] = false;
             }
+        }
+
+        if ($result['birth']['about']) {
+            $result['categories'][] = '[[Category: Estimated Birth Date]]';
         }
 
         if ($result['death']['status'] && $result['death']['dateStatus'] === 'invalid') {
@@ -586,7 +590,7 @@ class WikitreeParser
         if ($result['age']['status'] || $result['birth']['dateStatus'] !== 'invalid') {
 
             if (str_contains($result['birth']['location'], 'Australia')) {
-                $states = ['New South Wales','Victoria','South Australia','Western Australia','Tasmania','Queensland','Northern Territory','Australian Capital Territory'];
+                $states = ['New South Wales', 'Victoria', 'South Australia', 'Western Australia', 'Tasmania', 'Queensland', 'Northern Territory', 'Australian Capital Territory'];
                 foreach (explode(',', $result['birth']['location']) as $value) {
                     if (in_array(trim($value), $states)) {
                         $location = trim($value);
@@ -599,6 +603,11 @@ class WikitreeParser
                 } else {
                     $result['templates'][] = '{{Australia Born in Colony|colony=Colony of ' . $location . '}}';
                 }
+            }
+
+            if (str_contains($result['birth']['location'], 'England, United Kingdom')) {
+                $place = explode(',', $result['birth']['location']);
+                $result['templates'][] = '{{England Sticker|' . trim($place[1]) . '|' . trim($place[0]) . '}}';
             }
         }
         return $result;

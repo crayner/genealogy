@@ -8,8 +8,8 @@ birth:
     sentence: >- 
         { date_status, select, 
             full {{name} was born on {date}, the {gender} of {father} and {mother}, in {location}.}
-            year {{name} was born in {date}, the {gender} of {father} and {mother}, in {location}.}
-            monthYear {{name}was born in {date}, the {gender} of {father} and {mother}, in {location}.}
+            year {{name} was born{citation} {joiner} {date}, the {gender} of {father} and {mother}, in {location}.}
+            monthYear {{name} was born{citation} {joiner} {date}, the {gender} of {father} and {mother}, in {location}.}
             other {{name} was born, the {gender} of {father} and {mother}, in {location}.}
         }
     unknown:
@@ -121,3 +121,4 @@ Passed away Joiner: Passed away Joiner
 Wording used for connection of the place where this person passed away.: Wording used for connection of the place where this person passed away.
 Marriage Joiner: Marriage Joiner
 Wording used for connection of the place where this person was married.: Wording used for connection of the place where this person was married.
+about: about
