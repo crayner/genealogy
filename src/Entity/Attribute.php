@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 /**
  * Class Attribute
- * @selectPure App\Entity
+ * @selectPure  App\Entity
  * @author  Craig Rayner <craig@craigrayner.com>
  * 1/04/2021 09:21
  * @ORM\Entity(repositoryClass=AttributeRepository::class)

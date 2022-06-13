@@ -433,7 +433,7 @@ class WikitreeParser
             }
             if (str_contains($result['death']['location'], 'before')) $result['death']['before'] = true;
             if (str_contains($result['death']['location'], 'after')) $result['death']['after'] = true;
-            if (str_contains($result['death']['location'], 'about')) $result['death']['about'] = true;
+            if (str_contains($result['death']['location'], 'about') && !$result['birth']['about']) $result['death']['about'] = true;
         }
         $result['death']['location'] = trim(str_replace(['[uncertain]',"\r","\n",'Died','before','after','about','[death date?]', $xxx],'', $result['death']['location']));
         $result['death']['location'] = preg_replace('/^in /',"", $result['death']['location']);
