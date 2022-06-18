@@ -2,8 +2,7 @@
     align-content: center;
 }
 .container {
-    width: 1200px;
-    border: solid 1px black;
+    width: 100%;
 }
 .formElement {
     border: solid 1px black;
@@ -39,7 +38,7 @@
 }
 .right_half {
     float: right;
-    max-width: 40%;
+    max-width: 540px;
     width: 40%
 }
 .left-half {

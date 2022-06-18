@@ -19,6 +19,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -160,6 +161,48 @@ class WikiTreeBiographyType extends AbstractType
                     'choices' => $this->getPassedAwayJoiners(),
                 ]
             )
+            ->add('spouseName', TextType::class,
+                [
+                    'label' => 'Spouse Name',
+                    'required' => false,
+                ]
+            )
+            ->add('profileIdentifier', NumberType::class,
+                [
+                    'label' => 'Profile Identifier',
+                    'help' => 'Profile Identifier Help',
+                    'required' => false,
+                    'scale' => 0,
+                ]
+            )
+            ->add('marriageDate', DateType::class,
+                [
+                    'label' => 'Marriage Date',
+                    'required' => false,
+                    'widget' => 'single_text',
+                    'input' => 'datetime_immutable',
+                ]
+            )
+            ->add('marriageLocation', ChoiceType::class,
+                [
+                    'label' => 'Marriage Location',
+                    'choices' => $this->getLocationChoices(),
+                    'required' => false,
+                    'multiple' => true,
+                    'choice_translation_domain' => false,
+                    'placeholder' => 'No Location Selected',
+                ]
+            )
+            ->add('marriageCongregation', ChoiceType::class,
+                [
+                    'label' => 'Marriage Congregation',
+                    'choices' => $this->getCongregationChoices(),
+                    'required' => false,
+                    'multiple' => true,
+                    'choice_translation_domain' => false,
+                    'placeholder' => 'No Congregation Selected',
+                ]
+            )
             ->add('marriageJoiner', ChoiceType::class,
                 [
                     'label' => 'Marriage Joiner',
@@ -205,10 +248,6 @@ class WikiTreeBiographyType extends AbstractType
                     'multiple' => true,
                     'choice_translation_domain' => false,
                     'placeholder' => 'No Location Selected',
-                    'attr' => [
- //                       'rows' => 10,
- //                       'class' => 'multipleChoice',
-                    ],
                 ]
             )
             ->add('raynerPage', TextType::class,

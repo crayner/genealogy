@@ -52,6 +52,18 @@ class WikiTreeController extends AbstractController
 
             if (is_array($data['interredCemetery']) && count($data['interredCemetery']) > 1) {
                 $data['interredCemetery'] = null;
+                $data['passedAwayJoiner'] = null;
+            }
+
+            if (! is_array($data['congregations']) || count($data['congregations']) === 0) {
+                $data['marriageJoiner'] = null;
+            }
+
+            if ($data['profileIdentifier'] === null) {
+                $data['marriageCongregations'] = null;
+                $data['marriageDate'] = null;
+                $data['spouseName'] = null;
+                $data['marriageLocation'] = null;
             }
 
             if ($form->get('reset')->isClicked()) {
@@ -64,6 +76,11 @@ class WikiTreeController extends AbstractController
                 $data["raynerPage"] = null;
                 $data['passedAwayJoiner'] = null;
                 $data['marriageJoiner'] = null;
+                $data['marriageCongregations'] = null;
+                $data['marriageDate'] = null;
+                $data['spouseName'] = null;
+                $data['marriageLocation'] = null;
+                $data['profileIdentifier'] = null;
             }
 
             $result = $manager->login($data, $stack->getSession());

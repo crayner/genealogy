@@ -65,7 +65,7 @@
             </div>
         </div>
         <div class="formElement" >
-            <div style="float: right; margin-right: 60px;"> {{ form_widget(form.congregations) }}</div>
+            <div style="float: right; margin-right: 60px;">{{ form_widget(form.congregations) }}</div>
             <div class="formLabel">
                 <p class="formLabel">{{ form_label(form.congregations) }}</p>
                 <p class="formHelp">{{ form_help(form.congregations) }}</p>
@@ -78,7 +78,7 @@
 
         </div>
         <div class="formElement">
-            <div style="float: right; margin-right: 60px;"> {{ form_widget(form.locations) }}</div>
+            <div style="float: right; margin-right: 60px;">{{ form_widget(form.locations) }}</div>
             <div>
                 <p class="formLabel">{{ form_label(form.locations) }}</p>
                 <p class="formHelp">{{ form_help(form.locations) }}</p>
@@ -96,6 +96,43 @@
                 <div class="formWidget">{{ form_widget(form.submit) }}</div>
                 <p class="formLabel">{{ form_label(form.submit) }}</p>
                 <p class="formHelp">{{ form_widget(form.reset) }}</p>
+            </div>
+        </div>
+        <div class="formElement"><h3>{{ 'Marriage Sentence'|trans }}</h3>
+        <p>{{ 'marriage_sentence_help'|trans }}</p></div>
+        <div class="formElement">
+            <div class="formLabel">
+                <div class="formWidget">{{ form_widget(form.profileIdentifier) }}</div>
+                <p class="formLabel">{{ form_label(form.profileIdentifier) }}</p>
+                <p class="formHelp">{{ form_help(form.profileIdentifier) }}</p>
+            </div>
+        </div>
+        <div class="formElement">
+            <div class="formLabel">
+                <div class="formWidget">{{ form_widget(form.spouseName) }}</div>
+                <p class="formLabel">{{ form_label(form.spouseName) }}</p>
+                <p class="formHelp">{{ form_help(form.spouseName) }}</p>
+            </div>
+        </div>
+        <div class="formElement">
+            <div class="formLabel">
+                <div class="formWidget">{{ form_widget(form.marriageDate) }}</div>
+                <p class="formLabel">{{ form_label(form.marriageDate) }}</p>
+                <p class="formHelp">{{ form_help(form.marriageDate) }}</p>
+            </div>
+        </div>
+        <div class="formElement">
+            <div style="float: right; margin-right: 60px;">{{ form_widget(form.marriageLocation) }}</div>
+            <div>
+                <p class="formLabel">{{ form_label(form.marriageLocation) }}</p>
+                <p class="formHelp">{{ form_help(form.marriageLocation) }}</p>
+            </div>
+        </div>
+        <div class="formElement">
+            <div style="float: right; margin-right: 60px;">{{ form_widget(form.marriageCongregation) }}</div>
+            <div>
+                <p class="formLabel">{{ form_label(form.marriageCongregation) }}</p>
+                <p class="formHelp">{{ form_help(form.marriageCongregation) }}</p>
             </div>
         </div>
 
@@ -137,7 +174,6 @@
         </p>
         {% if (result.spouse|length > 0) %}
             {% for spouse in result.spouse %}
-
                 {% if spouse.dateStatus is not same as('full') %}{% set date_string = spouse.source %}{% endif %}
                 {% set joiner = form.children.marriageJoiner.vars.value|default('in')|trans %}
                 <p>{{ 'marriage.sentence'|trans({'{preferred}': result.name.preferred,
@@ -194,6 +230,16 @@
         {% endif %}
     {% endif %}
     </div>
+    {% if form.vars.value.profileIdentifier > 0 %}
+        {% set location = '' %}
+        {% dump(form) %}
+        {% if form.vars.value.marriageLocation|length > 0 %}
+    {% dump(form.vars.value.marriageLocation) %}
+            {% set location = form.vars.value.marriageLocation[0] %}
+        {% endif %}
+        {% set dateString = form.vars.value.marriageDate|date('l, jS F Y') %}
+        {{ 'create_marriage_sentence'|trans({'{name}': result.name.preferred, '{location}': location, '{date}': dateString, '{spouse}': form.vars.value.spouseName, '{identifier}': form.vars.value.profileIdentifier}) }}
+    {% endif %}
 {% endblock body %}
         {% block javascripts %}
             {{ parent() }}
@@ -226,6 +272,26 @@
 
                 function disable() {
                     document.multiselect('#wikitreebiography_interredCemetery').setIsEnabled(false);
+                }
+
+                document.multiselect('#wikitreebiography_marriageLocation');
+
+                function enable() {
+                    document.multiselect('#wikitreebiography_marriageLocation').setIsEnabled(true);
+                }
+
+                function disable() {
+                    document.multiselect('#wikitreebiography_marriageLocation').setIsEnabled(false);
+                }
+
+                document.multiselect('#wikitreebiography_marriageCongregation');
+
+                function enable() {
+                    document.multiselect('#wikitreebiography_marriageCongregation').setIsEnabled(true);
+                }
+
+                function disable() {
+                    document.multiselect('#wikitreebiography_marriageCongregation').setIsEnabled(false);
                 }
             </script>
         {% endblock %}

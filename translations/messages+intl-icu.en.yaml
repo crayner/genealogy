@@ -122,3 +122,12 @@ Wording used for connection of the place where this person passed away.: Wording
 Marriage Joiner: Marriage Joiner
 Wording used for connection of the place where this person was married.: Wording used for connection of the place where this person was married.
 about: about
+Marriage Sentence: Marriage Sentence
+marriage_sentence_help: You can use either a location or a congregation, but the name of the spouse and the date are required.
+Spouse Name: Spouse Name
+Marriage Date: Marriage Date
+Marriage Location: Marriage Location
+Marriage Congregation: Marriage Congregation
+Profile Identifier: Profile Identifier
+Profile Identifier Help: To create a marriage sentence you must include the Wikitree unique identifier which is available in the url when editing a profile.  It is a number ONLY.
+create_marriage_sentence: "{name} married '''''[https://www.wikitree.com/index.php?title=Special:EditFamily&u={identifier}&who=spouse {spouse}]''''' on {date} in {location}."
