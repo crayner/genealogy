@@ -54,6 +54,10 @@ class WikiTreeController extends AbstractController
                 $data['interredCemetery'] = null;
                 $data['passedAwayJoiner'] = null;
             }
+            
+            if (is_array($data['interredCemetery']) && count($data['interredCemetery']) === 0) {
+                $data['interredLocation'] = null;
+            }
 
             if (! is_array($data['congregations']) || count($data['congregations']) === 0) {
                 $data['marriageJoiner'] = null;
@@ -63,7 +67,8 @@ class WikiTreeController extends AbstractController
                 $data['marriageCongregations'] = null;
                 $data['marriageDate'] = null;
                 $data['spouseName'] = null;
-                $data['marriageLocation'] = null;
+                $data['marriageLocation'] = [];
+                $data['marriageCongregation'] = [];
             }
 
             if ($form->get('reset')->isClicked()) {
@@ -76,10 +81,10 @@ class WikiTreeController extends AbstractController
                 $data["raynerPage"] = null;
                 $data['passedAwayJoiner'] = null;
                 $data['marriageJoiner'] = null;
-                $data['marriageCongregations'] = null;
                 $data['marriageDate'] = null;
                 $data['spouseName'] = null;
-                $data['marriageLocation'] = null;
+                $data['marriageLocation'] = [];
+                $data['marriageCongregation'] = [];
                 $data['profileIdentifier'] = null;
             }
 
@@ -92,7 +97,8 @@ class WikiTreeController extends AbstractController
         return $this->render('wikitree/biography.html.twig',
             [
                 'form' => $form->createView(),
-                'result' => $result
+                'result' => $result,
+                'manager' => $manager,
             ]
         );
     }

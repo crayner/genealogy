@@ -196,6 +196,13 @@ class WikiTreeManager
             }
         }
 
+        foreach ($data['marriageCongregation'] as $congregation) {
+            $category = '[[Category: '.$this->getCongregation($congregation).']]';
+            if (array_search($category, $result['categories']) === false) {
+                $result['categories'][] = $category;
+            }
+        }
+
         foreach ($data['locations'] as $location) {
             $category = '[[Category: '.$location.']]';
             if (array_search($category, $result['categories']) === false) {
@@ -266,11 +273,13 @@ class WikiTreeManager
 
     /**
      * @param string $congregation
+     * @param bool $name
      * @return string
      */
-    private function getCongregation(string $congregation): string
+    public function getCongregation(string $congregation, bool $name = false): string
     {
         if (key_exists($congregation, $this->getCongregations())) {
+            if ($name and key_exists('name', $this->getCongregations()[$congregation])) return $this->getCongregations()[$congregation]['name'];
             return $this->getCongregations()[$congregation]['category'];
         }
         return '';
