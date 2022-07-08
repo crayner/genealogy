@@ -593,7 +593,7 @@ class WikitreeParser
                 $states = ['New South Wales', 'Victoria', 'South Australia', 'Western Australia', 'Tasmania', 'Queensland', 'Northern Territory', 'Australian Capital Territory'];
                 foreach (explode(',', $result['birth']['location']) as $value) {
                     if (in_array(trim($value), $states)) {
-                        $location = trim($value);
+                        $location = str_replace(['Australian '],'',trim($value));
                         break;
                     }
                 }
@@ -605,9 +605,19 @@ class WikitreeParser
                 }
             }
 
-            if (str_contains($result['birth']['location'], 'England, United Kingdom')) {
-                $place = explode(',', $result['birth']['location']);
-                $result['templates'][] = '{{England Sticker|' . trim($place[1]) . '|' . trim($place[0]) . '}}';
+            if (str_contains($result['birth']['location'], 'United Kingdom')) {
+                if (str_contains($result['birth']['location'], 'England')) {
+                    $place = explode(',', $result['birth']['location']);
+                    $result['templates'][] = '{{England Sticker|' . trim($place[1]) . '|' . trim($place[0]) . '}}';
+                } else if (str_contains($result['birth']['location'], 'Wales')) {
+                    $place = explode(',', $result['birth']['location']);
+                    $result['templates'][] = '{{Wales Sticker|' . trim($place[1]) . '|' . trim($place[0]) . '}}';
+                } else if (str_contains($result['birth']['location'], 'Scotland')) {
+                    $place = explode(',', $result['birth']['location']);
+                    $result['templates'][] = '{{Scotland Sticker|' . trim($place[1]) . '|' . trim($place[0]) . '}}';
+                } else {
+                    $result['templates'][] = '{{United Kingdom Sticker}}';
+                }
             }
         }
         return $result;
