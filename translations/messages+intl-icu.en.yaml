@@ -26,11 +26,11 @@ You have not logged into the Wikitree site.: You have not logged into the Wikitr
 Sources: Sources
 marriage:
     sentence: >-
-        { date_format, select,
-            full {{preferred} married {spouse} on {date}{joiner}{location}.}
-            monthYear {{preferred} married {spouse} in {date}{joiner}{location}.}
-            Year {{preferred} married {spouse} in {date}{joiner}{location}.}
-            other {{preferred} married {spouse}{joiner}{location}.}
+        { date_status, select,
+            full {{preferred} married {spouse} on {date}{endDate}{joiner}{location}.}
+            monthYear {{preferred} married {spouse} on {date}{endDate}{joiner}{location}.}
+            Year {{preferred} married {spouse} on {date}{endDate}{joiner}{location}.}
+            other {{preferred} married {spouse}{endDate}{joiner}{location}.}
         }
     children: >-
         { count, plural,
@@ -131,3 +131,5 @@ Marriage Congregation: Marriage Congregation
 Profile Identifier: Profile Identifier
 Profile Identifier Help: To create a marriage sentence you must include the Wikitree unique identifier which is available in the url when editing a profile.  It is a number ONLY.
 create_marriage_sentence: "{name} married '''''[https://www.wikitree.com/index.php?title=Special:EditFamily&u={identifier}&who=spouse {spouse}]''''' on {date} in {location}."
+spouse:
+    end_date: ' (till {end_date})'

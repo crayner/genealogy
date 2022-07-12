@@ -164,6 +164,11 @@ class WikitreeParser
                 }
                 $result['spouse'][$q]['date'] = trim($date);
                 $result['spouse'][$q]['location'] = trim(str_replace([trim($date),"[marriage date?]"], '', $result['spouse'][$q]['location']));
+                if (mb_substr($result['spouse'][$q]['location'],0,1) === '(') {
+                    $toDate = mb_substr($result['spouse'][$q]['location'], 0, strpos($result['spouse'][$q]['location'], ')') + 1);
+                    $result['spouse'][$q]['endDate'] =  trim(mb_substr($toDate, 3, strlen($toDate)-4));
+                    $result['spouse'][$q]['location'] = trim(str_replace($toDate, '', $result['spouse'][$q]['location']));
+                }
             }
 
             $span = $element->filterXPath('//span[contains(@itemprop, "children")]')->evaluate('count(@itemprop)');
@@ -349,11 +354,13 @@ class WikitreeParser
             $result['siblings'][$q] = $resolver->resolve($sibling);
         }
         $resolver->setDefault('date', '');
+        $resolver->setDefault('endDate', '');
         $resolver->setDefault('source', '');
         $resolver->setDefault('dateStatus', 'invalid');
         $resolver->setDefault('location', '');
         $resolver->setDefault('children', []);
         $resolver->setAllowedTypes('date', ['string', \DateTimeImmutable::class]);
+        $resolver->setAllowedTypes('endDate', ['string', \DateTimeImmutable::class]);
         $resolver->setAllowedTypes('source', 'string');
         $resolver->setAllowedTypes('dateStatus', 'string');
         $resolver->setAllowedTypes('location', 'string');
@@ -618,6 +625,11 @@ class WikitreeParser
                 } else {
                     $result['templates'][] = '{{United Kingdom Sticker}}';
                 }
+            }
+
+            if (str_contains($result['birth']['location'], 'New Zealand')) {
+                $place = explode(',', $result['birth']['location']);
+                $result['templates'][] = '{{New Zealand Sticker|region=' . trim($place[1]) . '|place=' . trim($place[0]) . '}}';
             }
         }
         return $result;

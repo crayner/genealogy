@@ -178,11 +178,17 @@
             {% for spouse in result.spouse %}
                 {% if spouse.dateStatus is not same as('full') %}{% set date_string = spouse.source %}{% endif %}
                 {% set joiner = form.children.marriageJoiner.vars.value|default('in')|trans %}
+                {% if spouse.endDate is not same as('') %}
+                    {% set spouse_end_date = 'spouse.end_date'|trans({'{end_date}': spouse.endDate|date('l, jS F Y')}) %}
+                {% else %}
+                    {% set spouse_end_date = '' %}
+                {% endif %}
                 <p>{{ 'marriage.sentence'|trans({'{preferred}': result.name.preferred,
                         '{spouse}': '\'\'\'[[' ~ spouse.ID ~ '|'~ spouse.nameAtBirth ~ ']]\'\'\'',
                         '{date}': spouse.date,
                         '{joiner}': joiner,
-                        '{location}': spouse.location, 'date_format': spouse.dateStatus }) }}
+                        '{endDate}': spouse_end_date,
+                        '{location}': spouse.location, 'date_status': spouse.dateStatus }) }}
                     {{ 'marriage.children'|trans({'{count}}': spouse.children|length}) }}</p>
                 {% if spouse.children|length > 0 %}
                     <p>
