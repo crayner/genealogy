@@ -629,6 +629,8 @@ class WikitreeParser
 
             if (str_contains($result['birth']['location'], 'New Zealand')) {
                 $place = explode(',', $result['birth']['location']);
+                if (!key_exists(1,$place)) $place[1] = '';
+                if (!key_exists(2,$place)) $place[2] = '';
                 $result['templates'][] = '{{New Zealand Sticker|region=' . trim($place[1]) . '|place=' . trim($place[0]) . '}}';
             }
         }
