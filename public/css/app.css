@@ -44,3 +44,7 @@
 .left-half {
     float:left;
 }
+.h1 {
+    font-size: x-large;
+    font-weight: bold;
+}
