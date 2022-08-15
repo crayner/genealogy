@@ -7,10 +7,10 @@ birth:
         }
     sentence: >- 
         { date_status, select, 
-            full {{name} was born on {date}, the {gender} of {father} and {mother}, in {location}.}
+            full {{name} was born{citation} on {date}, the {gender} of {father} and {mother}, in {location}.}
             year {{name} was born{citation} {joiner} {date}, the {gender} of {father} and {mother}, in {location}.}
             monthYear {{name} was born{citation} {joiner} {date}, the {gender} of {father} and {mother}, in {location}.}
-            other {{name} was born, the {gender} of {father} and {mother}, in {location}.}
+            other {{name} was born{citation}, the {gender} of {father} and {mother}, in {location}.}
         }
     unknown:
         father: Unknown Father
@@ -68,7 +68,7 @@ death:
                 other {# days}
             }
         display: , aged {age}
-        calculation: , age calulation was not performed
+        calculation: , age calculation was not performed
     unknown: "{name} passed away{citation}..."
 WikiTree User name: WikiTree User name
 Usually an email address: Usually an email address
@@ -117,6 +117,7 @@ at: ' at '
 late of: ', late of '
 registered at: ', registered at '
 in the: ' in the '
+at the: ', at the '
 Passed away Joiner: Passed away Joiner
 Wording used for connection of the place where this person passed away.: Wording used for connection of the place where this person passed away.
 Marriage Joiner: Marriage Joiner
@@ -133,3 +134,4 @@ Profile Identifier Help: To create a marriage sentence you must include the Wiki
 create_marriage_sentence: "{name} married '''''[https://www.wikitree.com/index.php?title=Special:EditFamily&u={identifier}&who=spouse {spouse}]''''' on {date} in {location}."
 spouse:
     end_date: ' (till {end_date})'
+DO NOT COPY THIS LINE: DO NOT COPY THIS LINE

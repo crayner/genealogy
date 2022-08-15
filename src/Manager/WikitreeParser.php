@@ -478,6 +478,7 @@ class WikitreeParser
 
         if ($result['birth']['about']) {
             $result['categories'][] = '[[Category: Estimated Birth Date]]';
+            $result['categories'][] = '[[Category: Australia, Needs Birth Source Researched]]';
         }
 
         if ($result['death']['status'] && $result['death']['dateStatus'] === 'invalid') {
@@ -525,7 +526,7 @@ class WikitreeParser
 
         if ($result['age']['status']) {
             if ($result['age']['y'] >= 100) {
-                $result['templates'][] = '{{Centenarian | age= 100 }}';
+                $result['templates'][] = '{{Centenarian | age= ' . $result['age']['y'] . ' }}';
             }
             if ($result['age']['y'] < 18) {
                 $result['templates'][] = '{{Died Young}}';
@@ -538,16 +539,17 @@ class WikitreeParser
             if ($result['spouse'] === [] && $result['age']['y'] >= 30) {
                 $result['categories'][] = '[[Category: Unmarried]]';
             }
-        } else if ($result['birth']['date'] instanceof \DateTimeImmutable && $result['birth']['date']->format('Ymd') >= date('Ymd', strtotime('1901-01-01'))) {
-            $result['templates'][] = '{{Australia Sticker|New South Wales}}';
-        } else if ($result['birth']['date'] instanceof \DateTimeImmutable && $result['birth']['date']->format('Ymd') < date('Ymd', strtotime('1901-01-01'))) {
-            $result['templates'][] = '{{Australia Born in Colony|colony=Colony of New South Wales}}';
         }
         if ($result['birth']['date'] instanceof \DateTimeImmutable && $result['birth']['date']->format('Ymd') >= date('Ymd', strtotime("+100 Years"))) {
-            $result['templates'][] = '{{Centenarian | age= 100 | living = yes }}';
+            $result['templates'][] = '{{Centenarian | age= 100  | living = yes }}';
         }
 
         $result['valid'] = true;
+        if ($result['death']['status'] === false && $result['age']['y'] > 85) {
+            $result['categories'][] = '[[Category: Estimated Death Date]]';
+            $result['categories'][] = '[[Category: Australia, Needs Death Source Researched]]';
+        }
+
         $this->setResult($result);
         return $this->getResult();
     }
@@ -608,7 +610,7 @@ class WikitreeParser
                 if (intval(substr($result['birth']['source'], 0, 4)) >= 1901) {
                     $result['templates'][] = '{{Australia Sticker|' . $location . '}}';
                 } else {
-                    $result['templates'][] = '{{Australia Born in Colony|colony=Colony of ' . $location . '}}';
+                    if ($location !== "") $result['templates'][] = '{{Australia Born in Colony|colony=Colony of ' . $location . '}}';
                 }
             }
 
@@ -625,7 +627,12 @@ class WikitreeParser
                 } else {
                     $result['templates'][] = '{{United Kingdom Sticker}}';
                 }
+            } else if (str_contains($result['birth']['location'], 'England')) {
+                $place = explode(',', $result['birth']['location']);
+                $result['templates'][] = '{{England Sticker|' . trim($place[1]) . '|' . trim($place[0]) . '}}';
             }
+
+
 
             if (str_contains($result['birth']['location'], 'New Zealand')) {
                 $place = explode(',', $result['birth']['location']);
