@@ -63,12 +63,13 @@ class WikiTreeController extends AbstractController
                 $data['marriageJoiner'] = null;
             }
 
-            if ($data['profileIdentifier'] === null) {
+            if (!key_exists('profileIdentifier', $data) || $data['profileIdentifier'] === null) {
                 $data['marriageCongregations'] = null;
                 $data['marriageDate'] = null;
                 $data['spouseName'] = null;
                 $data['marriageLocation'] = [];
                 $data['marriageCongregation'] = [];
+                $data['profileIdentifier'] = null;
             }
 
             if ($form->get('reset')->isClicked()) {
