@@ -266,7 +266,7 @@ class WikitreeParser
                 'templates' => [],
             ]
         );
-        $resolver->setAllowedValues('gender', ['male','female','','unknown']);
+        $resolver->setAllowedValues('gender', ['male','female','','unknown','no-gender']);
         $resolver->setAllowedTypes('gender',  'string');
         $resolver->setAllowedTypes('birth',  'array');
         $resolver->setAllowedTypes('children',  'array');
