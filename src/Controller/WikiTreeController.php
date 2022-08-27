@@ -59,10 +59,6 @@ class WikiTreeController extends AbstractController
                 $data['interredLocation'] = null;
             }
 
-            if (! is_array($data['congregations']) || count($data['congregations']) === 0) {
-                $data['marriageJoiner'] = null;
-            }
-
             if (!key_exists('profileIdentifier', $data) || $data['profileIdentifier'] === null) {
                 $data['marriageCongregations'] = null;
                 $data['marriageDate'] = null;
