@@ -14,7 +14,6 @@
 
 namespace App\Twig\Extension;
 
-use Psr\Log\NullLogger;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
