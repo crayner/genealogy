@@ -151,27 +151,17 @@
                 {{ category }}<br />
             {% endfor %}
         <span class="h1">== {{ 'Biography'|trans }} ==</span><br />
-        {% set name = result.name.given %}
-        {% if result.name.additional is not same as('') %}{% set name = name ~ ' ' ~ result.name.additional %}{% endif %}
-        {% set name = name ~ ' ' ~ result.name.atBirth %}
-        {% set gender = result.gender %}
-        {% if gender is same as('') %}{% set gender = 'not_stated' %}{% endif %}
-        {% if result.father.ID is not same as('') %}{% set father = '[[' ~ result.father.ID ~ '|' ~ result.father.name ~ ']]' %}{% else %}{% set father = 'birth.unknown.father'|trans %}{% endif %}
-        {% if result.mother.ID is not same as('') %}{% set mother = '[[' ~ result.mother.ID ~ '|' ~ result.mother.name ~ ']]' %}{% else %}{% set mother = 'birth.unknown.mother'|trans %}{% endif %}
-
         {% for template in result.templates %}
-            {{ template }}
+            {{ template|trim }}
         {% endfor %}
-        {% set gender = 'birth.gender'|trans({gender: gender}) %}
-        {% set name = "'''" ~ name ~ "'''" %}
-        {% set joiner = 'in'|trans %}
-        {% set citation = '' %}
-        {% if result.birth.about %}
-            {% set joiner = 'about'|trans %}
-            {% set citation = '{{Citation Needed}}' %}
-        {% endif %}
-        {{ 'birth.sentence'|trans({'name': name, '{joiner}': joiner, '{citation}': citation, 'date': result.birth.date, '{gender}': gender, date_status: result.birth.dateStatus, '{location}': result.birth.location, '{father}': father, '{mother}': mother}) }}
-            {# Baptism Sentence #}
+        {% set birth = parseBirthDetails(result) %}
+        {% set birth = birth|merge({'gender': 'birth.gender'|trans(birth)}) %}
+        {% if birth.father is same as('birth.father.unknown') %}{% set birth = birth|merge({'father': birth.father|trans}) %}{% endif %}
+        {% if birth.mother is same as('birth.mother.unknown') %}{% set birth = birth|merge({'mother': birth.mother|trans}) %}{% endif %}
+
+
+        {{ 'birth.sentence'|trans(birth) }}
+        {# Baptism Sentence #}
         {% if result.baptism.date is not same as(null) or result.baptism.location is not same as(null) %}
             {{ ' ' ~ 'baptism.sentence'|trans({'name': result.name.preferred, 'date': result.baptism.date, '{location}': result.baptism.location}) }}
         {% endif %}
