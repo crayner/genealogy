@@ -25,12 +25,20 @@ You will need to sign in to Wikitree to obtain the best results.: You will need 
 You have not logged into the Wikitree site.: You have not logged into the Wikitree site.
 Sources: Sources
 marriage:
+    endDate: >-
+        { end_date_status, select,
+            full { (till {endDate})}
+            empty {}
+            other {}
+        }
     sentence: >-
         { date_status, select,
-            full {{preferred} married {spouse} on {date}{endDate}{joiner}{location}.}
-            monthYear {{preferred} married {spouse} on {date}{endDate}{joiner}{location}.}
-            Year {{preferred} married {spouse} on {date}{endDate}{joiner}{location}.}
-            other {{preferred} married {spouse}{endDate}{joiner}{location}.}
+            full {{preferred} married {spouse} on {date}{endDate} {joiner} {location}.}
+            monthYear {{preferred} married {spouse} in {date}{endDate} {joiner} {location}.}
+            Year {{preferred} married {spouse} in {date}{endDate} {joiner} {location}.}
+            before {{preferred} married {spouse} before {date}{endDate} {joiner} {location}.}
+            about {{preferred} married {spouse} about {date}{endDate} {joiner} {location}.}
+            other {{preferred} married {spouse}{endDate} {joiner} {location}.}
         }
     children: >-
         { count, plural,

@@ -137,7 +137,8 @@ class WikitreeParser
                 $result['spouse'][$q]['name'] = $anchor->extract(['_text'])[0];
                 $result['spouse'][$q]['ID'] = str_replace('/wiki/', '', $anchor->attr('href'));
                 $parents = $spouse->ancestors();
-                $result['spouse'][$q]['location'] = trim(str_replace([$result['spouse'][$q]['name'], 'Husband of', 'husband of', "\n", "\r", "wife of", "Wife of", 'married', ' in', ' at'], '', $parents->first()->extract(['_text'])[0]));
+                $result['spouse'][$q]['raw'] = $parents->first()->extract(['_text'])[0];
+                $result['spouse'][$q]['location'] = trim(str_replace([$result['spouse'][$q]['name'], 'Husband of', 'husband of', "\n", "\r", "wife of", "Wife of", 'married', ' in', ' at'], '', $result['spouse'][$q]['raw']));
                 $result['spouse'][$q]['location'] = trim(mb_substr($result['spouse'][$q]['location'], 1));
 
                 $x = explode(' ', $result['spouse'][$q]['location']);
@@ -356,12 +357,14 @@ class WikitreeParser
         $resolver->setDefault('date', '');
         $resolver->setDefault('endDate', '');
         $resolver->setDefault('source', '');
+        $resolver->setDefault('raw', '');
         $resolver->setDefault('dateStatus', 'invalid');
         $resolver->setDefault('location', '');
         $resolver->setDefault('children', []);
         $resolver->setAllowedTypes('date', ['string', \DateTimeImmutable::class]);
         $resolver->setAllowedTypes('endDate', ['string', \DateTimeImmutable::class]);
         $resolver->setAllowedTypes('source', 'string');
+        $resolver->setAllowedTypes('raw', 'string');
         $resolver->setAllowedTypes('dateStatus', 'string');
         $resolver->setAllowedTypes('location', 'string');
         $resolver->setAllowedTypes('children', 'array');
