@@ -156,8 +156,8 @@
         {% endfor %}
         {% set birth = parseBirthDetails(result) %}
         {% set birth = birth|merge({'gender': 'birth.gender'|trans(birth)}) %}
-        {% if birth.father is same as('birth.father.unknown') %}{% set birth = birth|merge({'father': birth.father|trans}) %}{% endif %}
-        {% if birth.mother is same as('birth.mother.unknown') %}{% set birth = birth|merge({'mother': birth.mother|trans}) %}{% endif %}
+        {% if birth.father is same as('birth.unknown.father') %}{% set birth = birth|merge({'father': birth.father|trans}) %}{% endif %}
+        {% if birth.mother is same as('birth.unknown.mother') %}{% set birth = birth|merge({'mother': birth.mother|trans}) %}{% endif %}
 
 
         {{ 'birth.sentence'|trans(birth) }}
