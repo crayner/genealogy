@@ -418,6 +418,7 @@ class WikitreeParser
             if (str_contains($result['birth']['location'], 'after')) $result['birth']['after'] = true;
             if (str_contains($result['birth']['location'], 'about')) $result['birth']['about'] = true;
         }
+
         $result['birth']['location'] = trim(str_replace(["\r","\n",'Born','before','after','[birth date?]','in ','about','[uncertain]', $xxx], '', $result['birth']['location']));
         $result['death']['status'] = false;
         if (str_contains($result['death']['location'], 'Died')) {
@@ -524,8 +525,6 @@ class WikitreeParser
         }
 
         $result = $this->generateBirthSticker($result);
-
-
 
         if ($result['age']['status']) {
             if ($result['age']['y'] >= 100) {
@@ -636,23 +635,16 @@ class WikitreeParser
             }
 
 
-
             if (str_contains($result['birth']['location'], 'New Zealand')) {
                 $place = explode(',', $result['birth']['location']);
-                $x = 1;
-                $finished = false;
-                while (!$finished) {
-                    if (!key_exists($x,$place))
-                    {
-                        $place[$x] = $place[$x-1];
-                        $place[$x-1] = '';
-                        $x++;
-                        if ($x > 2) $finished = true;
-                    }
+                if (count($place) === 3 && $place[2] === 'New Zealand') {
+                    $result['templates'][] = '{{New Zealand Sticker|region=' . trim($place[1]) . '|place=' . trim($place[0]) . '}}';
+                } else {
+                    $result['templates'][] = '{{New Zealand Sticker}}';
                 }
-                $result['templates'][] = '{{New Zealand Sticker|region=' . trim($place[1]) . '|place=' . trim($place[0]) . '}}';
             }
         }
+
         return $result;
     }
 }
