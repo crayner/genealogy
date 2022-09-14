@@ -619,19 +619,31 @@ class WikitreeParser
             if (str_contains($result['birth']['location'], 'United Kingdom')) {
                 if (str_contains($result['birth']['location'], 'England')) {
                     $place = explode(',', $result['birth']['location']);
-                    $result['templates'][] = '{{England Sticker|' . trim($place[1]) . '|' . trim($place[0]) . '}}';
+                    if (count($place) > 2) {
+                        $result['templates'][] = '{{England Sticker|' . trim($place[1]) . '|' . trim($place[0]) . '}}';
+                    } else {
+                        $result['templates'][] = '{{England Sticker}}';
+                    }
                 } else if (str_contains($result['birth']['location'], 'Wales')) {
                     $place = explode(',', $result['birth']['location']);
                     $result['templates'][] = '{{Wales Sticker|' . trim($place[1]) . '|' . trim($place[0]) . '}}';
                 } else if (str_contains($result['birth']['location'], 'Scotland')) {
                     $place = explode(',', $result['birth']['location']);
                     $result['templates'][] = '{{Scotland Sticker|' . trim($place[1]) . '|' . trim($place[0]) . '}}';
+                } else if (str_contains($result['birth']['location'], 'Ireland')) {
+                    $result['templates'][] = '{{Ireland Sticker}}';
                 } else {
                     $result['templates'][] = '{{United Kingdom Sticker}}';
                 }
             } else if (str_contains($result['birth']['location'], 'England')) {
                 $place = explode(',', $result['birth']['location']);
-                $result['templates'][] = '{{England Sticker|' . trim($place[1]) . '|' . trim($place[0]) . '}}';
+                if (count($place) > 2) {
+                    $result['templates'][] = '{{England Sticker|' . trim($place[1]) . '|' . trim($place[0]) . '}}';
+                } else {
+                    $result['templates'][] = '{{England Sticker}}';
+                }
+            } else if (str_contains($result['birth']['location'], 'Ireland')) {
+                $result['templates'][] = '{{Ireland Sticker}}';
             }
 
 
