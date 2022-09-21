@@ -631,7 +631,7 @@ class WikitreeParser
                     $place = explode(',', $result['birth']['location']);
                     $result['templates'][] = '{{Scotland Sticker|' . trim($place[1]) . '|' . trim($place[0]) . '}}';
                 } else if (str_contains($result['birth']['location'], 'Ireland')) {
-                    $result['templates'][] = '{{Ireland Sticker}}';
+                    $result['templates'][] = '{{Ireland Native}}';
                 } else {
                     $result['templates'][] = '{{United Kingdom Sticker}}';
                 }
@@ -643,7 +643,7 @@ class WikitreeParser
                     $result['templates'][] = '{{England Sticker}}';
                 }
             } else if (str_contains($result['birth']['location'], 'Ireland')) {
-                $result['templates'][] = '{{Ireland Sticker}}';
+                $result['templates'][] = '{{Ireland Native}}';
             }
 
 

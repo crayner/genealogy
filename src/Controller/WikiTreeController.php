@@ -17,6 +17,7 @@ namespace App\Controller;
 use App\Form\WikiTreeBiographyType;
 use App\Form\WikiTreeLoginType;
 use App\Manager\WikiTreeManager;
+use App\Manager\WikitreeProfileManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -99,4 +100,21 @@ class WikiTreeController extends AbstractController
             ]
         );
     }
+
+    /**
+     * @param WikitreeProfileManager $manager
+     * @Route("/wikitree/profiles/",name="wikitree_profiles")
+     * @return Response
+     */
+    public function profiles(WikitreeProfileManager $manager): Response
+    {
+        $manager->execute();
+        return $this->render('base.html.twig',
+            [
+                'stuff' => $manager,
+            ]
+        );
+
+    }
+
 }
