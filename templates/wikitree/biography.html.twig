@@ -10,136 +10,8 @@
     <hr />
     <div class="left_half">
         <div class="right_half">
-            {{ form_start(form) }}
-            <div class="formElement"><h3>{{ 'Marriage Sentence'|trans }}</h3>
-                <p>{{ 'marriage_sentence_help'|trans }}</p></div>
-            <div class="formElement">
-                <div class="formLabel">
-                    <div class="formWidget">{{ form_widget(form.profileIdentifier) }}</div>
-                    <p class="formLabel">{{ form_label(form.profileIdentifier) }}</p>
-                    <p class="formHelp">{{ form_help(form.profileIdentifier) }}</p>
-                </div>
-            </div>
-            <div class="formElement">
-                <div class="formLabel">
-                    <div class="formWidget">{{ form_widget(form.spouseName) }}</div>
-                    <p class="formLabel">{{ form_label(form.spouseName) }}</p>
-                    <p class="formHelp">{{ form_help(form.spouseName) }}</p>
-                </div>
-            </div>
-            <div class="formElement">
-                <div class="formLabel">
-                    <div class="formWidget">{{ form_widget(form.marriageDate) }}</div>
-                    <p class="formLabel">{{ form_label(form.marriageDate) }}</p>
-                    <p class="formHelp">{{ form_help(form.marriageDate) }}</p>
-                </div>
-            </div>
-            <div class="formElement">
-                <div style="float: right; margin-right: 60px;">{{ form_widget(form.marriageLocation) }}</div>
-                <div>
-                    <p class="formLabel">{{ form_label(form.marriageLocation) }}</p>
-                    <p class="formHelp">{{ form_help(form.marriageLocation) }}</p>
-                </div>
-            </div>
-            <div class="formElement">
-                <div style="float: right; margin-right: 60px;">{{ form_widget(form.marriageCongregation) }}</div>
-                <div>
-                    <p class="formLabel">{{ form_label(form.marriageCongregation) }}</p>
-                    <p class="formHelp">{{ form_help(form.marriageCongregation) }}</p>
-                </div>
-            </div>
+            {% include 'wikitree/wikitree_form.html.twig' %}
         </div>
-
-    <div class="right_half">
-        {% if 'hidden' not in form.wikiTreeUser.vars.block_prefixes %}
-        <div class="formElement">
-            <div class="formLabel">
-                <div class="formWidget">{{ form_widget(form.wikiTreeUser) }}</div>
-                <p class="formLabel">{{ form_label(form.wikiTreeUser) }}</p>
-                <p class="formHelp">{{ form_help(form.wikiTreeUser) }}</p>
-            </div>
-        </div>
-        <div class="formElement">
-            <div class="formLabel">
-                <div class="formWidget">{{ form_widget(form.wikiTreePassword) }}</div>
-                <p class="formLabel">{{ form_label(form.wikiTreePassword) }}</p>
-                <p class="formHelp">{{ form_help(form.wikiTreePassword) }}</p>
-            </div>
-        </div>
-        {% endif %}
-        <div class="formElement">
-            <div class="formLabel">
-                <div class="formWidget">{{ form_widget(form.wikiTreeUserID) }}</div>
-                <p class="formLabel">{{ form_label(form.wikiTreeUserID) }}</p>
-                <p class="formHelp">{{ form_help(form.wikiTreeUserID) }}</p>
-            </div>
-        </div>
-        <div class="formElement">
-            <div class="formLabel">
-                <div class="formWidget">{{ form_widget(form.baptismDate) }}</div>
-                <p class="formLabel">{{ form_label(form.baptismDate) }}</p>
-                <p class="formHelp">{{ form_help(form.baptismDate) }}</p>
-            </div>
-            <div class="formLabel">
-                <div class="formWidget">{{ form_widget(form.baptismLocation) }}</div>
-                <p class="formLabel">{{ form_label(form.baptismLocation) }}</p>
-                <p class="formHelp">{{ form_help(form.baptismLocation) }}</p>
-            </div>
-        </div>
-        <div class="formElement">
-            <div style="float: right; margin-right: 60px;">{{ form_widget(form.interredCemetery) }}</div>
-            <div class="formLabel">
-                <p class="formLabel">{{ form_label(form.interredCemetery) }}</p>
-                <p class="formHelp">{{ form_help(form.interredCemetery) }}</p>
-            </div>
-            <div class="formLabel">
-                <div class="formWidget">{{ form_widget(form.interredLocation) }}</div>
-                <p class="formLabel">{{ form_label(form.interredLocation) }}</p>
-                <p class="formHelp">{{ form_help(form.interredLocation) }}</p>
-            </div>
-            <div class="formLabel">
-                <div class="formWidget">{{ form_widget(form.passedAwayJoiner) }}</div>
-                <p class="formLabel">{{ form_label(form.passedAwayJoiner) }}</p>
-                <p class="formHelp">{{ form_help(form.passedAwayJoiner) }}</p>
-            </div>
-        </div>
-        <div class="formElement" >
-            <div style="float: right; margin-right: 60px;">{{ form_widget(form.congregations) }}</div>
-            <div class="formLabel">
-                <p class="formLabel">{{ form_label(form.congregations) }}</p>
-                <p class="formHelp">{{ form_help(form.congregations) }}</p>
-            </div>
-            <div class="formLabel">
-                <div class="formWidget">{{ form_widget(form.marriageJoiner) }}</div>
-                <p class="formLabel">{{ form_label(form.marriageJoiner) }}</p>
-                <p class="formHelp">{{ form_help(form.marriageJoiner) }}</p>
-            </div>
-
-        </div>
-        <div class="formElement">
-            <div style="float: right; margin-right: 60px;">{{ form_widget(form.locations) }}</div>
-            <div>
-                <p class="formLabel">{{ form_label(form.locations) }}</p>
-                <p class="formHelp">{{ form_help(form.locations) }}</p>
-            </div>
-        </div>
-        <div class="formElement">
-            <div class="formLabel">
-                <div class="formWidget">{{ form_widget(form.raynerPage) }}</div>
-                <p class="formLabel">{{ form_label(form.raynerPage) }}</p>
-                <p class="formHelp">{{ form_help(form.raynerPage) }}</p>
-            </div>
-        </div>
-        <div class="formElement">
-            <div>
-                <div class="formWidget">{{ form_widget(form.submit) }}</div>
-                <p class="formLabel">{{ form_label(form.submit) }}</p>
-                <p class="formHelp">{{ form_widget(form.reset) }}</p>
-            </div>
-        </div>
-
-        {{ form_end(form) }}
-    </div>
 
     <p>{{ 'Privacy'|trans }}: {{ result.privacy|default('Not Set'|trans) }}</p>
     <p>{{ "Trusted List Access"|trans }}: {{ result.join|default('Not Set'|trans) }}</p>
@@ -168,12 +40,9 @@
         <br />  <!-- Birth Sentence -->
 
         {% if (result.spouse|length > 0) %}
-            {% set x = setResult(result) %}
             {% for spouse in result.spouse %}
-                {% set details = parseMarriageDetails(spouse, form.children.marriageJoiner.vars.value|default('in')) %}
-                {% set details = details|merge({'endDate': 'marriage.endDate'|trans(details)}) %}
-                <br />{{ 'marriage.sentence'|trans(details) }}
-                    {{ 'marriage.children'|trans({'{count}}': spouse.children|length}) }}<br />
+                <br />{{ 'marriage.sentence'|trans(spouse.sentence) }}
+                {{ 'marriage.children'|trans({'{count}}': spouse.children|length}) }}<br />
                 {% if spouse.children|length > 0 %}
                     {% for child in spouse.children %}
                         # [[{{ child.ID }}|{{ child.name }}]]<br />

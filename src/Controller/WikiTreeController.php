@@ -16,6 +16,7 @@ namespace App\Controller;
 
 use App\Form\WikiTreeBiographyType;
 use App\Form\WikiTreeLoginType;
+use App\Manager\MarriageSentenceManager;
 use App\Manager\WikiTreeManager;
 use App\Manager\WikitreeProfileManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,6 +24,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class WikiTreeController
@@ -38,7 +40,7 @@ class WikiTreeController extends AbstractController
      * @Route("/wikitree/biography/",name="wikitree_biography")
      * @return Response
      */
-    public function biography(RequestStack $stack, WikiTreeManager $manager): Response
+    public function biography(RequestStack $stack, WikiTreeManager $manager, TranslatorInterface $translator): Response
     {
 
         $request = $stack->getCurrentRequest();
@@ -47,6 +49,7 @@ class WikiTreeController extends AbstractController
         $result = [];
         $result['valid'] = false;
         $result['error'] = 'Nothing done yet.';
+        $data = [];
 
         if ($form->isSubmitted()) {
             $data = $form->getData();
@@ -91,6 +94,9 @@ class WikiTreeController extends AbstractController
                 $form = $this->createForm(WikiTreeBiographyType::class, $data);
 
         }
+
+        $marriageSentence = new MarriageSentenceManager($result, $data, $translator);
+        $result = $marriageSentence->getResult();
 
         return $this->render('wikitree/biography.html.twig',
             [
