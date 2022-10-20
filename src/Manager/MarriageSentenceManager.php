@@ -70,6 +70,7 @@ class MarriageSentenceManager
     public function setResult(array $result): MarriageSentenceManager
     {
         $this->result = $result;
+        if (!key_exists('spouse', $result)) $result['spouse'] = [];
         $this->setSpouses($result['spouse']);
         return $this;
     }
