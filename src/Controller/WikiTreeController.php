@@ -140,6 +140,8 @@ class WikiTreeController extends AbstractController
         $result = [];
         $result['valid'] = false;
         $result['error'] = 'Nothing done yet.';
+        $result['category'] = 'no category entered';
+        $result['profile'] = 'no profile entered';
         $data = [];
 
         if ($form->isSubmitted()) {
