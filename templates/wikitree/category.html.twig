@@ -1,0 +1,25 @@
+{% trans_default_domain 'messages' %}
+
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1 style="text-align: center">{{ 'WikiTree Category Management'|trans }}</h1>
+    <p class="important" style="text-align: center">
+       {{ 'List of profiles to work on and the category to add to the profile.'|trans }}
+    </p>
+    <hr />
+    <div class="left_half">
+        <div class="right_half">
+            {% include 'wikitree/category_form.html.twig' %}
+        </div>
+
+
+        <p>{{ 'category added to profile'|trans({"{category}": result.category, "{profile}": result.profile})|raw }}</p>
+
+        <p>{{ 'category sentence'|trans }}</p>
+
+    </div>
+{% endblock body %}
+        {% block javascripts %}
+            {{ parent() }}
+        {% endblock %}

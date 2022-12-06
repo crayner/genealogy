@@ -1,0 +1,16 @@
+{% if 'hidden' not in form.wikiTreeUser.vars.block_prefixes %}
+    <div class="formElement">
+        <div class="formLabel">
+            <div class="formWidget">{{ form_widget(form.wikiTreeUser) }}</div>
+            <p class="formLabel">{{ form_label(form.wikiTreeUser) }}</p>
+            <p class="formHelp">{{ form_help(form.wikiTreeUser) }}</p>
+        </div>
+    </div>
+    <div class="formElement">
+        <div class="formLabel">
+            <div class="formWidget">{{ form_widget(form.wikiTreePassword) }}</div>
+            <p class="formLabel">{{ form_label(form.wikiTreePassword) }}</p>
+            <p class="formHelp">{{ form_help(form.wikiTreePassword) }}</p>
+        </div>
+    </div>
+{% endif %}

@@ -14,8 +14,11 @@
 
 namespace App\Controller;
 
+use App\Form\CategoryLoginType;
+use App\Form\CategoryType;
 use App\Form\WikiTreeBiographyType;
 use App\Form\WikiTreeLoginType;
+use App\Manager\CategoryManager;
 use App\Manager\MarriageSentenceManager;
 use App\Manager\WikiTreeManager;
 use App\Manager\WikitreeProfileManager;
@@ -58,7 +61,7 @@ class WikiTreeController extends AbstractController
                 $data['interredCemetery'] = null;
                 $data['passedAwayJoiner'] = null;
             }
-            
+
             if (is_array($data['interredCemetery']) && count($data['interredCemetery']) === 0) {
                 $data['interredLocation'] = null;
             }
@@ -120,7 +123,42 @@ class WikiTreeController extends AbstractController
                 'stuff' => $manager,
             ]
         );
-
     }
 
+    /**
+     * @param RequestStack $stack
+     * @param CategoryManager $manager
+     * @Route("/wikitree/category/",name="wikitree_category")
+     * @return Response
+     */
+    public function category(RequestStack $stack, CategoryManager $manager): Response
+    {
+
+        $request = $stack->getCurrentRequest();
+        $form = $this->createForm(CategoryLoginType::class);
+        $form->handleRequest($request);
+        $result = [];
+        $result['valid'] = false;
+        $result['error'] = 'Nothing done yet.';
+        $data = [];
+
+        if ($form->isSubmitted()) {
+            $result['valid'] = $manager->handleForm($form, $stack->getSession());
+            $data = $form->getData();
+            $profiles = explode("\r\n", $data['profileList']);
+            $result['profile'] = array_shift($profiles);
+            $result['category'] = $data['category'];
+            $data['profileList'] = implode("\r\n", $profiles);
+            $form = $this->createForm(CategoryType::class, $data);
+        }
+
+        return $this->render('wikitree/category.html.twig',
+            [
+                'form' => $form->createView(),
+                'result' => $result,
+                'manager' => $manager,
+            ]
+        );
+
+    }
 }

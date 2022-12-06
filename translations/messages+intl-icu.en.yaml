@@ -143,3 +143,12 @@ create_marriage_sentence: "{name} married '''''[https://www.wikitree.com/index.p
 spouse:
     end_date: ' (till {end_date})'
 DO NOT COPY THIS LINE: DO NOT COPY THIS LINE
+The category that will be added to the Wikitree profiles/s.: The category that will be added to the Wikitree profiles/s.
+A list of profiles from Wikitree: A list of profiles from Wikitree
+Wikitree Profile List: Wikitree Profile List
+Category: Category
+WikiTree Category Management: WikiTree Category Management
+List of profiles to work on and the category to add to the profile.: List of profiles to work on and the category to add to the profile.
+Add Category: Add Category
+'category added to profile': "The category, {category}, was added to the profile, <a href='https://www.wikitree.com/wiki/{profile}#categories' target='_blank'>{profile}</a>."
+category sentence: This form/page adds the category to the next profile in the list.  It does not add the category to each profile in the list automatically as this would be a process that Wikitree may block as a robot.
