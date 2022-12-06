@@ -4,6 +4,7 @@ namespace App\Manager;
 
 use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class CategoryManager
@@ -27,7 +28,7 @@ class CategoryManager
      * @param Form $form
      * @return void
      */
-    public function handleForm(Form $form, Session $session): bool
+    public function handleForm(FormInterface $form, Session $session): bool
     {
         $data = $form->getData();
         $this->setCategory($data['category'])
