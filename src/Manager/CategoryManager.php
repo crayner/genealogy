@@ -107,7 +107,7 @@ class CategoryManager
      */
     public function setCategory(string $category): CategoryManager
     {
-        $this->category = trim(str_replace(["]]","[[Category:"], "", $category));
+        $this->category = trim(str_replace(["]]","[[","Category:"], "", $category));
         return $this;
     }
 
