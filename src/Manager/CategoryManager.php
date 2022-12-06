@@ -27,7 +27,7 @@ class CategoryManager
      * @param Form $form
      * @return void
      */
-    public function handleForm(Form $form, Session $session)
+    public function handleForm(Form $form, Session $session): bool
     {
         $data = $form->getData();
         $this->setCategory($data['category'])
@@ -133,7 +133,7 @@ class CategoryManager
      * @param $form
      * @return bool
      */
-    private function parse($form)
+    private function parse($form): bool
     {
         $biography = trim($form['wpTextbox1']->getValue());
         if (!(str_contains($biography, $this->buildCategory()) || str_contains($biography, $this->buildCategory(false)))) {
