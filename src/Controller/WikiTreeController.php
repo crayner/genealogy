@@ -148,7 +148,7 @@ class WikiTreeController extends AbstractController
             $result['valid'] = $manager->handleForm($form, $stack->getSession());
             $data = $form->getData();
             $profiles = explode("\r\n", $data['profileList']);
-            $result['profile'] = array_shift($profiles);
+            $result['profile'] = trim(array_shift($profiles));
             $result['category'] = $data['category'];
             $data['profileList'] = implode("\r\n", $profiles);
             $form = $this->createForm(CategoryType::class, $data);
