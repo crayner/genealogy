@@ -26,7 +26,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Yaml\Yaml;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -149,8 +148,13 @@ class WikiTreeController extends AbstractController
             $data = $form->getData();
             $profiles = explode("\r\n", $data['profileList']);
             $result['profile'] = trim(array_shift($profiles));
-            $result['category'] = $data['category'];
-            $data['profileList'] = implode("\r\n", $profiles);
+            $result['category'] = $data['category'] = $manager->getCategory();
+            if (count($profiles) === 0) {
+                $data['category'] = null;
+                $data['profileList'] = null;
+            } else {
+                $data['profileList'] = implode("\r\n", $profiles);
+            }
             $form = $this->createForm(CategoryType::class, $data);
         }
 
