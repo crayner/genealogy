@@ -124,6 +124,7 @@ class CategoryType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefault('show_login', false);
+        $resolver->setDefault('attr', ['id' => $this->getBlockPrefix()]);
     }
 
 }

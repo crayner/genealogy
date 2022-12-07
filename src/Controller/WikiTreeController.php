@@ -147,15 +147,16 @@ class WikiTreeController extends AbstractController
             $result['valid'] = $manager->handleForm($form, $stack->getSession());
             $data = $form->getData();
             $profiles = explode("\r\n", $data['profileList']);
+            $manager->setProfiles($profiles);
             $result['profile'] = trim(array_shift($profiles));
             $result['category'] = $data['category'] = $manager->getCategory();
             if (count($profiles) === 0) {
-                $data['category'] = null;
-                $data['profileList'] = null;
+                unset($data['profileList'],$data['category']);
+                $form = $this->createForm(CategoryType::class, $data);
             } else {
                 $data['profileList'] = implode("\r\n", $profiles);
+                $form = $this->createForm(CategoryType::class, $data);
             }
-            $form = $this->createForm(CategoryType::class, $data);
         }
 
         return $this->render('wikitree/category.html.twig',

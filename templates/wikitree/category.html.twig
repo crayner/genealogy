@@ -1,7 +1,16 @@
 {% trans_default_domain 'messages' %}
 
 {% extends "base.html.twig" %}
-
+{% block stylesheets %}
+    {{ parent() }}
+    {% if manager.profiles|length > 1 %}
+        <script>
+            window.onload = function(){
+                document.getElementById("wikitreecategory").submit();
+            }
+        </script>
+    {% endif %}
+{% endblock stylesheets %}
 {% block body %}
     <h1 style="text-align: center">{{ 'WikiTree Category Management'|trans }}</h1>
     <p class="important" style="text-align: center">
@@ -20,6 +29,7 @@
 
     </div>
 {% endblock body %}
-        {% block javascripts %}
-            {{ parent() }}
-        {% endblock %}
+
+{% block javascripts %}
+   {{ parent() }}
+{% endblock %}

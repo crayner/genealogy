@@ -10,14 +10,14 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class CategoryManager
 {
     /**
-     * @var string
+     * @var string|null
      */
-    private string $category;
+    private ?string $category = '';
 
     /**
      * @var array
      */
-    private array $profiles;
+    private array $profiles = [];
 
     /**
      * @var HttpBrowser
@@ -106,9 +106,9 @@ class CategoryManager
      * @param string $category
      * @return CategoryManager
      */
-    public function setCategory(string $category): CategoryManager
+    public function setCategory(?string $category = ''): CategoryManager
     {
-        $this->category = trim(str_replace(["]]","[[","Category:"], "", $category));
+        $this->category = trim(str_replace(["]]","[[","Category:"], "", $category !== null ? $category: ''));
         return $this;
     }
 
