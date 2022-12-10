@@ -3,7 +3,7 @@
 {% extends "base.html.twig" %}
 {% block stylesheets %}
     {{ parent() }}
-    {% if manager.profiles|length > 1 %}
+    {% if manager.profiles|length > 0 %}
         <script>
             window.onload = function(){
                 document.getElementById("wikitreecategory").submit();
@@ -26,6 +26,12 @@
         <p>{{ 'category added to profile'|trans({"{category}": result.category, "{profile}": result.profile})|raw }}</p>
 
         <p>{{ 'category sentence'|trans }}</p>
+        {% if manager.privateProfiles|length > 0 %}
+            <p>{{ 'Private Profiles'|trans }}</p><ol>
+            {% for profile in manager.privateProfiles %}
+                <li>{{ 'profile_link'|trans({"{profile}": profile})|raw }}</li>
+            {% endfor %}</ol>
+        {% endif %}
 
     </div>
 {% endblock body %}

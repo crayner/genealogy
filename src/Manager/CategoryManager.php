@@ -25,6 +25,11 @@ class CategoryManager
     private HttpBrowser $client;
 
     /**
+     * @var array
+     */
+    private array $privateProfiles = [];
+
+    /**
      * @param Form $form
      * @return void
      */
@@ -32,7 +37,8 @@ class CategoryManager
     {
         $data = $form->getData();
         $this->setCategory($data['category'])
-            ->setProfiles(explode("\r\n", $data['profileList']));
+            ->setProfiles(explode("\r\n", $data['profileList']))
+            ->setPrivateProfiles(explode("\r\n", $data['privateProfiles']));
 
         if ($session->has('cookieJar')) {
             $cookieJar = $session->get('cookieJar');
@@ -45,6 +51,7 @@ class CategoryManager
         $crawler = $client->request("GET", $url);
         $login = $crawler->filterXPath('//a[contains(@href, "Special:Userlogin")]')->evaluate('count(@href)');
         $didLogin = false;
+        if ($login !== [] && $crawler->filterXPath('//a[contains(@href, "Special:Userlogin")]')->text() === "login using a new window") $login = [];
 
         if ($login !== [] && key_exists('wikiTreeUser', $data)) {
             $crawler = $client->request('GET', 'https://www.wikitree.com/index.php?title=Special:Userlogin');
@@ -74,12 +81,18 @@ class CategoryManager
         }
         if ($didLogin) {
             $crawler = $client->request("GET", $url);
-            $cookieJar = $client->getCookieJar();
+        }
+
+        $status = $crawler->filterXPath('//div[contains(@class, "status red")]')->evaluate('count(@class)');
+        if ($status !== [] && $crawler->filterXPath('//div[contains(@class, "status red")]')->text() === "You do not have permission to edit this profile. Request to join the Trusted List.") {
+            $this->addPrivateProfile($this->firstProfile());
+            return false;
         }
 
         $form = $crawler->selectButton('wpSave')->form();
         $result = $this->parse($form);
 
+        $session->set("cookieJar", $this->getClient()->getCookieJar());
         return $result;
     }
 
@@ -131,6 +144,14 @@ class CategoryManager
     }
 
     /**
+     * @return string
+     */
+    public function firstProfile(): string
+    {
+        return trim(reset($this->profiles));
+    }
+
+    /**
      * @param $form
      * @return bool
      */
@@ -164,5 +185,60 @@ class CategoryManager
     {
         $this->client = $client;
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPrivateProfiles(): array
+    {
+        if (count($this->privateProfiles) > 0 && $this->privateProfiles[0] === "")
+            array_shift($this->privateProfiles);
+        return $this->privateProfiles;
+    }
+
+    /**
+     * @param string $profile
+     * @return $this
+     */
+    public function addPrivateProfile(string $profile): CategoryManager
+    {
+        if (!in_array($profile, $this->privateProfiles))
+            $this->privateProfiles[] = $profile;
+        return $this;
+    }
+
+    /**
+     * @param array $privateProfiles
+     * @return CategoryManager
+     */
+    public function setPrivateProfiles(array $privateProfiles): CategoryManager
+    {
+        $this->privateProfiles = $privateProfiles;
+        return $this;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    public function getData(array $data): array
+    {
+        array_shift($this->profiles);
+        $data['profileList'] = implode("\r\n", $this->getProfiles());
+        $data['privateProfiles'] = implode("\r\n", $this->getPrivateProfiles());
+        if (count($this->getProfiles()) === 1 && $this->getProfiles()[0] === "") {
+            $data['profileList'] = "";
+            $this->setProfiles([]);
+        }
+        if ((count($this->getPrivateProfiles()) > 0 && $this->getPrivateProfiles()[0] === "") || count($this->getPrivateProfiles()) === 0) {
+            $data['privateProfiles'] = "";
+            $this->setPrivateProfiles([]);
+        }
+        $data['category'] = $this->getCategory();
+        if (count($this->getProfiles()) === 0) {
+            unset($data['profileList'], $data['category'], $data['privateProfiles']);
+        }
+        return $data;
     }
 }

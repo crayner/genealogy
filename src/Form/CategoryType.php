@@ -72,19 +72,8 @@ class CategoryType extends AbstractType
                 );
         } else {
             $builder
-                ->add('wikiTreeUser', HiddenType::class,
-                    [
-                        'label' => 'WikiTree User name',
-                        'help' => 'Usually an email address',
-                        'required' => true,
-                    ]
-                )
-                ->add('wikiTreePassword', HiddenType::class,
-                    [
-                        'label' => 'WikiTree Password',
-                        'required' => true,
-                    ]
-                );
+                ->add('wikiTreeUser', HiddenType::class)
+                ->add('wikiTreePassword', HiddenType::class);
         }
         $builder
             ->add('profileList', TextareaType::class,
@@ -101,6 +90,7 @@ class CategoryType extends AbstractType
                     'required' => true,
                 ]
             )
+            ->add('privateProfiles', HiddenType::class)
             ->add('submit', SubmitType::class,
                 [
                     'label' => 'Add Category',
