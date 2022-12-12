@@ -178,3 +178,4 @@ Start Category Load: Start Category Load
       other { Category to be added to the profile (There are # profiles in that require this category.):}
   }
 "Link to next profile": "Edit this profile:"
+"add to the category profiles waiting to be loaded.": Add to the category-profiles waiting to be loaded.

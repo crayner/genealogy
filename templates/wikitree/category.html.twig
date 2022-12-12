@@ -49,6 +49,8 @@
     <p style="color: darkred">{{ manager.error }}</p>
     {% endif %}
 
+    <p><a href="{{ url('wikitree_add_category') }}">{{ 'add to the category profiles waiting to be loaded.'|trans }}</a></p>
+
 {% endblock body %}
 
 {% block javascripts %}
