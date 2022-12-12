@@ -2,22 +2,39 @@
 
 namespace App\Manager;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Yaml\Yaml;
 
 class CategoryManager
 {
+    /**
+     * FILENAME
+     */
+    private $fileName = __DIR__ . '/../../var/log/categories.yaml';
     /**
      * @var string|null
      */
     private ?string $category = '';
 
     /**
-     * @var array
+     * @var ArrayCollection
      */
-    private array $profiles = [];
+    private ArrayCollection $profiles;
+
+    /**
+     * @var ArrayCollection
+     */
+    private ArrayCollection $categories;
+
+    /**
+     * @var string|null
+     */
+    private ?string $error;
 
     /**
      * @var HttpBrowser
@@ -25,21 +42,20 @@ class CategoryManager
     private HttpBrowser $client;
 
     /**
-     * @var array
+     * @var bool
      */
-    private array $privateProfiles = [];
+    private $initiated = false;
 
     /**
      * @param Form $form
      * @return void
      */
-    public function handleForm(FormInterface $form, Session $session): bool
+    public function addNextCategory(FormInterface $form, Session $session): bool
     {
         $data = $form->getData();
-        $this->setCategory($data['category'])
-            ->setProfiles(explode("\r\n", $data['profileList']))
-            ->setPrivateProfiles(explode("\r\n", $data['privateProfiles']));
 
+        return true;
+        /*
         if ($session->has('cookieJar')) {
             $cookieJar = $session->get('cookieJar');
         } else {
@@ -47,7 +63,7 @@ class CategoryManager
         }
 
         $client = $this->setClient(new HttpBrowser(null, null, $cookieJar))->getClient();
-        $url = 'https://www.wikitree.com/index.php?action=edit&title=' . $this->getProfiles()[0];
+        $url = 'https://www.wikitree.com/index.php?action=edit&title=' . $this->firstProfile();
         $crawler = $client->request("GET", $url);
         $login = $crawler->filterXPath('//a[contains(@href, "Special:Userlogin")]')->evaluate('count(@href)');
         $didLogin = false;
@@ -68,9 +84,8 @@ class CategoryManager
             $status = $crawler->filterXPath('//div[contains(@class, "status red")]')->evaluate('count(@class)');
 
             //has the login been successful.
-            if ($status !== []) {
-                $result['error'] = $crawler->filterXPath('//div[contains(@class, "status red")]')->text();
-                $result['valid'] = false;
+            if ($status !== [] || strpos($crawler->getUri(), "errcode=blocked") !== false) {
+                $this->setError($crawler->filterXPath('//div[contains(@class, "status red")]')->text());
                 return false;
             }
             $didLogin = true;
@@ -85,7 +100,6 @@ class CategoryManager
 
         $status = $crawler->filterXPath('//div[contains(@class, "status red")]')->evaluate('count(@class)');
         if ($status !== [] && $crawler->filterXPath('//div[contains(@class, "status red")]')->text() === "You do not have permission to edit this profile. Request to join the Trusted List.") {
-            $this->addPrivateProfile($this->firstProfile());
             return false;
         }
 
@@ -94,6 +108,7 @@ class CategoryManager
 
         $session->set("cookieJar", $this->getClient()->getCookieJar());
         return $result;
+        */
     }
 
     /**
@@ -101,7 +116,7 @@ class CategoryManager
      */
     public function getCategory(): string
     {
-        return $this->category;
+        return $this->category ?: "No category Selected";
     }
 
     /**
@@ -121,34 +136,12 @@ class CategoryManager
      */
     public function setCategory(?string $category = ''): CategoryManager
     {
+        if ($category === '' && $this->getCategories()->count() > 0) {
+            $this->getCategories()->first();
+            $category = $this->getCategories()->key();
+        }
         $this->category = trim(str_replace(["]]","[[","Category:"], "", $category !== null ? $category: ''));
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getProfiles(): array
-    {
-        return $this->profiles;
-    }
-
-    /**
-     * @param array $profiles
-     * @return CategoryManager
-     */
-    public function setProfiles(array $profiles): CategoryManager
-    {
-        $this->profiles = $profiles;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function firstProfile(): string
-    {
-        return trim(reset($this->profiles));
     }
 
     /**
@@ -188,27 +181,6 @@ class CategoryManager
     }
 
     /**
-     * @return array
-     */
-    public function getPrivateProfiles(): array
-    {
-        if (count($this->privateProfiles) > 0 && $this->privateProfiles[0] === "")
-            array_shift($this->privateProfiles);
-        return $this->privateProfiles;
-    }
-
-    /**
-     * @param string $profile
-     * @return $this
-     */
-    public function addPrivateProfile(string $profile): CategoryManager
-    {
-        if (!in_array($profile, $this->privateProfiles))
-            $this->privateProfiles[] = $profile;
-        return $this;
-    }
-
-    /**
      * @param array $privateProfiles
      * @return CategoryManager
      */
@@ -219,26 +191,201 @@ class CategoryManager
     }
 
     /**
-     * @param array $data
+     * @param FormInterface $form
+     * @return void
+     */
+    public function handleForm(FormInterface $form): bool
+    {
+        $this->initiateCategories();
+        $data = $form->getData();
+        $this->addCategory([$data['category'] => explode("\r\n",$data['profileList'])]);
+
+        $this->writeCategories();
+        return true;
+    }
+
+    /**
+     * @return void
+     */
+    public function initiateCategories()
+    {
+        if ($this->isInitiated())
+            return;
+
+        if (!is_file($this->fileName)) {
+            file_put_contents($this->fileName, Yaml::dump([], 8));
+        }
+        $file = new File($this->fileName);
+        $this->setCategories(new ArrayCollection(Yaml::parse($file->getContent())));
+        foreach ($this->getCategories() as $name=>$profiles) {
+            $this->getCategories()->set($name, new ArrayCollection($profiles));
+        }
+        $this->setInitiated();
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCategories(): ArrayCollection
+    {
+        return $this->categories = $this->categories ?? new ArrayCollection();
+    }
+
+    /**
+     * @param array $category
+     * @return $this
+     */
+    public function addCategory(array $category): CategoryManager
+    {
+        $key = key($category);
+        if ($this->getCategories()->containsKey(trim($key))) {
+            $profiles = $this->getCategories()->get(trim($key));
+            foreach ($category[$key] as $profile) {
+                if (!$profiles->contains(trim($profile))) $profiles->add(trim($profile));
+            }
+        } else {
+            $this->getCategories()->set(trim($key), new ArrayCollection([]));
+            $profiles = $this->getCategories()->get(trim($key));
+            foreach ($category[$key] as $profile) {
+                $profiles->add(trim($profile));
+            }
+        }
+        $this->getCategories()->set(trim($key), $profiles);
+        return $this;
+    }
+
+    /**
+     * @param string $categoryName
+     * @return $this
+     */
+    public function removeCategory(string $categoryName): CategoryManager
+    {
+        if ($this->getCategories()->containsKey($categoryName)) {
+            $this->getCategories()->remove($categoryName);
+        }
+        return $this;
+    }
+
+    /**
+     * @param ArrayCollection $categories
+     * @return CategoryManager
+     */
+    public function setCategories(ArrayCollection $categories): CategoryManager
+    {
+        $this->categories = $categories;
+        return $this;
+    }
+
+    /**
+     * @return CategoryManager
+     */
+    public function writeCategories(): CategoryManager
+    {
+        $data = [];
+        foreach ($this->getCategories()->toArray() as $category=>$profiles)
+        {
+            $data[$category] = $profiles->toArray();
+        }
+
+        file_put_contents($this->fileName, Yaml::dump($data,8));
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getError(): ?string
+    {
+        return $this->error = $this->error ?? "";
+    }
+
+    /**
+     * @param string|null $error
+     * @return CategoryManager
+     */
+    public function setError(?string $error): CategoryManager
+    {
+        $this->error = $error;
+        return $this;
+    }
+
+    /**
+     * @param bool $current
      * @return array
      */
-    public function getData(array $data): array
+    public function statistics(bool $current): array
     {
-        array_shift($this->profiles);
-        $data['profileList'] = implode("\r\n", $this->getProfiles());
-        $data['privateProfiles'] = implode("\r\n", $this->getPrivateProfiles());
-        if (count($this->getProfiles()) === 1 && $this->getProfiles()[0] === "") {
-            $data['profileList'] = "";
-            $this->setProfiles([]);
+        $result = [];
+        $result['categories'] = $this->getCategories()->count();
+        $result['profiles'] = 0;
+        if ($current) {
+            $result['profile'] = $this->firstProfile();
+            $result['category'] = $this->getCategory();
         }
-        if ((count($this->getPrivateProfiles()) > 0 && $this->getPrivateProfiles()[0] === "") || count($this->getPrivateProfiles()) === 0) {
-            $data['privateProfiles'] = "";
-            $this->setPrivateProfiles([]);
+        foreach ($this->getCategories()->toArray() as $profiles) {
+            $result['profiles'] += $profiles->count();
         }
-        $data['category'] = $this->getCategory();
-        if (count($this->getProfiles()) === 0) {
-            unset($data['profileList'], $data['category'], $data['privateProfiles']);
+        $result['wait'] = 4000 + rand(1000, 6000);
+        return $result;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInitiated(): bool
+    {
+        return $this->initiated;
+    }
+
+    /**
+     * @param bool $initiated
+     * @return $this
+     */
+    public function setInitiated(bool $initiated = true): CategoryManager
+    {
+        $this->initiated = $initiated;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function firstProfile(): string
+    {
+        $category = $this->getCategories()->first();
+        if (!$category) return "No profile set.";
+        while ($category->count() === 0) {
+            $this->removeCategory($category);
+            $category = $this->getCategories()->first();
         }
-        return $data;
+        $this->setCategory();
+        return $category->first();
+    }
+
+    /**
+     * @return $this
+     */
+    public function removeProfile(): CategoryManager
+    {
+        $profile = $this->firstProfile();
+        $this->getCategories()->get($this->getCategory())->removeElement($profile);
+
+        $profiles = $this->getCategories()->get($this->getCategory());
+        if ($profiles->count() === 0) {
+            $this->removeCategory($this->getCategory());
+        }
+        $this->getCategories()->set($this->getCategory(), new ArrayCollection(array_values($profiles->toArray())));
+
+        $this->firstProfile();
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function profilesInCategory(): int
+    {
+        return $this->getCategories()->get($this->getCategory())->count();
     }
 }

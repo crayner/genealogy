@@ -6,7 +6,7 @@
         <meta name="keywords" content="Genealogy,gedcom">
         <meta name="author" content="Craig Rayner">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}Genealogy Project{% endblock %}</title>
+        <title>{% block title %}{{ 'Genealogy Project'|trans }}{% endblock %}</title>
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
             <link href="{{ asset('css/app.css') }}?version=7" rel="stylesheet" type="text/css"/>

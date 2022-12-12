@@ -14,6 +14,7 @@
 
 namespace App\Controller;
 
+use App\Form\CategoryAddType;
 use App\Form\CategoryLoginType;
 use App\Form\CategoryType;
 use App\Form\WikiTreeBiographyType;
@@ -132,23 +133,19 @@ class WikiTreeController extends AbstractController
      */
     public function category(RequestStack $stack, CategoryManager $manager): Response
     {
-
         $request = $stack->getCurrentRequest();
         $form = $this->createForm(CategoryLoginType::class);
         $form->handleRequest($request);
-        $result = [];
-        $result['valid'] = false;
-        $result['error'] = 'Nothing done yet.';
-        $result['category'] = 'no category entered';
-        $result['profile'] = 'no profile entered';
-        $data = [];
+        $manager->initiateCategories();
 
+        $result = $manager->statistics(true);
         if ($form->isSubmitted()) {
-            $result['valid'] = $manager->handleForm($form, $stack->getSession());
-            $result['profile'] = $manager->firstProfile();
-            $result['category'] = $manager->getCategory();
-            $data = $manager->getData($form->getData());
+            $manager->addNextCategory($form, $stack->getSession());
+            $data = $form->getData();
             $form = $this->createForm(CategoryType::class, $data);
+            $manager->removeProfile()
+                ->writeCategories();
+            $result = array_merge($result, $manager->statistics(false));
         }
 
         return $this->render('wikitree/category.html.twig',
@@ -159,5 +156,34 @@ class WikiTreeController extends AbstractController
             ]
         );
 
+    }
+
+    /**
+     * @param RequestStack $stack
+     * @param CategoryManager $manager
+     * @Route("/wikitree/add/category/",name="wikitree_add_category")
+     * @return Response
+     */
+    public function addCategories(RequestStack $stack, CategoryManager $manager): Response
+    {
+        $result = [];
+        $form = $this->createForm(CategoryAddType::class);
+        $request = $stack->getCurrentRequest();
+        $form->handleRequest($request);
+        $manager->initiateCategories();
+
+        if ($form->isSubmitted()) {
+            $manager->handleForm($form, $stack->getSession());
+            $form = $this->createForm(CategoryAddType::class);
+        }
+
+        $result = $manager->statistics(true);
+        return $this->render('wikitree/add_category.html.twig',
+            [
+                'form' => $form->createView(),
+                'result' => $result,
+                'manager' => $manager,
+            ]
+        );
     }
 }

@@ -150,7 +150,31 @@ Category: Category
 WikiTree Category Management: WikiTree Category Management
 List of profiles to work on and the category to add to the profile.: List of profiles to work on and the category to add to the profile.
 Add Category: Add Category
-'category added to profile': "The category, {category}, was added to the profile, <a href='https://www.wikitree.com/wiki/{profile}#categories' target='_blank'>{profile}</a>."
+'category added to profile': "The category, {category}, was added to the profile, <a href='https://www.wikitree.com/wiki/{profile}#categories' target='_blank'>{profile}</a>.  Remaining: {count}. Pausing {pause} seconds."
 category sentence: This form/page adds the category to the next profile in the list.  It does not add the category to each profile in the list automatically as this would be a process that Wikitree may block as a robot.
 Private Profiles: Private Profiles
 profile_link: "<a href=\"https://www.wikitree.com/wiki/{profile}\" target=\"_blank\">{profile}</a>"
+Genealogy Project: Genealogy Project
+WikiTree Add Category Management: WikiTree Add Category Management
+Add a category with a list of profiles to the queue file.: Add a category with a list of profiles to the queue file.
+Add Category Profiles: Add Category Profiles
+category_count: >-
+    { count, plural,
+        =0 {There are no categories waiting to be loaded.}
+        one {There is one category waiting to be loaded.}
+        other {There are # categories waiting to be loaded.}
+    }
+profile_count: >-
+    { count, plural,
+        =0 {There are no profiles waiting to be loaded.}
+        one {There is one profile waiting to be loaded.}
+        other {There are # profiles waiting to be loaded.}
+    }
+Start Category Load: Start Category Load
+"category to add to profile:": >-
+  { count, plural,
+      =0 { There are no profiles remaining that require this category. }
+      one { Category to be added to the profile (This is the last profile to require this category.): }
+      other { Category to be added to the profile (There are # profiles in that require this category.):}
+  }
+"Link to next profile": "Edit this profile:"

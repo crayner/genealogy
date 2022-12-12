@@ -26,7 +26,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * CategoryType
  */
-class CategoryType extends AbstractType
+class CategoryAddType extends AbstractType
 {
     /**
      * @var CategoryManager
@@ -55,30 +55,27 @@ class CategoryType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($options['show_login']) {
-            $builder
-                ->add('wikiTreeUser', TextType::class,
-                    [
-                        'label' => 'WikiTree User name',
-                        'help' => 'Usually an email address',
-                        'required' => true,
-                    ]
-                )
-                ->add('wikiTreePassword', TextType::class,
-                    [
-                        'label' => 'WikiTree Password',
-                        'required' => true,
-                    ]
-                );
-        } else {
-            $builder
-                ->add('wikiTreeUser', HiddenType::class)
-                ->add('wikiTreePassword', HiddenType::class);
-        }
         $builder
+            ->add('profileList', TextareaType::class,
+                [
+                    'label' => 'Wikitree Profile List',
+                    'help' => 'A list of profiles from Wikitree',
+                    'required' => true,
+                    'attr' => [
+                        'rows' => 12,
+                    ],
+                ]
+            )
+            ->add('category', TextType::class,
+                [
+                    'label' => 'Category',
+                    'help' => 'The category that will be added to the Wikitree profiles/s.',
+                    'required' => true,
+                ]
+            )
             ->add('submit', SubmitType::class,
                 [
-                    'label' => 'Add Category',
+                    'label' => 'Add Category Profiles',
                 ]
             )
         ;
@@ -89,17 +86,6 @@ class CategoryType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'wikitree_category';
+        return 'wikitree_add_category';
     }
-
-    /**
-     * @param OptionsResolver $resolver
-     * @return void
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefault('show_login', false);
-        $resolver->setDefault('attr', ['id' => $this->getBlockPrefix()]);
-    }
-
 }

@@ -1,13 +1,16 @@
 {% trans_default_domain 'messages' %}
 
 {% extends "base.html.twig" %}
+{% block title %}{{ parent() }} - {{  'Category'|trans }}{% endblock %}
 {% block stylesheets %}
     {{ parent() }}
-    {% if manager.profiles|length > 0 %}
+    {% if result.profiles > 0 %}
         <script>
-            window.onload = function(){
-                document.getElementById("wikitreecategory").submit();
-            }
+//            window.onload = function(){
+//                setTimeout(function(){
+//                    document.getElementById("wikitree_category").submit();
+//                }, {{ result.wait }});
+//            }
         </script>
     {% endif %}
 {% endblock stylesheets %}
@@ -17,23 +20,35 @@
        {{ 'List of profiles to work on and the category to add to the profile.'|trans }}
     </p>
     <hr />
+    <!--
     <div class="left_half">
         <div class="right_half">
-            {% include 'wikitree/category_form.html.twig' %}
+            {{ form_start(form) }}
+            {% include 'wikitree/login_form.html.twig' %}
+            {{ form_end(form) }}
         </div>
-
-
-        <p>{{ 'category added to profile'|trans({"{category}": result.category, "{profile}": result.profile})|raw }}</p>
-
-        <p>{{ 'category sentence'|trans }}</p>
-        {% if manager.privateProfiles|length > 0 %}
-            <p>{{ 'Private Profiles'|trans }}</p><ol>
-            {% for profile in manager.privateProfiles %}
-                <li>{{ 'profile_link'|trans({"{profile}": profile})|raw }}</li>
-            {% endfor %}</ol>
-        {% endif %}
-
     </div>
+    -->
+
+    <p>{{ 'category_count'|trans({count: result.categories}) }}</p>
+
+    <p>{{ 'profile_count'|trans({count: result.profiles}) }}</p>
+
+    <!--
+    <p>{{ 'category added to profile'|trans({"{category}": result.category, "{profile}": result.profile, "{count}": result.profiles, "{pause}": (result.wait / 1000)})|raw }}</p>
+
+    <p>{{ 'category sentence'|trans }}</p> -->
+
+    <p style="font-weight: bold">{{ 'category to add to profile:'|trans({"count": manager.profilesInCategory}) }}</p>
+
+    <h3 style="color: blue">{{ manager.buildCategory }}</h3>
+
+    <p>{{ 'Link to next profile'|trans }} <a href="https://www.wikitree.com/index.php?action=edit&title="{{ manager.firstProfile }}" target="_blank">{{ manager.firstProfile }}</a> </p>
+
+    {% if manager.error is not same as("") %}
+    <p style="color: darkred">{{ manager.error }}</p>
+    {% endif %}
+
 {% endblock body %}
 
 {% block javascripts %}

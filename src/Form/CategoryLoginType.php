@@ -45,6 +45,6 @@ class CategoryLoginType extends CategoryType
      */
     public function getBlockPrefix()
     {
-        return 'wikitreecategory';
+        return 'wikitree_category';
     }
 }

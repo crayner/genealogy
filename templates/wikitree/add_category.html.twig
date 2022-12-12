@@ -1,0 +1,40 @@
+{% trans_default_domain 'messages' %}
+
+{% extends "base.html.twig" %}
+{% block title %}{{ parent() }} - {{  'Add Category'|trans }}{% endblock %}
+
+
+{% block body %}
+    <h1 style="text-align: center">{{ 'WikiTree Add Category Management'|trans }}</h1>
+    <p class="important" style="text-align: center">
+       {{ 'Add a category with a list of profiles to the queue file.'|trans }}
+    </p>
+    <hr />
+    <p>{{ 'category_count'|trans({count: result.categories}) }}</p>
+    <p>{{ 'profile_count'|trans({count: result.profiles}) }}</p>
+    <div class="left-half">
+        {% if result.profiles > 0 %}
+            <a href="{{ url('wikitree_category') }}">{{ 'Start Category Load'|trans }}</a>
+        {% endif %}
+        {{ form_start(form) }}
+        <div class="formElement">
+            <div class="formLabel">
+                <div class="formWidget">{{ form_widget(form.category) }}</div>
+                <p class="formLabel">{{ form_label(form.category) }}</p>
+                <p class="formHelp">{{ form_help(form.category) }}</p>
+            </div>
+        </div>
+        <div class="formElement" style="min-height: 210px">
+            <div class="formLabel">
+                <div class="formWidget">{{ form_widget(form.profileList) }}</div>
+                <p class="formLabel">{{ form_label(form.profileList) }}</p>
+                <p class="formHelp">{{ form_help(form.profileList) }}</p>
+            </div>
+        </div>
+        {{ form_end(form) }}{% dump %}
+    </div>
+{% endblock body %}
+
+{% block javascripts %}
+   {{ parent() }}
+{% endblock %}
