@@ -61,12 +61,14 @@ class CategoryType extends AbstractType
                     [
                         'label' => 'WikiTree User name',
                         'help' => 'Usually an email address',
+                        'data' => 'craig@craigraner.com',
                         'required' => true,
                     ]
                 )
                 ->add('wikiTreePassword', TextType::class,
                     [
                         'label' => 'WikiTree Password',
+                        'data' => uniqid(),
                         'required' => true,
                     ]
                 );
@@ -78,7 +80,7 @@ class CategoryType extends AbstractType
         $builder
             ->add('submit', SubmitType::class,
                 [
-                    'label' => 'Add Category',
+                    'label' => 'Next Category',
                 ]
             )
         ;

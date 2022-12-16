@@ -134,9 +134,9 @@ class CategoryManager
      * @param string $category
      * @return CategoryManager
      */
-    public function setCategory(?string $category = ''): CategoryManager
+    public function setCategory(?string $category = null): CategoryManager
     {
-        if ($category === '' && $this->getCategories()->count() > 0) {
+        if (is_null($category) && $this->getCategories()->count() > 0) {
             $this->getCategories()->first();
             $category = $this->getCategories()->key();
         }
@@ -198,7 +198,7 @@ class CategoryManager
     {
         $this->initiateCategories();
         $data = $form->getData();
-        $this->addCategory([$data['category'] => explode("\r\n",$data['profileList'])]);
+        $this->addCategory([$this->setCategory($data['category'])->getCategory() => explode("\r\n",$data['profileList'])]);
 
         $this->writeCategories();
         return true;
@@ -262,8 +262,10 @@ class CategoryManager
     {
         if ($this->getCategories()->containsKey($categoryName)) {
             $this->getCategories()->remove($categoryName);
+            $this->getCategories()->removeElement([]);
+
         }
-        return $this;
+        return $this->setCategory();
     }
 
     /**

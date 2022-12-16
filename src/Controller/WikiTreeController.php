@@ -173,7 +173,7 @@ class WikiTreeController extends AbstractController
         $manager->initiateCategories();
 
         if ($form->isSubmitted()) {
-            $manager->handleForm($form, $stack->getSession());
+            $manager->handleForm($form);
             $form = $this->createForm(CategoryAddType::class);
         }
 

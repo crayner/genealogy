@@ -20,15 +20,12 @@
        {{ 'List of profiles to work on and the category to add to the profile.'|trans }}
     </p>
     <hr />
-    <!--
+
     <div class="left_half">
         <div class="right_half">
-            {{ form_start(form) }}
-            {% include 'wikitree/login_form.html.twig' %}
-            {{ form_end(form) }}
         </div>
     </div>
-    -->
+
 
     <p>{{ 'category_count'|trans({count: result.categories}) }}</p>
 
@@ -43,11 +40,16 @@
 
     <h3 style="color: blue">{{ manager.buildCategory }}</h3>
 
-    <p>{{ 'Link to next profile'|trans }} <a href="https://www.wikitree.com/index.php?action=edit&title="{{ manager.firstProfile }}" target="_blank">{{ manager.firstProfile }}</a> </p>
+    <p>{{ 'Link to next profile'|trans }} <a href="https://www.wikitree.com/index.php?action=edit&title={{ manager.firstProfile }}#bio" target="_blank">{{ manager.firstProfile }}</a></p>
 
     {% if manager.error is not same as("") %}
     <p style="color: darkred">{{ manager.error }}</p>
     {% endif %}
+    {{ form_start(form) }}
+    {{ form_widget(form.submit) }}
+
+    {% include 'wikitree/login_form.html.twig' %}
+    {{ form_end(form) }}
 
     <p><a href="{{ url('wikitree_add_category') }}">{{ 'add to the category profiles waiting to be loaded.'|trans }}</a></p>
 
