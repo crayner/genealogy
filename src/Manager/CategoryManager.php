@@ -97,6 +97,7 @@ class CategoryManager
 
         $status = $crawler->filterXPath('//div[contains(@class, "status red")]')->evaluate('count(@class)');
         if ($status !== [] && $crawler->filterXPath('//div[contains(@class, "status red")]')->text() === "You do not have permission to edit this profile. Request to join the Trusted List.") {
+            $this->setError($crawler->filterXPath('//div[contains(@class, "status red")]')->text());
             return false;
         }
 
