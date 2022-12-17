@@ -24,11 +24,6 @@ class CategoryManager
     /**
      * @var ArrayCollection
      */
-    private ArrayCollection $profiles;
-
-    /**
-     * @var ArrayCollection
-     */
     private ArrayCollection $categories;
 
     /**
@@ -54,12 +49,14 @@ class CategoryManager
     {
         $data = $form->getData();
 
-        return true;
-        /*
         if ($session->has('cookieJar')) {
             $cookieJar = $session->get('cookieJar');
         } else {
             $cookieJar = null;
+        }
+
+        if ($this->firstProfile() === "No profile set.") {
+            return true;
         }
 
         $client = $this->setClient(new HttpBrowser(null, null, $cookieJar))->getClient();
@@ -107,8 +104,8 @@ class CategoryManager
         $result = $this->parse($form);
 
         $session->set("cookieJar", $this->getClient()->getCookieJar());
+
         return $result;
-        */
     }
 
     /**
@@ -262,8 +259,6 @@ class CategoryManager
     {
         if ($this->getCategories()->containsKey($categoryName)) {
             $this->getCategories()->remove($categoryName);
-            $this->getCategories()->removeElement([]);
-
         }
         return $this->setCategory();
     }
@@ -327,7 +322,8 @@ class CategoryManager
         foreach ($this->getCategories()->toArray() as $profiles) {
             $result['profiles'] += $profiles->count();
         }
-        $result['wait'] = 4000 + rand(1000, 6000);
+        $result['wait'] = rand(1000, 3000);
+        $result['pause'] = $this->profilesInCategory() % 8;
         return $result;
     }
 
@@ -369,6 +365,9 @@ class CategoryManager
      */
     public function removeProfile(): CategoryManager
     {
+        if (is_null($this->getCategory()) || $this->getCategory() === "No category Selected")
+            return $this;
+
         $profile = $this->firstProfile();
         $this->getCategories()->get($this->getCategory())->removeElement($profile);
 
@@ -376,9 +375,11 @@ class CategoryManager
         if ($profiles->count() === 0) {
             $this->removeCategory($this->getCategory());
         }
-        $this->getCategories()->set($this->getCategory(), new ArrayCollection(array_values($profiles->toArray())));
+        if ($this->getCategories()->count() > 0) {
+            $this->getCategories()->set($this->getCategory(), new ArrayCollection(array_values($profiles->toArray())));
 
-        $this->firstProfile();
+            $this->firstProfile();
+        }
 
         return $this;
     }
@@ -388,6 +389,6 @@ class CategoryManager
      */
     public function profilesInCategory(): int
     {
-        return $this->getCategories()->get($this->getCategory())->count();
+        return is_null($this->getCategory()) ? $this->getCategories()->get($this->getCategory())->count() : 0;
     }
 }

@@ -146,6 +146,8 @@ class WikiTreeController extends AbstractController
             $manager->removeProfile()
                 ->writeCategories();
             $result = array_merge($result, $manager->statistics(false));
+        } else {
+            $result['pause'] = 0;
         }
 
         return $this->render('wikitree/category.html.twig',

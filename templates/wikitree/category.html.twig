@@ -4,13 +4,13 @@
 {% block title %}{{ parent() }} - {{  'Category'|trans }}{% endblock %}
 {% block stylesheets %}
     {{ parent() }}
-    {% if result.profiles > 0 %}
+    {% if result.profiles > 0 and result.pause is not same as (0) %}
         <script>
-//            window.onload = function(){
-//                setTimeout(function(){
-//                    document.getElementById("wikitree_category").submit();
-//                }, {{ result.wait }});
-//            }
+            window.onload = function(){
+                setTimeout(function(){
+                    document.getElementById("wikitree_category").submit();
+                }, {{ result.wait }});
+            }
         </script>
     {% endif %}
 {% endblock stylesheets %}
@@ -50,6 +50,12 @@
 
     {% include 'wikitree/login_form.html.twig' %}
     {{ form_end(form) }}
+
+    {% if result.pause is same as (0)%}
+        <p style="font-weight: bold">{{ 'Paused'|trans }}</p>
+    {% else %}
+        <p>{{ result.pause }}</p>
+    {% endif %}
 
     <p><a href="{{ url('wikitree_add_category') }}">{{ 'add to the category profiles waiting to be loaded.'|trans }}</a></p>
 
