@@ -389,6 +389,7 @@ class CategoryManager
      */
     public function profilesInCategory(): int
     {
-        return is_null($this->getCategory()) ? $this->getCategories()->get($this->getCategory())->count() : 0;
+        if ($this->getCategories()->count() === 0 || ! $this->getCategories()->containsKey($this->getCategory())) return 0;
+        return $this->getCategories()->get($this->getCategory())->count();
     }
 }
