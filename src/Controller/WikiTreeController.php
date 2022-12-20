@@ -17,10 +17,12 @@ namespace App\Controller;
 use App\Form\CategoryAddType;
 use App\Form\CategoryLoginType;
 use App\Form\CategoryType;
+use App\Form\RemoveCategoryType;
 use App\Form\WikiTreeBiographyType;
 use App\Form\WikiTreeLoginType;
 use App\Manager\CategoryManager;
 use App\Manager\MarriageSentenceManager;
+use App\Manager\RemoveCategoryManager;
 use App\Manager\WikiTreeManager;
 use App\Manager\WikitreeProfileManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -157,7 +159,6 @@ class WikiTreeController extends AbstractController
                 'manager' => $manager,
             ]
         );
-
     }
 
     /**
@@ -181,6 +182,41 @@ class WikiTreeController extends AbstractController
 
         $result = $manager->statistics(true);
         return $this->render('wikitree/add_category.html.twig',
+            [
+                'form' => $form->createView(),
+                'result' => $result,
+                'manager' => $manager,
+            ]
+        );
+    }
+
+    /**
+     * @param RequestStack $stack
+     * @param RemoveCategoryManager $manager
+     * @Route("/wikitree/remove/category/",name="wikitree_remove_category")
+     * @return Response
+     */
+    public function removeCategory(RequestStack $stack, RemoveCategoryManager $manager): Response
+    {
+        $result = [];
+        $form = $this->createForm(RemoveCategoryType::class);
+        $request = $stack->getCurrentRequest();
+        $form->handleRequest($request);
+        $manager->initiateCategories();
+
+        $result = $manager->statistics(true);
+        if ($form->isSubmitted()) {
+            $manager->removeNextCategory($form, $stack->getSession());
+            $data = $form->getData();
+            $form = $this->createForm(RemoveCategoryType::class, $data);
+            $manager->removeProfile()
+                ->writeCategories();
+            $result = array_merge($result, $manager->statistics(false));
+        } else {
+            $result['pause'] = 0;
+        }
+
+        return $this->render('wikitree/remove_category.html.twig',
             [
                 'form' => $form->createView(),
                 'result' => $result,

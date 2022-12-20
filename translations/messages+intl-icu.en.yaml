@@ -172,11 +172,17 @@ profile_count: >-
     }
 Start Category Load: Start Category Load
 "category to add to profile:": >-
-  { count, plural,
-      =0 { There are no profiles remaining that require this category. }
-      one { Category to be added to the profile (This is the last profile to require this category.): }
-      other { Category to be added to the profile (There are # profiles that require this category.):}
-  }
+    { count, plural,
+        =0 { There are no profiles remaining that require this category. }
+        one { Category to be added to the profile (This is the last profile to require this category.): }
+        other { Category to be added to the profile (There are # profiles that require this category.):}
+    }
+"category to remove from profile:": >-
+    { count, plural,
+        =0 { There are no profiles remaining that require this category removed. }
+        one { Category to be removed from the profile (This is the last profile to require this category removed.): }
+        other { Category to be removed from the profile (There are # profiles that require this category removed.):}
+    }
 "Link to next profile": "Edit this profile:"
 "add to the category profiles waiting to be loaded.": Add to the category-profiles waiting to be loaded.
 "Next Category": Next Category

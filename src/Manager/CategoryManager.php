@@ -16,12 +16,12 @@ class CategoryManager
     /**
      * MOD_SIZE
      */
-    CONST MOD_SIZE = 11;
+    CONST MOD_SIZE = 17;
 
     /**
      * MAX_DELAY
      */
-    CONST MAX_DELAY = 3500;
+    CONST MAX_DELAY = 3800;
     /**
      * FILENAME
      */
