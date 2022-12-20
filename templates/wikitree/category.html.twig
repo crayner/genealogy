@@ -1,7 +1,7 @@
 {% trans_default_domain 'messages' %}
 
 {% extends "base.html.twig" %}
-{% block title %}{{ parent() }} - {{  'Category'|trans }}{% endblock %}
+{% block title %}{{ parent() }} - {{ result.pause }} - {{  'Category'|trans }}{% endblock %}
 {% block stylesheets %}
     {{ parent() }}
     {% if result.profiles > 0 and result.pause is not same as (0) %}

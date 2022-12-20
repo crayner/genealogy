@@ -61,14 +61,14 @@ class CategoryType extends AbstractType
                     [
                         'label' => 'WikiTree User name',
                         'help' => 'Usually an email address',
-                        'data' => 'craig@craigraner.com',
+                        'data' => 'craig@craigrayner.com',
                         'required' => true,
                     ]
                 )
                 ->add('wikiTreePassword', TextType::class,
                     [
                         'label' => 'WikiTree Password',
-                        'data' => uniqid(),
+                        'data' => '7DQQGVovqS*41k9P',
                         'required' => true,
                     ]
                 );

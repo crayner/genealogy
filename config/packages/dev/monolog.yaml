@@ -4,7 +4,12 @@ monolog:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
-            channels: ["!event"]
+            channels: ["!event","!wikitree"]
+        wikitree:
+            type: stream
+            path: "%kernel.logs_dir%/wikitree.log"
+            level: debug
+            channels: ["wikitree"]
         # uncomment to get logging in your browser
         # you may have to allow bigger header sizes in your Web server configuration
         #firephp:
@@ -17,3 +22,4 @@ monolog:
             type: console
             process_psr_3_messages: false
             channels: ["!event", "!doctrine", "!console"]
+    channels: ['wikitree']

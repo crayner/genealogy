@@ -3,6 +3,7 @@
 namespace App\Manager;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
@@ -12,6 +13,15 @@ use Symfony\Component\Yaml\Yaml;
 
 class CategoryManager
 {
+    /**
+     * MOD_SIZE
+     */
+    CONST MOD_SIZE = 11;
+
+    /**
+     * MAX_DELAY
+     */
+    CONST MAX_DELAY = 3500;
     /**
      * FILENAME
      */
@@ -40,6 +50,19 @@ class CategoryManager
      * @var bool
      */
     private $initiated = false;
+
+    /**
+     * @var LoggerInterface
+     */
+    private LoggerInterface $logger;
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $wikitreeLogger)
+    {
+        $this->logger = $wikitreeLogger;
+    }
 
     /**
      * @param Form $form
@@ -155,7 +178,12 @@ class CategoryManager
             $form['wpSummary'] = 'Categorisation';
             $crawler = $this->getClient()->submit($form);
             $status = $crawler->filterXPath('//div[contains(@class, "status red")]')->evaluate('count(@class)');
-            if ($status !== []) return false;
+            if ($status !== [] && !$crawler->filterXPath('//div[contains(@class, "status red")]')->text() === "") {
+                $this->setError($crawler->filterXPath('//div[contains(@class, "status red")]')->text());
+                return false;
+            }
+        } else {
+            $this->setError("The category already existed in the profile.");
         }
         return true;
     }
@@ -304,6 +332,7 @@ class CategoryManager
     public function setError(?string $error): CategoryManager
     {
         $this->error = $error;
+        if (!is_null($error)) $this->getLogger()->warning($error, $this->getContext());
         return $this;
     }
 
@@ -323,8 +352,8 @@ class CategoryManager
         foreach ($this->getCategories()->toArray() as $profiles) {
             $result['profiles'] += $profiles->count();
         }
-        $result['wait'] = rand(1000, 3000);
-        $result['pause'] = $this->profilesInCategory() % 8;
+        $result['wait'] = rand(1500, CategoryManager::MAX_DELAY);
+        $result['pause'] = $this->profilesInCategory() % CategoryManager::MOD_SIZE;
         return $result;
     }
 
@@ -392,5 +421,24 @@ class CategoryManager
     {
         if ($this->getCategories()->count() === 0 || ! $this->getCategories()->containsKey($this->getCategory())) return 0;
         return $this->getCategories()->get($this->getCategory())->count();
+    }
+
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger(): LoggerInterface
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @return array
+     */
+    public function getContext(): array
+    {
+        $context = [];
+        $context['profile'] = $this->firstProfile();
+        $context['category'] = $this->getCategory();
+        return $context;
     }
 }
