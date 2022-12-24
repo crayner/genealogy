@@ -17,4 +17,10 @@ parameters:
             at: at
             in the: in the
             registered at: registered at
-           
+    loader:
+        group_size_min: 6
+        group_size_max: 13
+        group_pause_min: 10000  // times are in milliseconds
+        group_pause_max: 35000
+        profile_pause_min: 2500
+        profile_pause_max: 7500
