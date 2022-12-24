@@ -8,20 +8,13 @@ use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Yaml\Yaml;
 
 class CategoryManager
 {
-    /**
-     * MOD_SIZE
-     */
-    CONST MOD_SIZE = 17;
-
-    /**
-     * MAX_DELAY
-     */
-    CONST MAX_DELAY = 3800;
     /**
      * FILENAME
      */
@@ -57,20 +50,35 @@ class CategoryManager
     private LoggerInterface $logger;
 
     /**
-     * @param LoggerInterface $logger
+     * @var array
      */
-    public function __construct(LoggerInterface $wikitreeLogger)
+    private array $loader;
+
+    /**
+     * @var Session
+     */
+    private SessionInterface $session;
+
+    /**
+     * @param array $loader
+     * @param RequestStack $stack
+     * @param LoggerInterface $wikitreeLogger
+     */
+    public function __construct(array $loader, RequestStack $stack, LoggerInterface $wikitreeLogger)
     {
         $this->logger = $wikitreeLogger;
+        $this->loader = $loader;
+        $this->setSession($stack->getSession());
     }
 
     /**
      * @param Form $form
      * @return void
      */
-    public function addNextCategory(FormInterface $form, Session $session): bool
+    public function addNextCategory(FormInterface $form): bool
     {
         $data = $form->getData();
+        $session = $this->getSession();
 
         if ($session->has('cookieJar')) {
             $cookieJar = $session->get('cookieJar');
@@ -128,6 +136,10 @@ class CategoryManager
         $result = $this->parse($form);
 
         $session->set("cookieJar", $this->getClient()->getCookieJar());
+        if (!$session->has('groupSize') || $session->get('group_size') === 0) {
+            $session->set("groupSize", rand($this->getGroupSizeMin(), $this->getGroupSizeMax()));
+        }
+        $session->set("groupSize", $session->get("groupSize") - 1);
 
         return $result;
     }
@@ -352,8 +364,11 @@ class CategoryManager
         foreach ($this->getCategories()->toArray() as $profiles) {
             $result['profiles'] += $profiles->count();
         }
-        $result['wait'] = rand(1500, CategoryManager::MAX_DELAY);
-        $result['pause'] = $this->profilesInCategory() % CategoryManager::MOD_SIZE;
+        $result['wait'] = rand($this->getProfilePauseMin(), $this->getProfilePauseMax());
+        $result['pause'] = $this->session->get("groupSize");
+        if ($result['pause'] === 0) {
+            $result['wait'] += rand($this->getGroupPauseMin(), $this->getGroupPauseMax());
+        }
         return $result;
     }
 
@@ -440,5 +455,78 @@ class CategoryManager
         $context['profile'] = $this->firstProfile();
         $context['category'] = $this->getCategory();
         return $context;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLoader(): array
+    {
+        return $this->loader;
+    }
+
+    /**
+     * @return Session
+     */
+    public function getSession(): Session
+    {
+        return $this->session;
+    }
+    /**
+     * @param Session $session
+     * @return $this
+     */
+    public function setSession(SessionInterface $session): CategoryManager
+    {
+        $this->session = $session;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getGroupSizeMin(): int
+    {
+        return intval($this->getLoader()['group_size_min']);
+    }
+
+    /**
+     * @return int
+     */
+    public function getGroupSizeMax(): int
+    {
+        return intval($this->getLoader()['group_size_max']);
+    }
+
+    /**
+     * @return int
+     */
+    public function getGroupPauseMin(): int
+    {
+        return ($this->getLoader()['group_pause_min']);
+    }
+
+    /**
+     * @return int
+     */
+    public function getGroupPauseMax(): int
+    {
+        return intval($this->getLoader()['group_pause_max']);
+    }
+
+    /**
+     * @return int
+     */
+    public function getProfilePauseMin(): int
+    {
+        return intval($this->getLoader()['group_pause_min']);
+    }
+
+    /**
+     * @return int
+     */
+    public function getProfilePauseMax(): int
+    {
+        return intval($this->getLoader()['group_pause_max']);
     }
 }

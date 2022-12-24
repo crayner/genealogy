@@ -60,7 +60,7 @@
     <p><a href="{{ url('wikitree_add_category') }}">{{ 'add to the category profiles waiting to be loaded.'|trans }}</a></p>
 
 {% endblock body %}
-
+{% dump(app.request.session) %}
 {% block javascripts %}
    {{ parent() }}
 {% endblock %}
