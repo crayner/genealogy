@@ -23,6 +23,7 @@ use App\Form\WikiTreeLoginType;
 use App\Manager\CategoryManager;
 use App\Manager\MarriageSentenceManager;
 use App\Manager\RemoveCategoryManager;
+use App\Manager\SwapCategoryManager;
 use App\Manager\WikiTreeManager;
 use App\Manager\WikitreeProfileManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -142,7 +143,7 @@ class WikiTreeController extends AbstractController
 
         $result = $manager->statistics(true);
         if ($form->isSubmitted()) {
-            $manager->addNextCategory($form, $stack->getSession());
+            $manager->addNextCategory($form);
             $data = $form->getData();
             $form = $this->createForm(CategoryType::class, $data);
             $manager->removeProfile()
@@ -206,7 +207,42 @@ class WikiTreeController extends AbstractController
 
         $result = $manager->statistics(true);
         if ($form->isSubmitted()) {
-            $manager->removeNextCategory($form, $stack->getSession());
+            $manager->removeNextCategory($form);
+            $data = $form->getData();
+            $form = $this->createForm(RemoveCategoryType::class, $data);
+            $manager->removeProfile()
+                ->writeCategories();
+            $result = array_merge($result, $manager->statistics(false));
+        } else {
+            $result['pause'] = 0;
+        }
+
+        return $this->render('wikitree/remove_category.html.twig',
+            [
+                'form' => $form->createView(),
+                'result' => $result,
+                'manager' => $manager,
+            ]
+        );
+    }
+
+    /**
+     * @param RequestStack $stack
+     * @param SwapCategoryManager $manager
+     * @Route("/wikitree/swap/category/",name="wikitree_swap_category")
+     * @return Response
+     */
+    public function swapCategory(RequestStack $stack, SwapCategoryManager $manager): Response
+    {
+        $result = [];
+        $form = $this->createForm(RemoveCategoryType::class);
+        $request = $stack->getCurrentRequest();
+        $form->handleRequest($request);
+        $manager->initiateCategories();
+
+        $result = $manager->statistics(true);
+        if ($form->isSubmitted()) {
+            $manager->swapNextCategory($form);
             $data = $form->getData();
             $form = $this->createForm(RemoveCategoryType::class, $data);
             $manager->removeProfile()

@@ -8,7 +8,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class RemoveCategoryManager extends CategoryManager
+class SwapCategoryManager extends CategoryManager
 {
 
     /**
@@ -25,7 +25,7 @@ class RemoveCategoryManager extends CategoryManager
      * @param Form $form
      * @return void
      */
-    public function removeNextCategory(FormInterface $form): bool
+    public function swapNextCategory(FormInterface $form): bool
     {
         $data = $form->getData();
         
@@ -82,7 +82,7 @@ class RemoveCategoryManager extends CategoryManager
             return false;
         }
         $form = $crawler->selectButton('wpSave')->form();
-        $result = $this->remove($form);
+        $result = $this->swap($form);
 
         $this->nextProfile()
             ->getSession()->set("cookieJar", $this->getClient()->getCookieJar());
@@ -94,11 +94,11 @@ class RemoveCategoryManager extends CategoryManager
      * @param $form
      * @return bool
      */
-    private function remove($form): bool
+    private function swap($form): bool
     {
         $biography = trim($form['wpTextbox1']->getValue());
         if (str_contains($biography, $this->buildCategory()) || str_contains($biography, $this->buildCategory(false))) {
-            $biography = str_replace([$this->buildCategory()."\n", $this->buildCategory(false)."\n", $this->buildCategory(), $this->buildCategory(false)], "", $biography);
+            $biography = str_replace([$this->buildCategory(), $this->buildCategory(false)], [$this->swapCategory(), $this->swapCategory(false)], $biography);
             $form['wpTextbox1'] = $biography;
             $form['wpSummary'] = 'Categorisation';
             $crawler = $this->getClient()->submit($form);
@@ -112,4 +112,24 @@ class RemoveCategoryManager extends CategoryManager
         }
         return true;
     }
+
+    /**
+     * @return string
+     */
+    public function getSwap(): string
+    {
+        return $this->getLoader()['swap'];
+    }
+
+    /**
+     * @return string
+     */
+    public function swapCategory(bool $space=true): string
+    {
+        if ($space)
+            return "[[Category: " . $this->getSwap() . "]]";
+        else
+            return "[[Category:" . $this->getSwap() . "]]";
+    }
+
 }

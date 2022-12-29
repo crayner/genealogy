@@ -186,4 +186,7 @@ Start Category Load: Start Category Load
 "Link to next profile": "Edit this profile:"
 "add to the category profiles waiting to be loaded.": Add to the category-profiles waiting to be loaded.
 "Next Category": Next Category
-"Paused": Paused
+"Paused": Paused for
+link: Link
+'List of profiles to work on and the category to remove from the profile.': 'List of profiles to work on and the category to remove from the profile.'
+category removed from profile: ""

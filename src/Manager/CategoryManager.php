@@ -118,8 +118,7 @@ class CategoryManager
             }
             $didLogin = true;
         } else if ($login !== []) {
-            $result['error'] = 'You have not logged into the Wikitree site.';
-            $result['valid'] = false;
+            $this->setError('You have not logged into the Wikitree site.');
             return false;
         }
         if ($didLogin) {
@@ -128,18 +127,16 @@ class CategoryManager
 
         $status = $crawler->filterXPath('//div[contains(@class, "status red")]')->evaluate('count(@class)');
         if ($status !== [] && $crawler->filterXPath('//div[contains(@class, "status red")]')->text() === "You do not have permission to edit this profile. Request to join the Trusted List.") {
-            $this->setError($crawler->filterXPath('//div[contains(@class, "status red")]')->text());
+            $this->nextProfile()
+                ->setError($crawler->filterXPath('//div[contains(@class, "status red")]')->text());
             return false;
         }
 
         $form = $crawler->selectButton('wpSave')->form();
         $result = $this->parse($form);
 
-        $session->set("cookieJar", $this->getClient()->getCookieJar());
-        if (!$session->has('groupSize') || $session->get('group_size') === 0) {
-            $session->set("groupSize", rand($this->getGroupSizeMin(), $this->getGroupSizeMax()));
-        }
-        $session->set("groupSize", $session->get("groupSize") - 1);
+        $this->nextProfile()
+            ->getSession()->set("cookieJar", $this->getClient()->getCookieJar());
 
         return $result;
     }
@@ -298,9 +295,7 @@ class CategoryManager
      */
     public function removeCategory(string $categoryName): CategoryManager
     {
-        if ($this->getCategories()->containsKey($categoryName)) {
-            $this->getCategories()->remove($categoryName);
-        }
+        $this->getCategories()->remove($categoryName);
         return $this->setCategory();
     }
 
@@ -366,7 +361,7 @@ class CategoryManager
         }
         $result['wait'] = rand($this->getProfilePauseMin(), $this->getProfilePauseMax());
         $result['pause'] = $this->session->get("groupSize");
-        if ($result['pause'] === 0) {
+        if ($result['pause'] <= 0) {
             $result['wait'] += rand($this->getGroupPauseMin(), $this->getGroupPauseMax());
         }
         return $result;
@@ -519,7 +514,7 @@ class CategoryManager
      */
     public function getProfilePauseMin(): int
     {
-        return intval($this->getLoader()['group_pause_min']);
+        return intval($this->getLoader()['profile_pause_min']);
     }
 
     /**
@@ -527,6 +522,22 @@ class CategoryManager
      */
     public function getProfilePauseMax(): int
     {
-        return intval($this->getLoader()['group_pause_max']);
+        return intval($this->getLoader()['profile_pause_max']);
+    }
+
+    /**
+     * @return CategoryManager
+     */
+    public function nextProfile(): CategoryManager
+    {
+        $result = $this->statistics(false);
+        if (!$this->getSession()->has('groupSize') || $this->getSession()->get('groupSize') <= 0) {
+            $this->getSession()->set("groupSize", rand($this->getGroupSizeMin(), $this->getGroupSizeMax()));
+            if ($this->getSession()->get('groupSize') > $result['profiles']) {
+                $this->getSession()->set("groupSize", $result['profiles']);
+            }
+        }
+        $this->getSession()->set("groupSize", $this->getSession()->get("groupSize") - 1);
+        return $this;
     }
 }

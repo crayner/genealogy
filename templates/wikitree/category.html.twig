@@ -1,10 +1,10 @@
 {% trans_default_domain 'messages' %}
 
 {% extends "base.html.twig" %}
-{% block title %}{{ result.pause }} - {{ parent() }} - {{  'Category'|trans }}{% endblock %}
+{% block title %}{{ result.profiles }}:{{ result.pause }} - {{ parent() }} - {{  'Category'|trans }}{% endblock %}
 {% block stylesheets %}
     {{ parent() }}
-    {% if result.profiles > 0 and result.pause is not same as (0) %}
+    {% if result.profiles > 0 %}
         <script>
             window.onload = function(){
                 setTimeout(function(){
@@ -32,13 +32,13 @@
     <p>{{ 'profile_count'|trans({count: result.profiles}) }}</p>
 
     <!--
-    <p>{{ 'category added to profile'|trans({"{category}": result.category, "{profile}": result.profile, "{count}": result.profiles, "{pause}": (result.wait / 1000)})|raw }}</p>
+    <p>{{ 'category added to profile'|trans({"{category}": result.category, "{profile}": result.profile, "{count}": result.profiles, "{pause}": (result.wait / 1000)})|raw }} <a target="_blank" href="https://www.wikitree.com/wiki/Category:{{ result.category }}">{{ "link"|trans }}</a></p>
 
     <p>{{ 'category sentence'|trans }}</p> -->
 
     <p style="font-weight: bold">{{ 'category to add to profile:'|trans({"count": manager.profilesInCategory}) }}</p>
 
-    <h3 style="color: blue">{{ manager.buildCategory }}</h3>
+    <h3 style="color: blue">{{ manager.buildCategory }} <a target="_blank" href="https://www.wikitree.com/wiki/Category:{{ result.category }}">{{ "link"|trans }}</a></h3>
 
     <p>{{ 'Link to next profile'|trans }} <a href="https://www.wikitree.com/index.php?action=edit&title={{ manager.firstProfile }}#bio" target="_blank">{{ manager.firstProfile }}</a></p>
 
@@ -52,7 +52,7 @@
     {{ form_end(form) }}
 
     {% if result.pause is same as (0)%}
-        <p style="font-weight: bold">{{ 'Paused'|trans }}</p>
+        <p style="font-weight: bold">{{ 'Paused'|trans }} {{ result.wait }}</p>
     {% else %}
         <p>{{ result.pause }}</p>
     {% endif %}

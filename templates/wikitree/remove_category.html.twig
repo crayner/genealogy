@@ -1,10 +1,10 @@
 {% trans_default_domain 'messages' %}
 
 {% extends "base.html.twig" %}
-{% block title %}{{ parent() }} - {{ result.pause }} - {{  'Category'|trans }}{% endblock %}
+{% block title %}{{ result.profiles }}:{{ result.pause }} - {{ parent() }} - {{  'Category'|trans }}{% endblock %}
 {% block stylesheets %}
     {{ parent() }}
-    {% if result.profiles > 0 and result.pause is not same as (0) %}
+    {% if result.profiles > 0 %}
         <script>
             window.onload = function(){
                 setTimeout(function(){
@@ -17,15 +17,9 @@
 {% block body %}
     <h1 style="text-align: center">{{ 'WikiTree Category Management'|trans }}</h1>
     <p class="important" style="text-align: center">
-       {{ 'List of profiles to work on and the category to add to the profile.'|trans }}
+       {{ 'List of profiles to work on and the category to remove from the profile.'|trans }}
     </p>
     <hr />
-
-    <div class="left_half">
-        <div class="right_half">
-        </div>
-    </div>
-
 
     <p>{{ 'category_count'|trans({count: result.categories}) }}</p>
 
@@ -38,7 +32,7 @@
 
     <p style="font-weight: bold">{{ 'category to remove from profile:'|trans({"count": manager.profilesInCategory}) }}</p>
 
-    <h3 style="color: blue">{{ manager.buildCategory }}</h3>
+    <h3 style="color: blue">{{ manager.buildCategory }} <a target="_blank" href="https://www.wikitree.com/wiki/Category:{{ result.category }}">{{ "link"|trans }}</a></h3>
 
     <p>{{ 'Link to next profile'|trans }} <a href="https://www.wikitree.com/index.php?action=edit&title={{ manager.firstProfile }}#bio" target="_blank">{{ manager.firstProfile }}</a></p>
 
@@ -52,7 +46,7 @@
     {{ form_end(form) }}
 
     {% if result.pause is same as (0)%}
-        <p style="font-weight: bold">{{ 'Paused'|trans }}</p>
+        <p style="font-weight: bold">{{ 'Paused'|trans }} {{ result.wait }}</p>
     {% else %}
         <p>{{ result.pause }}</p>
     {% endif %}

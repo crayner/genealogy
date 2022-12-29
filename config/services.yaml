@@ -42,3 +42,9 @@ services:
     App\Manager\CategoryManager:
         arguments:
             $loader: '%loader%'
+    App\Manager\RemoveCategoryManager:
+        arguments:
+            $loader: '%loader%'
+    App\Manager\SwapCategoryManager:
+        arguments:
+            $loader: '%loader%'
