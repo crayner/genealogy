@@ -352,9 +352,11 @@ class CategoryManager
         $result = [];
         $result['categories'] = $this->getCategories()->count();
         $result['profiles'] = 0;
+        $result['daily_count'] = $this->getDailyCount(false);
         if ($current) {
             $result['profile'] = $this->firstProfile();
             $result['category'] = $this->getCategory();
+            $result['daily_count'] = $this->getDailyCount(true);
         }
         foreach ($this->getCategories()->toArray() as $profiles) {
             $result['profiles'] += $profiles->count();
@@ -539,5 +541,24 @@ class CategoryManager
         }
         $this->getSession()->set("groupSize", $this->getSession()->get("groupSize") - 1);
         return $this;
+    }
+
+    /**
+     * @param bool $increment
+     * @return int
+     */
+    public function getDailyCount(bool $increment = false): int
+    {
+        if (!$this->getSession()->has('daily_count')) {
+            $this->getSession()->set('daily_count', ['date' => date("Ymd"), 'count' => 0]);
+        }
+        $dailyCount = $this->getSession()->get('daily_count');
+        if ($dailyCount['date'] !== date("Ymd")) {
+            $dailyCount['date'] = date("Ymd");
+            $dailyCount['count'] = 0;
+        }
+        if ($increment) $dailyCount['count']++;
+        $this->getSession()->set("daily_count", $dailyCount);
+        return $dailyCount['count'];
     }
 }

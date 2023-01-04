@@ -190,3 +190,10 @@ Start Category Load: Start Category Load
 link: Link
 'List of profiles to work on and the category to remove from the profile.': 'List of profiles to work on and the category to remove from the profile.'
 category removed from profile: ""
+You have exceed the daily quota of allowed category changes on this system: You have exceed the daily quota of allowed category changes on this system
+Daily Quota Remaining: >-
+    { count, plural,
+        =0 { You have reach your daily category limit. }
+        one { You have only one category to change before you reach your daily limit. }
+        other { You have # categories to change before you reach your daily limit.}
+    }

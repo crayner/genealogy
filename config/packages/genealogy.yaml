@@ -24,4 +24,5 @@ parameters:
         group_pause_max: 30000
         profile_pause_min: 3500
         profile_pause_max: 5500
-        swap: ""
+        swap: "Frenchs Forest Bushland Cemetery, Davidson, New South Wales"
+    max_daily_count: 1000
