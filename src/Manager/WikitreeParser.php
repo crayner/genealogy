@@ -483,12 +483,10 @@ class WikitreeParser
         if ($result['birth']['about'] || $result['birth']['before']|| $result['birth']['after']) {
             $result['categories'][] = '[[Category: Estimated Birth Date]]';
             $result['categories'][] = '[[Category: Australia, Needs Birth Source Researched]]';
-            $result['birth']['sticker'] = '{{Estimated Date|Birth}}';
         }
         if ($result['death']['status'] && $result['death']['dateStatus'] === 'invalid' && $result['age']['y'] > 85 && $result['age']['status'] === false) {
             $result['categories'][] = '[[Category: Estimated Death Date]]';
             $result['categories'][] = '[[Category: Australia, Needs Death Source Researched]]';
-            $result['death']['sticker'] = '{{Estimated Date|Death}}';
         }
 
         if ($result['name']['preferred'] === '') {
