@@ -246,6 +246,8 @@ class CategoryManager
     {
         if ($this->isInitiated())
             return;
+        $this->setCategories(new ArrayCollection());
+        $this->category = '';
 
         if (!is_file($this->fileName)) {
             file_put_contents($this->fileName, Yaml::dump([], 8));
@@ -263,7 +265,7 @@ class CategoryManager
      */
     public function getCategories(): ArrayCollection
     {
-        return $this->categories = $this->categories ?? new ArrayCollection();
+        return $this->categories = $this->categories ?? $this->initiateCategories();
     }
 
     /**
@@ -296,7 +298,10 @@ class CategoryManager
     public function removeCategory(string $categoryName): CategoryManager
     {
         $this->getCategories()->remove($categoryName);
-        return $this->setCategory();
+        $this->writeCategories()
+            ->setInitiated(false)
+            ->initiateCategories();
+        return $this;
     }
 
     /**
@@ -315,11 +320,9 @@ class CategoryManager
     public function writeCategories(): CategoryManager
     {
         $data = [];
-        foreach ($this->getCategories()->toArray() as $category=>$profiles)
-        {
-            $data[$category] = $profiles->toArray();
+        foreach ($this->getCategories()->toArray() as $category=>$profiles) {
+            if ($profiles->count() > 0) $data[$category] = $profiles->toArray();
         }
-
         file_put_contents($this->fileName, Yaml::dump($data,8));
         return $this;
     }
@@ -353,9 +356,9 @@ class CategoryManager
         $result['categories'] = $this->getCategories()->count();
         $result['profiles'] = 0;
         $result['daily_count'] = $this->getDailyCount(false);
+        $result['profile'] = $this->firstProfile();
+        $result['category'] = $this->getCategory();
         if ($current) {
-            $result['profile'] = $this->firstProfile();
-            $result['category'] = $this->getCategory();
             $result['daily_count'] = $this->getDailyCount(true);
         }
         foreach ($this->getCategories()->toArray() as $profiles) {

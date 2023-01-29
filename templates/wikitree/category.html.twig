@@ -4,7 +4,7 @@
 {% block title %}{{ result.profiles }}:{{ result.pause }} - {{ parent() }} - {{  'Category'|trans }}{% endblock %}
 {% block stylesheets %}
     {{ parent() }}
-    {% if result.profiles > 0 and result.daily_count <= max_daily_count %}
+    {% if result.profiles > 0 and result.daily_count < max_daily_count %}
         <script>
             window.onload = function(){
                 setTimeout(function(){
@@ -58,7 +58,7 @@
     {% endif %}
 
     <p>{{ 'Daily Quota Remaining'|trans({'count': (max_daily_count - result.daily_count)}) }}</p>
-    {% if result.daily_count > max_daily_count %}
+    {% if result.daily_count >= max_daily_count %}
         <p>{{ 'You have exceed the daily quota of allowed category changes on this system'|trans }}</p>
     {% endif %}
 

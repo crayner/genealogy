@@ -100,7 +100,6 @@ class WikiTreeController extends AbstractController
                 $form = $this->createForm(WikiTreeBiographyType::class, $data);
 
         }
-
         $marriageSentence = new MarriageSentenceManager($result, $data, $translator);
         $result = $marriageSentence->getResult();
 
@@ -141,14 +140,14 @@ class WikiTreeController extends AbstractController
         $form->handleRequest($request);
         $manager->initiateCategories();
 
-        $result = $manager->statistics(true);
+        $result = $manager->statistics(false);
         if ($form->isSubmitted()) {
             $manager->addNextCategory($form);
             $data = $form->getData();
             $form = $this->createForm(CategoryType::class, $data);
             $manager->removeProfile()
                 ->writeCategories();
-            $result = array_merge($result, $manager->statistics(false));
+            $result = array_merge($result, $manager->statistics(true));
         } else {
             $result['pause'] = 0;
         }
@@ -181,7 +180,7 @@ class WikiTreeController extends AbstractController
             $form = $this->createForm(CategoryAddType::class);
         }
 
-        $result = $manager->statistics(true);
+        $result = $manager->statistics(false);
         return $this->render('wikitree/add_category.html.twig',
             [
                 'form' => $form->createView(),
@@ -205,14 +204,14 @@ class WikiTreeController extends AbstractController
         $form->handleRequest($request);
         $manager->initiateCategories();
 
-        $result = $manager->statistics(true);
+        $result = $manager->statistics(false);
         if ($form->isSubmitted()) {
             $manager->removeNextCategory($form);
             $data = $form->getData();
             $form = $this->createForm(RemoveCategoryType::class, $data);
             $manager->removeProfile()
                 ->writeCategories();
-            $result = array_merge($result, $manager->statistics(false));
+            $result = array_merge($result, $manager->statistics(true));
         } else {
             $result['pause'] = 0;
         }
@@ -240,14 +239,14 @@ class WikiTreeController extends AbstractController
         $form->handleRequest($request);
         $manager->initiateCategories();
 
-        $result = $manager->statistics(true);
+        $result = $manager->statistics(false);
         if ($form->isSubmitted()) {
             $manager->swapNextCategory($form);
             $data = $form->getData();
             $form = $this->createForm(RemoveCategoryType::class, $data);
             $manager->removeProfile()
                 ->writeCategories();
-            $result = array_merge($result, $manager->statistics(false));
+            $result = array_merge($result, $manager->statistics(true));
         } else {
             $result['pause'] = 0;
         }

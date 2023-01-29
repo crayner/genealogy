@@ -444,7 +444,7 @@ class WikitreeParser
             }
             if (str_contains($result['death']['location'], 'before')) $result['death']['before'] = true;
             if (str_contains($result['death']['location'], 'after')) $result['death']['after'] = true;
-            if (str_contains($result['death']['location'], 'about') && !$result['birth']['about']) $result['death']['about'] = true;
+            if (str_contains($result['death']['location'], '[uncertain]') && !$result['birth']['about']) $result['death']['about'] = true;
         }
         $result['death']['location'] = trim(str_replace(['[uncertain]',"\r","\n",'Died','before','after','about','[death date?]', $xxx],'', $result['death']['location']));
         $result['death']['location'] = preg_replace('/^in /',"", $result['death']['location']);
@@ -483,10 +483,12 @@ class WikitreeParser
         if ($result['birth']['about'] || $result['birth']['before']|| $result['birth']['after']) {
             $result['categories'][] = '[[Category: Estimated Birth Date]]';
             $result['categories'][] = '[[Category: Australia, Needs Birth Source Researched]]';
+            $result['birth']['sticker'] = '{{Estimated Date|Birth}}';
         }
         if ($result['death']['status'] && $result['death']['dateStatus'] === 'invalid' && $result['age']['y'] > 85 && $result['age']['status'] === false) {
             $result['categories'][] = '[[Category: Estimated Death Date]]';
             $result['categories'][] = '[[Category: Australia, Needs Death Source Researched]]';
+            $result['death']['sticker'] = '{{Estimated Date|Death}}';
         }
 
         if ($result['name']['preferred'] === '') {
@@ -542,7 +544,7 @@ class WikitreeParser
             }
         }
         if ($result['birth']['date'] instanceof \DateTimeImmutable && $result['birth']['date']->format('Ymd') >= date('Ymd', strtotime("+100 Years"))) {
-            $result['templates'][] = '{{Centenarian | age= 100  | living = yes }}';
+            $result['templates'][] = '{{Centenarian | age= ' . $result['age']['y'] . '  | living = yes }}';
         }
 
         $result['valid'] = true;
