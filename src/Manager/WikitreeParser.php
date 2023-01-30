@@ -122,10 +122,10 @@ class WikitreeParser
             }
             $span = $element->filterXPath('//span[contains(@itemprop, "sibling")]')->evaluate('count(@itemprop)');
             if ($span !== []) {
-                $result['siblings'] = [];
                 foreach($element->filterXPath('//span[contains(@itemprop, "sibling")]') as $q=>$sibling) {
                     $result['siblings'][$q]['name'] = $sibling->textContent;
                     $result['siblings'][$q]['ID'] = str_replace('/wiki/', '', $sibling->firstChild->getAttribute('href'));
+                    $result['siblings'][$q]['title'] = $sibling->firstChild->getAttribute('title');
                 }
             }
             $span = $element->filterXPath('//span[contains(@itemprop, "spouse")]')->evaluate('count(@itemprop)');
@@ -174,11 +174,12 @@ class WikitreeParser
 
             $span = $element->filterXPath('//span[contains(@itemprop, "children")]')->evaluate('count(@itemprop)');
             if ($span !== []) {
-                foreach($element->filterXPath('//span[contains(@itemprop, "children")]') as $q=>$sibling) {
-                    $result['children'][$q]['name'] = $sibling->textContent;
-                    $result['children'][$q]['ID'] = str_replace('/wiki/', '', $sibling->firstChild->getAttribute('href'));
+                foreach($element->filterXPath('//span[contains(@itemprop, "children")]') as $q=>$child) {
+                    $result['children'][$q]['name'] = $child->textContent;
+                    $result['children'][$q]['ID'] = str_replace('/wiki/', '', $child->firstChild->getAttribute('href'));
                 }
             }
+
 
             $span = $element->filterXPath('//span[starts-with(@title, "Daughter")]')->evaluate('count(@title)');
             if ($span !== []) {
@@ -218,6 +219,9 @@ class WikitreeParser
                 $result['death']['location'] = $vital ? $vital->textContent : '';
                 $deathDate = true;
             }
+
+
+
             $span = $element->filterXPath('//a[contains(@href, "death-date")]')->evaluate('count(@href)');
             if ($span !== [] && !$deathDate) {
                 $span =  $element->filterXPath('//a[contains(@href, "death-date")]');
@@ -234,6 +238,7 @@ class WikitreeParser
                 $result['death']['location'] = $vital ? $vital->textContent : '';
             }
         }
+
         $privacy = $crawler->filterXPath('//img[contains(@title, "Privacy ")]')->evaluate('substring-after(@title, "Privacy ")');
 
         $join = $crawler->filterXPath('//li/a[contains(@href, "joinnetwork")]')->evaluate('count(@href)');
@@ -341,11 +346,13 @@ class WikitreeParser
                 'ID' => '',
                 'name' => '',
                 'nameAtBirth' => '',
+                'title' => '',
             ]
         );
         $resolver->setAllowedTypes('ID', 'string');
         $resolver->setAllowedTypes('name', 'string');
         $resolver->setAllowedTypes('nameAtBirth', 'string');
+        $resolver->setAllowedTypes('title', 'string');
         $result['father'] = $resolver->resolve($result['father']);
         $result['mother'] = $resolver->resolve($result['mother']);
         foreach($result['children'] as $q=>$child) {

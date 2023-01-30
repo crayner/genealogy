@@ -4,7 +4,7 @@
 {% block title %}{{ 'Genealogy Project'|trans }} - {{  'Biography'|trans }}{% endblock %}
 
 {% block body %}
-dump(result)
+{% dump(result) %}
     <h1 style="text-align: center">{{ 'WikiTree Biography Generator'|trans }}</h1>
     <p class="important" style="text-align: center">
        {{ 'Use the Wikitree ID of the profile for which you are creating a biography.'|trans }}
@@ -40,6 +40,15 @@ dump(result)
             {{ ' ' ~ 'baptism.sentence'|trans({'name': result.name.preferred, 'date': result.baptism.date, '{location}': result.baptism.location}) }}
         {% endif %}
         <br />  <!-- Birth Sentence -->
+
+            {# Siblings #}
+        {% if result.siblings|length > 0 %}
+            <br />{{ "sibling sentence"|trans({sex: result.gender, name: result.name.preferred}) }}<br />
+            {% for sibling in result.siblings %}
+                # [[{{ sibling.ID }}|{{ sibling.name }}]]<br />
+            {% endfor %}
+            <!-- Siblings -->
+        {% endif %}
 
         {% if (result.spouse|length > 0) %}
             {% for spouse in result.spouse %}

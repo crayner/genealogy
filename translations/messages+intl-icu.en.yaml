@@ -197,3 +197,9 @@ Daily Quota Remaining: >-
         one { You have only one category to change before you reach your daily limit. }
         other { You have # categories to change before you reach your daily limit.}
     }
+"sibling sentence": >-
+    { sex, select,
+        female {{name} is the sister of:}
+        male {{name} is the brother of:}
+        other {{name} has the following siblings:}
+    }
