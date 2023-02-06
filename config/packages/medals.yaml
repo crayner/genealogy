@@ -1,0 +1,7 @@
+parameters:
+    current_name: Victory Medal
+    current_category: Victory Medal
+    new_name: ~
+    new_category: Victory Medal, British Empire, World War I
+    default_image: Mil_template_images-37.jpg
+

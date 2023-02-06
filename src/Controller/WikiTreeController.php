@@ -17,11 +17,13 @@ namespace App\Controller;
 use App\Form\CategoryAddType;
 use App\Form\CategoryLoginType;
 use App\Form\CategoryType;
+use App\Form\MedalUpdaterType;
 use App\Form\RemoveCategoryType;
 use App\Form\WikiTreeBiographyType;
 use App\Form\WikiTreeLoginType;
 use App\Manager\CategoryManager;
 use App\Manager\MarriageSentenceManager;
+use App\Manager\MedalUpdateManager;
 use App\Manager\RemoveCategoryManager;
 use App\Manager\SwapCategoryManager;
 use App\Manager\WikiTreeManager;
@@ -258,5 +260,35 @@ class WikiTreeController extends AbstractController
                 'manager' => $manager,
             ]
         );
+    }
+
+
+    /**
+     * @param RequestStack $stack
+     * @param MedalUpdateManager $manager
+     * @Route("/wikitree/medal/updater/",name="wikitree_medal_updater")
+     * @return Response
+     */
+    public function medalSwapper(RequestStack $stack, MedalUpdateManager $manager): Response
+    {
+        $result = [];
+        $form = $this->createForm(MedalUpdaterType::class);
+        $request = $stack->getCurrentRequest();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $data = $form->getData();
+            $data['biography'] = $manager->searchBiography($data['biography']);
+            $form = $this->createForm(MedalUpdaterType::class, $data);
+        }
+
+        return $this->render('wikitree/medal_update.html.twig',
+            [
+                'form' => $form->createView(),
+                'result' => $result,
+                'manager' => $manager,
+            ]
+        );
+
     }
 }

@@ -1,0 +1,38 @@
+{% trans_default_domain 'messages' %}
+
+{% extends "base.html.twig" %}
+{% block title %}{{ 'Genealogy Project'|trans }} - {{  'Biography'|trans }}{% endblock %}
+
+{% block body %}
+    <h1 style="text-align: center">{{ 'WikiTree Medal Update'|trans }}</h1>
+    <p class="important" style="text-align: center">
+       {{ 'Use the Wikitree ID of the profile for which you are updating the medal category and sticker.'|trans }}
+    </p>
+    <hr />
+    <div style="width: 100%">
+        <div style="width: 45%; float: right">
+            {{ form_start(form) }}
+            <div class="formElement">
+                <div class="formLabel" style="min-height: 450px">
+                    <div class="formWidget">{{ form_widget(form.biography) }}</div>
+                    <p class="formLabel">{{ form_label(form.biography) }}</p>
+                    <p class="formHelp">{{ form_help(form.biography) }}</p>
+                    <p class="formHelp">{{ "Medal Update Help"|trans }}</p>
+                </div>
+            </div>
+            <div class="formElement">
+                <div class="formLabel" style="min-height: 50px">
+                    <div class="formWidget">{{ form_widget(form.submit) }}</div>
+                    <p class="formLabel">{{ form_label(form.submit) }}</p>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+        <div style="float: left; width: 50%">
+            {% for line in manager.explodeBiography %}
+                <p>{{ line|raw }}</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock body %}
+

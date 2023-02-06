@@ -48,3 +48,10 @@ services:
     App\Manager\SwapCategoryManager:
         arguments:
             $loader: '%loader%'
+    App\Manager\MedalUpdateManager:
+        calls:
+            -   setCurrentName: [ '%current_name%' ]
+            -   setCurrentCategory: [ '%current_category%' ]
+            -   setNewName: [ '%new_name%' ]
+            -   setNewCategory: [ '%new_category%' ]
+            -   setDefaultImage: [ '%default_image%' ]
