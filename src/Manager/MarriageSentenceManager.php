@@ -141,7 +141,7 @@ class MarriageSentenceManager
         }
         $this->result['spouse'] = $this->getSpouses();
 
-        if (key_exists('profileIdentifier', $this->getFormData()) && $this->getFormData()['profileIdentifier'] !== '' && in_array('[[Category: Unmarried]]', $this->getResult()['categories'])) {
+        if (key_exists('profileIdentifier', $this->getFormData()) && !empty($this->getFormData()['profileIdentifier']) && in_array('[[Category: Unmarried]]', $this->getResult()['categories'])) {
             $this->result['categories'] = array_diff($this->getResult()['categories'], ['[[Category: Unmarried]]']);
         }
     }
