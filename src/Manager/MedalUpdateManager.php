@@ -7,7 +7,7 @@ class MedalUpdateManager
     /**
      * @var string
      */
-    private string $biography;
+    private string $biography = "";
 
     /**
      * @var array
@@ -32,6 +32,11 @@ class MedalUpdateManager
      * @var string|null
      */
     private ?string $newName;
+
+    /**
+     * @var string|null
+     */
+    private ?string $existingMedal;
 
     /**
      * @var string
@@ -76,11 +81,9 @@ class MedalUpdateManager
         //Does the Sticker exist?
         foreach($this->getMedals() as $q=>$medal) {
             if ($this->isMedalMatch($medal)) {
-                dump($this,$medal);
-               $this->extractExistingImage($medal);
-                dump($medal);
-               $this    ->replaceMedalSticker($medal);
-                dump($medal);
+               $this->extractExistingImage($medal)
+                   ->replaceMedalSticker($medal)
+                   ->setExistingMedal($medal);
                break;
             }
         }
@@ -321,7 +324,9 @@ class MedalUpdateManager
         if ($this->isCategoryExists() && $this->isMedalExists()) {
             $biography = "<span style=\"color: red; text-decoration: line-through\">[[Category: " . $this->getCurrentCategory() . "]]</span>\r\n" . $biography;
         }
-        $biography = str_replace($this->buildMedalSticker(), "<span style=\"color: green;\">" . $this->buildMedalSticker() . "</span>", $biography);
+        if ($this->isMedalExists()) {
+            $biography = str_replace($this->buildMedalSticker(), "<span style=\"color: red; text-decoration: line-through\">".str_replace("\r\n", " ", $this->getExistingMedal()) . "</span>\r\n<span style=\"color: green;\">" . $this->buildMedalSticker() . "</span>", $biography);
+        }
         if ($this->isCategoryExists() && ! $this->isMedalExists()) {
             $biography = str_replace("[[Category: " . $this->getNewCategory() . "]]", "<span style=\"color: green;\">[[Category: " . $this->getNewCategory() . "]]</span>", $biography);
         }
@@ -371,6 +376,24 @@ class MedalUpdateManager
     public function setCategoryExists(bool $categoryExists): MedalUpdateManager
     {
         $this->categoryExists = $categoryExists;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getExistingMedal(): ?string
+    {
+        return $this->existingMedal;
+    }
+
+    /**
+     * @param string|null $existingMedal
+     * @return MedalUpdateManager
+     */
+    public function setExistingMedal(?string $existingMedal): MedalUpdateManager
+    {
+        $this->existingMedal = $existingMedal;
         return $this;
     }
 }
