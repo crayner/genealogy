@@ -635,7 +635,7 @@ class WikitreeParser
                     $result['templates'][] = '{{Wales Sticker|' . trim($place[1]) . '|' . trim($place[0]) . '}}';
                 } else if (str_contains($result['birth']['location'], 'Scotland')) {
                     $place = explode(',', $result['birth']['location']);
-                    $result['templates'][] = '{{Scotland Sticker|' . trim($place[1]) . '|' . trim($place[0]) . '}}';
+                    $result['templates'][] = '{{Scotland Sticker}}';
                 } else if (str_contains($result['birth']['location'], 'Ireland')) {
                     $result['templates'][] = '{{Ireland Native}}';
                 } else {
