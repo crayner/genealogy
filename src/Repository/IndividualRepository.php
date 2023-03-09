@@ -36,32 +36,18 @@ class IndividualRepository extends ServiceEntityRepository
         parent::__construct($registry, Individual::class);
     }
 
-    // /**
-    //  * @return Individual[] Returns an array of Individual objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param string|null $sourceID
+     * @param bool $create
+     * @return Individual|null
+     */
+    public function findOneBySourceID(?string $sourceID, bool $create = false): ?Individual
     {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('i.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $individual = parent::findOneBy(['source_ID' => $sourceID]);
+        if ($create && is_null($individual)) {
+            $individual = new Individual();
+            $individual->setSourceID($sourceID);
+        }
+        return $individual;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Individual
-    {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

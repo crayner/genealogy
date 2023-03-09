@@ -14,410 +14,911 @@
 
 namespace App\Entity;
 
-use App\Exception\IndividualException;
 use App\Repository\IndividualRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 /**
  * Class Individual
- * @selectPure App\Entity
  * @author  Craig Rayner <craig@craigrayner.com>
  * 30/03/2021 08:58
- * @ORM\Entity(repositoryClass=IndividualRepository::class)
- * @ORM\Table(name="individual",
- *     uniqueConstraints={@ORM\UniqueConstraint(name="identifier",columns={"identifier"})})
- * @UniqueEntity("identifier")
  */
+#[ORM\Entity(repositoryClass: IndividualRepository::class)]
+#[ORM\Table(name: 'individual', options: ['collate' => 'utf8mb4_unicode_ci'])]
+#[ORM\HasLifecycleCallbacks]
 class Individual
 {
     /**
+     * @var int|null
+     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'bigint', options: array('unsigned' => true))]
+    #[ORM\GeneratedValue]
+    private ?int $id;
+
+    /**
+     * @var int
+     */
+    #[ORM\Column(type: 'bigint', unique: true, options: ['unsigned'])]
+    private int $source_ID;
+
+    /**
+     * @var string
+     */
+    #[ORM\Column(type: 'string', length: 64, unique: true)]
+    private string $user_ID;
+
+    /**
      * @var string|null
-     * @ORM\Id()
-     * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
-    private string $id;
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
+    private ?string $user_ID_DB;
+
+    /**
+     * @var \DateTimeImmutable|null
+     */
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $last_Touched;
+
+    /**
+     * @var \DateTimeImmutable|null
+     */
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $created_On;
+
+    /**
+     * @var integer
+     */
+    #[ORM\Column(type: 'integer', options: array('unsigned' => true))]
+    private int $edit_Count;
+
+    /**
+     * @var string|null
+     */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    private ?string $prefix;
 
     /**
      * @var string
-     * @ORM\Column(length=22)
      */
-    private string $identifier;
+    #[ORM\Column(type: 'string', length: 128)]
+    private string $first_Name;
 
     /**
-     * @var Collection
-     * @ORM\OneToMany(targetEntity="App\Entity\IndividualName", mappedBy="individual",cascade={"persist"})
+     * @var string|null
      */
-    private Collection $names;
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    private ?string $preferred_Name;
 
     /**
-     * @var string
-     * @ORM\Column(type="enum",options={"default": "N"})
+     * @var string|null
      */
-    private string $gender;
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    private ?string $middle_Name;
+
+    /**
+     * @var string|null
+     */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    private ?string $nick_Names;
+
+    /**
+     * @var string|null
+     */
+    #[ORM\Column(type: 'string', length: 128)]
+    private ?string $last_Name_At_Birth;
+
+    /**
+     * @var string|null
+     */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    private ?string $last_Name_Current;
+
+    /**
+     * @var string|null
+     */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    private ?string $last_Name_Other;
+
+    /**
+     * @var string|null
+     */
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
+    private ?string $suffix;
+
+    /**
+     * @var string|null
+     */
+    #[ORM\Column(type: 'enum', length: 16, nullable: true)]
+    private ?string $gender;
 
     /**
      * @var array|string[]
      */
-    private static array $genderList = [
-        'M',  // Male
-        'F',  // Female
-        'X',  // Intersex
-        'U',  // Unknown (not found yet)
-        'N',  // Not recorded
-    ];
+    private array $genderList =
+        [
+            'Unknown',
+            'Male',
+            'Female',
+        ];
 
     /**
-     * @var Collection
-     * @ORM\ManyToMany(targetEntity="App\Entity\Event",cascade={"persist"})
-     * @ORM\JoinTable(name="individual_events",
-     *      joinColumns={@ORM\JoinColumn(name="individual_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id")}
-     *      )
+     * @var \DateTimeImmutable|null
      */
-    private Collection $events;
+    #[ORM\Column(type: 'date_immutable', nullable: true)]
+    private ?\DateTimeImmutable $birth_Date;
 
     /**
-     * @var Collection
-     * @ORM\OneToMany(targetEntity=IndividualFamily::class, mappedBy="individual",cascade={"persist"})
+     * @var \DateTimeImmutable|null
      */
-    private Collection $families;
-
-    /**
-     * @var Collection
-     * @ORM\ManyToMany(targetEntity=SourceData::class,cascade={"persist"})
-     */
-    private Collection $sources;
+    #[ORM\Column(type: 'date_immutable', nullable: true)]
+    private ?\DateTimeImmutable $death_Date;
 
     /**
      * @var string|null
-     * @ORM\Column(length=22,nullable=true)
      */
-    private ?string $recordKey;
+    #[ORM\Column(type: 'string', length: 191, nullable: true)]
+    private ?string $birth_Location;
 
     /**
      * @var string|null
-     * @ORM\Column(type="text",nullable=true)
      */
-    private ?string $note;
+    #[ORM\Column(type: 'string', length: 191, nullable: true)]
+    private ?string $death_Location;
 
     /**
-     * @var Collection
-     * @ORM\ManyToMany(targetEntity=MultimediaRecord::class,cascade={"persist"})
-     * @ORM\JoinTable(name="individual_multimedia_records",
-     *      joinColumns={@ORM\JoinColumn(name="individual_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="multimedia_record_id", referencedColumnName="id")}
-     *      )
+     * @var string|null
      */
-    private Collection $multimediaRecords;
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    private ?string $photo;
 
     /**
-     * @var array|null
-     * @ORM\Column(type="simple_array",nullable=true)
+     * @var Individual|null
      */
-    private ?array $description;
+    #[ORM\ManyToOne(targetEntity: Individual::class, inversedBy: 'father_Children')]
+    #[ORM\JoinColumn(name: 'father', nullable: true)]
+    private ?Individual $father;
 
     /**
-     * Individual constructor.
-     * @param string|null $identifier
+     * @var Collection|ArrayCollection|null
      */
-    public function __construct(?string $identifier = null)
+    #[ORM\OneToMany(targetEntity: Individual::class, mappedBy: 'father')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Collection $father_Children;
+
+    /**
+     * @var Individual|null
+     */
+    #[ORM\ManyToOne(targetEntity: Individual::class, inversedBy: 'mother_Children')]
+    #[ORM\JoinColumn(name: 'mother', nullable: true)]
+    private ?Individual $mother;
+
+    /**
+     * @var Collection|ArrayCollection|null
+     */
+    #[ORM\OneToMany(targetEntity: Individual::class, mappedBy: 'mother')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Collection $mother_Children;
+
+    /**
+     * @var integer
+     */
+    #[ORM\Column(type: 'integer', options: ['unsigned'])]
+    private bool $page_ID;
+
+    /**
+     * @var Individual|null
+     */
+    #[ORM\ManyToOne(targetEntity: Individual::class)]
+    #[ORM\JoinColumn(name: 'manager', nullable: true)]
+    private ?Individual $manager;
+
+    /**
+     * @var bool
+     */
+    #[ORM\Column(name: 'is_Living', type: 'boolean')]
+    private bool $living;
+
+    /**
+     * @var integer
+     */
+    #[ORM\Column(type: 'smallint')]
+    private bool $privacy;
+
+    /**
+     * @var string|null
+     */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    private ?string $background;
+
+    /**
+     * @var int
+     */
+    #[ORM\Column(type: 'integer')]
+    private int $thank_Count;
+
+    /**
+     * @var bool
+     */
+    #[ORM\Column(name: 'is_Locked', type: 'boolean')]
+    private bool $locked;
+
+    /**
+     * @var bool
+     */
+    #[ORM\Column(name: 'is_Guest', type: 'boolean')]
+    private bool $guest;
+
+    /**
+     * @var bool
+     */
+    #[ORM\Column(name: 'is_Connected', type: 'boolean')]
+    private bool $connected;
+
+    public function __construct()
     {
-        if (!in_array($identifier, [null,''])) $this->identifier = $identifier;
+        $this->father_Children = new ArrayCollection();
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @return string
-     */
-    public function getIdentifier(): string
-    {
-        if (!isset($this->identifier)) throw new IndividualException('The individual does not have a valid identifier.');
-        return $this->identifier;
-    }
-
-    /**
-     * @param string $identifier
+     * @param int|null $id
      * @return Individual
      */
-    public function setIdentifier(string $identifier): Individual
+    public function setId(?int $id): Individual
     {
-        $this->identifier = $identifier;
+        $this->id = $id;
         return $this;
     }
 
     /**
-     * @return Collection
+     * @return int
      */
-    public function getNames(): Collection
+    public function getSourceID(): int
     {
-        if (isset($this->names) && $this->names instanceof PersistentCollection) $this->names->initialize();
-
-        return $this->names = isset($this->names) ? $this->names : new ArrayCollection();
+        return $this->source_ID;
     }
 
     /**
-     * @param Collection $names
+     * @param int $source_ID
      * @return Individual
      */
-    public function setNames(Collection $names): Individual
+    public function setSourceID(int $source_ID): Individual
     {
-        $this->names = $names;
-        return $this;
-    }
-
-    /**
-     * @param IndividualName $name
-     * @return Individual
-     */
-    public function addName(IndividualName $name, bool $mirror = true): Individual
-    {
-        if ($mirror) $name->setIndividual($this, false);
-        if ($this->getNames()->contains($name)) return $this;
-
-        $this->names->add($name);
-
+        $this->source_ID = $source_ID;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getGender(): string
+    public function getUserID(): string
+    {
+        return $this->user_ID;
+    }
+
+    /**
+     * @param string $user_ID
+     * @return Individual
+     */
+    public function setUserID(string $user_ID): Individual
+    {
+        $this->user_ID = $user_ID;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUserIDDB(): ?string
+    {
+        return !is_null($this->user_ID_DB) ? $this->user_ID_DB: $this->getUserID();
+    }
+
+    /**
+     * @param string|null $user_ID_DB
+     * @return Individual
+     */
+    public function setUserIDDB(?string $user_ID_DB): Individual
+    {
+        $this->user_ID_DB = $user_ID_DB;
+        return $this;
+    }
+
+    /**
+     * @param LifecycleEventArgs $args
+     * @return void
+     */
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function wastedSpace(LifecycleEventArgs $args)
+    {
+        if ($this->getUserID() === $this->getUserIDDB()) {
+            $this->setUserIDDB(null);
+        }
+        if (!isset($this->edit_Count) || $this->edit_Count < 1) $this->setEditCount(1);
+        if ($this->getLastNameCurrent() === $this->getLastNameAtBirth()) {
+            $this->setLastNameCurrent(null);
+        }
+        if (empty($this->getFirstName()) && !empty($this->getPreferredName())) {
+            $this->setFirstName($this->getPreferredName())
+                ->setPreferredName(null);
+        }
+    }
+
+    /**
+     * @return \DateTimeImmutable|null
+     */
+    public function getLastTouched(): ?\DateTimeImmutable
+    {
+        return $this->last_Touched;
+    }
+
+    /**
+     * @param \DateTimeImmutable|null $last_Touched
+     * @return Individual
+     */
+    public function setLastTouched(?\DateTimeImmutable $last_Touched): Individual
+    {
+        $this->last_Touched = $last_Touched;
+        return $this;
+    }
+
+    /**
+     * @return \DateTimeImmutable|null
+     */
+    public function getCreatedOn(): ?\DateTimeImmutable
+    {
+        return $this->created_On;
+    }
+
+    /**
+     * @param \DateTimeImmutable|null $created_On
+     * @return Individual
+     */
+    public function setCreatedOn(?\DateTimeImmutable $created_On): Individual
+    {
+        $this->created_On = $created_On;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEditCount(): int
+    {
+        if (!isset($this->edit_Count) || $this->edit_Count < 1) $this->setEditCount(1);
+        return $this->edit_Count;
+    }
+
+    /**
+     * @param int $edit_Count
+     * @return Individual
+     */
+    public function setEditCount(int $edit_Count): Individual
+    {
+        $this->edit_Count = $edit_Count;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPrefix(): ?string
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * @param string|null $prefix
+     * @return Individual
+     */
+    public function setPrefix(?string $prefix): Individual
+    {
+        $this->prefix = $prefix === '' ? null : $prefix;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstName(): string
+    {
+        return $this->first_Name;
+    }
+
+    /**
+     * @param string $first_Name
+     * @return Individual
+     */
+    public function setFirstName(string $first_Name): Individual
+    {
+        $this->first_Name = $first_Name;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPreferredName(): ?string
+    {
+        return !is_null($this->preferred_Name) ? $this->preferred_Name : $this->getFirstName();
+    }
+
+    /**
+     * @param string|null $preferred_Name
+     * @return Individual
+     */
+    public function setPreferredName(?string $preferred_Name): Individual
+    {
+        $this->preferred_Name = $preferred_Name;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMiddleName(): ?string
+    {
+        return $this->middle_Name;
+    }
+
+    /**
+     * @param string|null $middle_Name
+     * @return Individual
+     */
+    public function setMiddleName(?string $middle_Name): Individual
+    {
+        $this->middle_Name = $middle_Name === "" ? null : $middle_Name;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNickNames(): ?string
+    {
+        return $this->nick_Names;
+    }
+
+    /**
+     * @param string|null $nick_Names
+     * @return Individual
+     */
+    public function setNickNames(?string $nick_Names): Individual
+    {
+        $this->nick_Names = $nick_Names === "" ? null : $nick_Names;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLastNameAtBirth(): ?string
+    {
+        return $this->last_Name_At_Birth;
+    }
+
+    /**
+     * @param string|null $last_Name_At_Birth
+     * @return Individual
+     */
+    public function setLastNameAtBirth(?string $last_Name_At_Birth): Individual
+    {
+        $this->last_Name_At_Birth = $last_Name_At_Birth;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLastNameCurrent(): ?string
+    {
+        return !is_null($this->last_Name_Current) ? $this->last_Name_Current : $this->getLastNameAtBirth();
+    }
+
+    /**
+     * @param string|null $last_Name_Current
+     * @return Individual
+     */
+    public function setLastNameCurrent(?string $last_Name_Current): Individual
+    {
+        $this->last_Name_Current = $last_Name_Current;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLastNameOther(): ?string
+    {
+        return $this->last_Name_Other;
+    }
+
+    /**
+     * @param string|null $last_Name_Other
+     * @return Individual
+     */
+    public function setLastNameOther(?string $last_Name_Other): Individual
+    {
+        $this->last_Name_Other = $last_Name_Other === '' ? null : $last_Name_Other;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSuffix(): ?string
+    {
+        return $this->suffix;
+    }
+
+    /**
+     * @param string|null $suffix
+     * @return Individual
+     */
+    public function setSuffix(?string $suffix): Individual
+    {
+        $this->suffix = empty($suffix) ? null : $suffix;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getGender(): ?string
     {
         return $this->gender;
     }
 
     /**
-     * @param string $gender
+     * @param string|null $gender
      * @return Individual
      */
-    public function setGender(string $gender): Individual
+    public function setGender(?string $gender): Individual
     {
-        if (!in_array($gender, self::getGenderList())) throw new IndividualException($this, sprintf('The gender (%s) given for the individual is not valid.', $gender));
-        $this->gender = $gender;
+        $this->gender = in_array($gender, $this->getGenderList(true)) ? $gender : null;
         return $this;
     }
 
     /**
-     * @return array|string[]
+     * @return array
      */
-    public static function getGenderList(): array
+    public function getGenderList(bool $withNull = false): array
     {
-        return self::$genderList;
+        return $withNull ? array_merge([null], $this->genderList) : $this->genderList;
     }
 
     /**
-     * @return Collection
+     * @return \DateTimeImmutable|null
      */
-    public function getEvents(): Collection
+    public function getBirthDate(): ?\DateTimeImmutable
     {
-        if (isset($this->events) && $this->events instanceof PersistentCollection) $this->events->initialize();
-
-        return $this->events = isset($this->events) ? $this->events : new ArrayCollection();
+        return $this->birth_Date;
     }
 
     /**
-     * @param Collection $events
+     * @param \DateTimeImmutable|null $birth_Date
      * @return Individual
      */
-    public function setEvents(Collection $events): Individual
+    public function setBirthDate(?\DateTimeImmutable $birth_Date): Individual
     {
-        $this->events = $events;
+        $this->birth_Date = $birth_Date;
         return $this;
     }
 
     /**
-     * @param Event $event
+     * @return \DateTimeImmutable|null
+     */
+    public function getDeathDate(): ?\DateTimeImmutable
+    {
+        return $this->death_Date;
+    }
+
+    /**
+     * @param \DateTimeImmutable|null $death_Date
      * @return Individual
      */
-    public function addEvent(Event $event): Individual
+    public function setDeathDate(?\DateTimeImmutable $death_Date): Individual
     {
-        if ($this->getEvents()->contains($event)) return $this;
-
-        $this->events->add($event);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getFamilies(): Collection
-    {
-        if (isset($this->families) && $this->families instanceof PersistentCollection) $this->families->initialize();
-
-        return $this->families = isset($this->families) ? $this->families : new ArrayCollection();
-    }
-
-    /**
-     * @param Collection $families
-     * @return Individual
-     */
-    public function setFamilies(Collection $families): Individual
-    {
-        $this->families = $families;
-        return $this;
-    }
-
-    /**
-     * @param IndividualFamily $family
-     * @return Individual
-     */
-    public function addFamily(IndividualFamily $family): Individual
-    {
-        if (!$this->getFamilies()->contains($family)) {
-            $this->families->add($family);
-            $family->setIndividual($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param IndividualFamily $family
-     * @return Individual
-     */
-    public function removeFamily(IndividualFamily $family): Individual
-    {
-        if ($this->getFamilies()->removeElement($family)) {
-            // set the owning side to null (unless already changed)
-            if ($family->getIndividual() === $this) {
-                $family->setIndividual(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getSources(): Collection
-    {
-        if (isset($this->sources) && $this->sources instanceof PersistentCollection) $this->sources->initialize();
-
-        return $this->sources = isset($this->sources) ? $this->sources : new ArrayCollection();
-    }
-
-    /**
-     * @param SourceData $source
-     * @return Individual
-     */
-    public function addSource(SourceData $source): Individual
-    {
-        if (!$this->getSources()->contains($source)) {
-            $this->sources->add($source);
-        }
-
+        $this->death_Date = $death_Date;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getRecordKey(): ?string
+    public function getBirthLocation(): ?string
     {
-        return isset($this->recordKey) ? $this->recordKey : null;
+        return $this->birth_Location;
     }
 
     /**
-     * @param string|null $recordKey
+     * @param string|null $birth_Location
      * @return Individual
      */
-    public function setRecordKey(?string $recordKey): Individual
+    public function setBirthLocation(?string $birth_Location): Individual
     {
-        $this->recordKey = $recordKey;
+        $this->birth_Location = empty($birth_Location) ? null : $birth_Location;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getNote(): ?string
+    public function getDeathLocation(): ?string
     {
-        return $this->note;
+        return $this->death_Location;
     }
 
     /**
-     * @param string|null $note
+     * @param string|null $death_Location
      * @return Individual
      */
-    public function setNote(?string $note): Individual
+    public function setDeathLocation(?string $death_Location): Individual
     {
-        $this->note = $note;
+        $this->death_Location = empty($death_Location) ? null : $death_Location;
         return $this;
     }
 
     /**
-     * @param string $note
+     * @return string|null
+     */
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    /**
+     * @param string|null $photo
      * @return Individual
      */
-    public function concatNote(string $note): Individual
+    public function setPhoto(?string $photo): Individual
     {
-        $this->note .= $note;
+        $this->photo = empty($photo) ? null : $photo;
         return $this;
     }
 
     /**
-     * @return Collection
+     * @return Individual|null
      */
-    public function getMultimediaRecords(): Collection
+    public function getFather(): ?Individual
     {
-        return $this->multimediaRecords = isset($this->multimediaRecords) ? $this->multimediaRecords : new ArrayCollection();
+        return $this->father;
     }
 
     /**
-     * @param Collection $multimediaRecords
+     * @param Individual|null $father
      * @return Individual
      */
-    public function setMultimediaRecords(Collection $multimediaRecords): Individual
+    public function setFather(?Individual $father): Individual
     {
-        $this->multimediaRecords = $multimediaRecords;
+        $this->father = $father;
         return $this;
     }
 
     /**
-     * @param MultimediaRecord $record
+     * @return Collection|null
+     */
+    public function getFatherChildren(): ?Collection
+    {
+        return $this->father_Children;
+    }
+
+    /**
+     * @param Collection|null $father_Children
      * @return Individual
      */
-    public function addMultimediaRecord(MultimediaRecord $record): Individual
+    public function setFatherChildren(?Collection $father_Children): Individual
     {
-        if ($this->getMultimediaRecords()->containsKey($record->getLink())) return $this;
-
-        $this->multimediaRecords->set($record->getLink(), $record);
-
+        $this->father_Children = $father_Children;
         return $this;
     }
 
     /**
-     * @return array|null
+     * @return Individual|null
      */
-    public function getDescription(): ?array
+    public function getMother(): ?Individual
     {
-        return isset($this->description) ? $this->description : null;
+        return $this->mother;
     }
 
     /**
-     * @param array|null $description
+     * @param Individual|null $mother
      * @return Individual
      */
-    public function setDescription(?array $description): Individual
+    public function setMother(?Individual $mother): Individual
     {
-        $this->description = $description;
+        $this->mother = $mother;
+        return $this;
+    }
+
+    /**
+     * @return Collection|null
+     */
+    public function getMotherChildren(): ?Collection
+    {
+        return $this->mother_Children;
+    }
+
+    /**
+     * @param Collection|null $mother_Children
+     * @return Individual
+     */
+    public function setMotherChildren(?Collection $mother_Children): Individual
+    {
+        $this->mother_Children = $mother_Children;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPageID(): bool
+    {
+        return $this->page_ID;
+    }
+
+    /**
+     * @param bool $page_ID
+     * @return Individual
+     */
+    public function setPageID(bool $page_ID): Individual
+    {
+        $this->page_ID = $page_ID;
+        return $this;
+    }
+
+    /**
+     * @return Individual|null
+     */
+    public function getManager(): ?Individual
+    {
+        return $this->manager;
+    }
+
+    /**
+     * @param Individual|null $manager
+     * @return Individual
+     */
+    public function setManager(?Individual $manager): Individual
+    {
+        $this->manager = $manager;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLiving(): bool
+    {
+        return $this->living;
+    }
+
+    /**
+     * @param bool $living
+     * @return Individual
+     */
+    public function setLiving(bool $living): Individual
+    {
+        $this->living = $living;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPrivacy(): bool
+    {
+        return $this->privacy;
+    }
+
+    /**
+     * @param bool $privacy
+     * @return Individual
+     */
+    public function setPrivacy(bool $privacy): Individual
+    {
+        $this->privacy = $privacy;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getBackground(): ?string
+    {
+        return $this->background;
+    }
+
+    /**
+     * @param string|null $background
+     * @return Individual
+     */
+    public function setBackground(?string $background): Individual
+    {
+        $this->background = empty($background) ? null : $background;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getThankCount(): int
+    {
+        return $this->thank_Count;
+    }
+
+    /**
+     * @param int $thank_Count
+     * @return Individual
+     */
+    public function setThankCount(int $thank_Count): Individual
+    {
+        $this->thank_Count = empty($thank_Count) ? 0 : $thank_Count;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLocked(): bool
+    {
+        return $this->locked;
+    }
+
+    /**
+     * @param bool $locked
+     * @return Individual
+     */
+    public function setLocked(bool $locked): Individual
+    {
+        $this->locked = $locked;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGuest(): bool
+    {
+        return $this->guest;
+    }
+
+    /**
+     * @param bool $guest
+     * @return Individual
+     */
+    public function setGuest(bool $guest): Individual
+    {
+        $this->guest = $guest;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isConnected(): bool
+    {
+        return $this->connected;
+    }
+
+    /**
+     * @param bool $connected
+     * @return Individual
+     */
+    public function setConnected(bool $connected): Individual
+    {
+        $this->connected = $connected;
         return $this;
     }
 }

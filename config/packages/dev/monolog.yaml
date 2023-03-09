@@ -2,14 +2,34 @@ monolog:
     handlers:
         main:
             type: stream
-            path: "%kernel.logs_dir%/%kernel.environment%.log"
-            level: debug
+            path: "%kernel.logs_dir%/%kernel.environment%.error.log"
+            level: error
             channels: ["!event","!wikitree"]
+        request:
+            type: stream
+            path: "%kernel.logs_dir%/%kernel.environment%.request.log"
+            level: debug
+            channels: ["request"]
+        php:
+            type: stream
+            path: "%kernel.logs_dir%/%kernel.environment%.php.log"
+            level: debug
+            channels: ["php"]
         wikitree:
             type: stream
-            path: "%kernel.logs_dir%/wikitree.log"
+            path: "%kernel.logs_dir%/%kernel.environment%.wikitree.log"
             level: debug
             channels: ["wikitree"]
+        doctrine:
+            type: stream
+            path: "%kernel.logs_dir%/%kernel.environment%.doctrine.log"
+            level: debug
+            channels: ["doctrine"]
+        main_debug:
+            type: stream
+            path: "%kernel.logs_dir%/%kernel.environment%.debug.log"
+            level: debug
+            channels: ["!event","!wikitree","!doctrine"]
         # uncomment to get logging in your browser
         # you may have to allow bigger header sizes in your Web server configuration
         #firephp:
