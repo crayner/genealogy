@@ -1,17 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- *
- * genealogy
- * (c) 2021 Craig Rayner <craig@craigrayner.com>
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * User: Craig Rayner
- * Date: 30/03/2021
- * Time: 08:57
- */
-
 namespace App\Entity;
 
 use App\Repository\IndividualRepository;
@@ -24,6 +11,7 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
  * Class Individual
  * @author  Craig Rayner <craig@craigrayner.com>
  * 30/03/2021 08:58
+ * @selectPure App\Entity
  */
 #[ORM\Entity(repositoryClass: IndividualRepository::class)]
 #[ORM\Table(name: 'individual', options: ['collate' => 'utf8mb4_unicode_ci'])]
@@ -31,12 +19,12 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
 class Individual
 {
     /**
-     * @var int|null
+     * @var int
      */
     #[ORM\Id]
-    #[ORM\Column(type: 'bigint', options: array('unsigned' => true))]
+    #[ORM\Column(type: 'bigint', options: ['unsigned'])]
     #[ORM\GeneratedValue]
-    private ?int $id;
+    private int $id;
 
     /**
      * @var int
@@ -71,7 +59,7 @@ class Individual
     /**
      * @var integer
      */
-    #[ORM\Column(type: 'integer', options: array('unsigned' => true))]
+    #[ORM\Column(type: 'integer', options: ['unsigned'])]
     private int $edit_Count;
 
     /**
@@ -147,13 +135,13 @@ class Individual
     /**
      * @var \DateTimeImmutable|null
      */
-    #[ORM\Column(type: 'date_immutable', nullable: true)]
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $birth_Date;
 
     /**
      * @var \DateTimeImmutable|null
      */
-    #[ORM\Column(type: 'date_immutable', nullable: true)]
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $death_Date;
 
     /**
@@ -177,30 +165,16 @@ class Individual
     /**
      * @var Individual|null
      */
-    #[ORM\ManyToOne(targetEntity: Individual::class, inversedBy: 'father_Children')]
-    #[ORM\JoinColumn(name: 'father', nullable: true)]
+    #[ORM\OneToOne(targetEntity: Individual::class)]
+    #[ORM\JoinColumn(name: 'father')]
     private ?Individual $father;
-
-    /**
-     * @var Collection|ArrayCollection|null
-     */
-    #[ORM\OneToMany(targetEntity: Individual::class, mappedBy: 'father')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Collection $father_Children;
 
     /**
      * @var Individual|null
      */
-    #[ORM\ManyToOne(targetEntity: Individual::class, inversedBy: 'mother_Children')]
-    #[ORM\JoinColumn(name: 'mother', nullable: true)]
+    #[ORM\OneToOne(targetEntity: Individual::class)]
+    #[ORM\JoinColumn(name: 'mother')]
     private ?Individual $mother;
-
-    /**
-     * @var Collection|ArrayCollection|null
-     */
-    #[ORM\OneToMany(targetEntity: Individual::class, mappedBy: 'mother')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Collection $mother_Children;
 
     /**
      * @var integer
@@ -209,11 +183,22 @@ class Individual
     private bool $page_ID;
 
     /**
-     * @var Individual|null
+     * @var Collection
      */
-    #[ORM\ManyToOne(targetEntity: Individual::class)]
-    #[ORM\JoinColumn(name: 'manager', nullable: true)]
-    private ?Individual $manager;
+    #[ORM\ManyToMany(targetEntity: Individual::class, inversedBy: 'profiles')]
+    #[ORM\JoinTable(name: 'profiles_managers')]
+    #[ORM\JoinColumn(referencedColumnName: 'id', name: 'manager')]
+    #[ORM\InverseJoinColumn(name: 'profile', referencedColumnName: 'id')]
+    private Collection $managers;
+
+    /**
+     * @var Collection
+     */
+    #[ORM\ManyToMany(targetEntity: Individual::class, mappedBy: 'managers')]
+    #[ORM\JoinTable(name: 'profiles_managers')]
+    #[ORM\JoinColumn(referencedColumnName: 'id', name: 'profile')]
+    #[ORM\InverseJoinColumn(name: 'manager', referencedColumnName: 'id')]
+    private Collection $profiles;
 
     /**
      * @var bool
@@ -222,10 +207,10 @@ class Individual
     private bool $living;
 
     /**
-     * @var integer
+     * @var int
      */
     #[ORM\Column(type: 'smallint')]
-    private bool $privacy;
+    private int $privacy;
 
     /**
      * @var string|null
@@ -257,9 +242,13 @@ class Individual
     #[ORM\Column(name: 'is_Connected', type: 'boolean')]
     private bool $connected;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
-        $this->father_Children = new ArrayCollection();
+        $this->managers = new ArrayCollection();
+        $this->profiles = new ArrayCollection();
     }
 
     /**
@@ -698,29 +687,11 @@ class Individual
 
     /**
      * @param Individual|null $father
-     * @return Individual
+     * @return $this
      */
     public function setFather(?Individual $father): Individual
     {
         $this->father = $father;
-        return $this;
-    }
-
-    /**
-     * @return Collection|null
-     */
-    public function getFatherChildren(): ?Collection
-    {
-        return $this->father_Children;
-    }
-
-    /**
-     * @param Collection|null $father_Children
-     * @return Individual
-     */
-    public function setFatherChildren(?Collection $father_Children): Individual
-    {
-        $this->father_Children = $father_Children;
         return $this;
     }
 
@@ -743,24 +714,6 @@ class Individual
     }
 
     /**
-     * @return Collection|null
-     */
-    public function getMotherChildren(): ?Collection
-    {
-        return $this->mother_Children;
-    }
-
-    /**
-     * @param Collection|null $mother_Children
-     * @return Individual
-     */
-    public function setMotherChildren(?Collection $mother_Children): Individual
-    {
-        $this->mother_Children = $mother_Children;
-        return $this;
-    }
-
-    /**
      * @return bool
      */
     public function isPageID(): bool
@@ -779,20 +732,88 @@ class Individual
     }
 
     /**
-     * @return Individual|null
+     * @return Collection
      */
-    public function getManager(): ?Individual
+    public function getManagers(): Collection
     {
-        return $this->manager;
+        return $this->managers;
+    }
+
+    /**
+     * @param Collection $managers
+     * @return Individual
+     */
+    public function setManagers(Collection $managers): Individual
+    {
+        $this->managers = $managers;
+        return $this;
     }
 
     /**
      * @param Individual|null $manager
      * @return Individual
      */
-    public function setManager(?Individual $manager): Individual
+    public function addManager(?Individual $manager): Individual
     {
-        $this->manager = $manager;
+        if (is_null($manager) || $this->getManagers()->contains($manager)) return $this;
+        $this->getManagers()->add($manager);
+        $manager->addProfile($this);
+        return $this;
+    }
+
+    /**
+     * @param Individual $manager
+     * @return $this
+     */
+    public function removeManager(Individual $manager): Individual
+    {
+        if ($this->getManagers()->contains($manager)) {
+            $this->getManagers()->removeElement($manager);
+            $manager->removeProfile($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getProfiles(): Collection
+    {
+        return $this->profiles;
+    }
+
+    /**
+     * @param Collection $profiles
+     * @return Individual
+     */
+    public function setProfiles(Collection $profiles): Individual
+    {
+        $this->profiles = $profiles;
+        return $this;
+    }
+
+    /**
+     * @param Individual|null $profile
+     * @return Individual
+     */
+    public function addProfile(?Individual $profile): Individual
+    {
+        if (is_null($profile) || $this->getProfiles()->contains($profile)) return $this;
+        $this->getProfiles()->add($profile);
+        $profile->addManager($this);
+        return $this;
+    }
+
+    /**
+     * @param Individual $profile
+     * @return $this
+     */
+    public function removeProfile(Individual $profile): Individual
+    {
+        if ($this->getProfiles()->contains($profile)) {
+            $this->getProfiles()->removeElement($profile);
+            $profile->removeManager($this);
+        }
         return $this;
     }
 
@@ -815,18 +836,18 @@ class Individual
     }
 
     /**
-     * @return bool
+     * @return int
      */
-    public function isPrivacy(): bool
+    public function getPrivacy(): int
     {
         return $this->privacy;
     }
 
     /**
-     * @param bool $privacy
+     * @param int $privacy
      * @return Individual
      */
-    public function setPrivacy(bool $privacy): Individual
+    public function setPrivacy(int $privacy): Individual
     {
         $this->privacy = $privacy;
         return $this;
@@ -920,5 +941,59 @@ class Individual
     {
         $this->connected = $connected;
         return $this;
+    }
+
+    /**
+     * @return \DateTimeImmutable|null
+     */
+    public function createEventDate(?string $date): ?\DateTimeImmutable
+    {
+        if (empty($date) || strlen($date) !== 8) return null;
+        $hour = '00';
+        $min = '00';
+        $sec = '00';
+        $year = substr($date, 0, 4);
+        $month = substr($date, 4,2);
+        $day = substr($date, 6, 2);
+        if ($year > 0) {
+            $hour = '01';
+        } else {
+            return null;
+        }
+        if ($month >= 1 && $month <= 12) {
+            $min = '01';
+            if ($day >= 1 && $day <= 31) {
+                $sec = '01';
+            } else {
+                $day = '01';
+            }
+        } else {
+            $month = '01';
+            $day = '01';
+        }
+        $date = $year . $month . $day . " " . $hour . $min . $sec;
+
+        return new \DateTimeImmutable($date, new \DateTimeZone("UTC"));
+    }
+
+    /**
+     * @param \DateTimeImmutable|null $date
+     * @return string
+     */
+    public function parseEventDate(?\DateTimeImmutable $date): string
+    {
+        if (is_null($date)) return '';
+        $yearValid = (bool)intval($date->format('G'));
+        if (!$yearValid) return '';
+        $monthValid = (bool)intval($date->format('i'));
+        $dayValid = (bool)intval($date->format('s'));
+        if ($dayValid) {
+            return $date->format('j M Y');
+        }
+        if ($monthValid) {
+            return $date->format('M Y');
+
+        }
+        return $date->format('Y');
     }
 }

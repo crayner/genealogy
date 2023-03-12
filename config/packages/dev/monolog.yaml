@@ -21,9 +21,10 @@ monolog:
             level: debug
             channels: ["wikitree"]
         doctrine:
-            type: stream
+            type: rotating_file
             path: "%kernel.logs_dir%/%kernel.environment%.doctrine.log"
-            level: debug
+            level: info
+            max_files: 10
             channels: ["doctrine"]
         main_debug:
             type: stream
