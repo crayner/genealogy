@@ -45,9 +45,9 @@ class WikiTreeController extends AbstractController
     /**
      * @param RequestStack $stack
      * @param WikiTreeManager $manager
-     * @Route("/wikitree/biography/",name="wikitree_biography")
      * @return Response
      */
+    #[Route('/wikitree/biography', name: 'wikitree_biography')]
     public function biography(RequestStack $stack, WikiTreeManager $manager, TranslatorInterface $translator): Response
     {
 
@@ -116,9 +116,9 @@ class WikiTreeController extends AbstractController
 
     /**
      * @param WikitreeProfileManager $manager
-     * @Route("/wikitree/profiles/",name="wikitree_profiles")
      * @return Response
      */
+    #[Route('/wikitree/profiles', name: 'wikitree_profiles')]
     public function profiles(WikitreeProfileManager $manager): Response
     {
         $manager->execute();
@@ -132,9 +132,9 @@ class WikiTreeController extends AbstractController
     /**
      * @param RequestStack $stack
      * @param CategoryManager $manager
-     * @Route("/wikitree/category/",name="wikitree_category")
      * @return Response
      */
+    #[Route('/wikitree/category', name: 'wikitree_category')]
     public function category(RequestStack $stack, CategoryManager $manager): Response
     {
         $request = $stack->getCurrentRequest();
@@ -166,9 +166,9 @@ class WikiTreeController extends AbstractController
     /**
      * @param RequestStack $stack
      * @param CategoryManager $manager
-     * @Route("/wikitree/add/category/",name="wikitree_add_category")
      * @return Response
      */
+    #[Route('/wikitree/add/category', name: 'wikitree_add_category')]
     public function addCategories(RequestStack $stack, CategoryManager $manager): Response
     {
         $result = [];
@@ -195,9 +195,9 @@ class WikiTreeController extends AbstractController
     /**
      * @param RequestStack $stack
      * @param RemoveCategoryManager $manager
-     * @Route("/wikitree/remove/category/",name="wikitree_remove_category")
      * @return Response
      */
+    #[Route('/wikitree/remove/category', name: 'wikitree_remove_category')]
     public function removeCategory(RequestStack $stack, RemoveCategoryManager $manager): Response
     {
         $result = [];
@@ -230,9 +230,9 @@ class WikiTreeController extends AbstractController
     /**
      * @param RequestStack $stack
      * @param SwapCategoryManager $manager
-     * @Route("/wikitree/swap/category/",name="wikitree_swap_category")
      * @return Response
      */
+    #[Route('/wikitree/swap/category', name: 'wikitree_swap_category')]
     public function swapCategory(RequestStack $stack, SwapCategoryManager $manager): Response
     {
         $result = [];
@@ -266,9 +266,9 @@ class WikiTreeController extends AbstractController
     /**
      * @param RequestStack $stack
      * @param MedalUpdateManager $manager
-     * @Route("/wikitree/medal/updater/",name="wikitree_medal_updater")
      * @return Response
      */
+    #[Route("/wikitree/medal/updater",name: "wikitree_medal_updater")]
     public function medalSwapper(RequestStack $stack, MedalUpdateManager $manager): Response
     {
         $result = [];
