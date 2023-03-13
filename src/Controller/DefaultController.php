@@ -15,13 +15,11 @@
 namespace App\Controller;
 
 use App\Entity\Individual;
-use App\Manager\DumpPeopleMarriage;
-use App\Manager\DumpPeopleUsers;
 use App\Manager\FileNameDiscriminator;
 use App\Manager\GedFileHandler;
 use App\Manager\ParameterManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -34,12 +32,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends AbstractController
 {
     /**
-     * @Route("/importer/",name="importer")
      * @param FileNameDiscriminator $fileNameDiscriminator
      * @param GedFileHandler $handler
      * @param ParameterManager $parameterManager
      * @return Response
      */
+    #[Route('/importer', name: 'importer')]
     public function importer(FileNameDiscriminator $fileNameDiscriminator, GedFileHandler $handler, ParameterManager $parameterManager): Response
     {
         $individuals = $this->getDoctrine()->getManager()->getRepository(Individual::class)->findAll();
@@ -59,9 +57,9 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/importer/ready/",name="importer_ready")
      *
      */
+    #[Route("/importer/ready",name: "importer_ready")]
     public function ready()
     {
         $individuals = $this->getDoctrine()->getManager()->getRepository(Individual::class)->findAll();
@@ -74,31 +72,11 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/",name="home")
-     * @return Response
+     * @return RedirectResponse
      */
-    public function home() {
-        return $this->redirectToRoute('wikitree_biography');
-    }
-
-    /**
-     * @param DumpPeopleUsers $individual
-     * @param DumpPeopleMarriage $marriage
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/dump/",name="dump")
-     */
-    public function dump(DumpPeopleUsers $individual, DumpPeopleMarriage $marriage): Response
+    #[Route("/", name: "home")]
+    public function home(): RedirectResponse
     {
-
-        $offset = $individual->execute();
-
-        if (is_array($offset)) dd($offset);
-        if ($offset > 0) {
-            return $this->render('wikitree/dump_wikitree.html.twig', ['offset' => $offset]);
-        }
-
-       // $marriage->execute();
-
         return $this->redirectToRoute('wikitree_biography');
     }
 }
