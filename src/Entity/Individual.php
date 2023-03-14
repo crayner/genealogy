@@ -125,7 +125,7 @@ class Individual
     /**
      * @var array|string[]
      */
-    private array $genderList =
+    static public array $genderList =
         [
             'Unknown',
             'Male',
@@ -180,15 +180,15 @@ class Individual
      * @var integer
      */
     #[ORM\Column(type: 'integer', options: ['unsigned'])]
-    private bool $page_ID;
+    private int $page_ID;
 
     /**
      * @var Collection
      */
     #[ORM\ManyToMany(targetEntity: Individual::class, inversedBy: 'profiles')]
     #[ORM\JoinTable(name: 'profiles_managers')]
-    #[ORM\JoinColumn(referencedColumnName: 'id', name: 'manager')]
-    #[ORM\InverseJoinColumn(name: 'profile', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'profile', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'manager', referencedColumnName: 'id')]
     private Collection $managers;
 
     /**
@@ -196,8 +196,8 @@ class Individual
      */
     #[ORM\ManyToMany(targetEntity: Individual::class, mappedBy: 'managers')]
     #[ORM\JoinTable(name: 'profiles_managers')]
-    #[ORM\JoinColumn(referencedColumnName: 'id', name: 'profile')]
-    #[ORM\InverseJoinColumn(name: 'manager', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'manager', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'profile', referencedColumnName: 'id')]
     private Collection $profiles;
 
     /**
@@ -208,6 +208,9 @@ class Individual
 
     /**
      * @var int
+     * bit 0 : Edit = 1, no edit = 0
+     * bit 1 : Biography: Public = 1, Private = 0
+     * bit 2 : Family Tree: Public = 1, Private = 0
      */
     #[ORM\Column(type: 'smallint')]
     private int $privacy;
@@ -243,12 +246,18 @@ class Individual
     private bool $connected;
 
     /**
+     * @var ArrayCollection
+     */
+    private ArrayCollection $marriages;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->managers = new ArrayCollection();
         $this->profiles = new ArrayCollection();
+        $this->marriages = new ArrayCollection();
     }
 
     /**
@@ -306,11 +315,13 @@ class Individual
     }
 
     /**
+     * @param bool $reflectNull
      * @return string|null
      */
-    public function getUserIDDB(): ?string
+    public function getUserIDDB(bool $reflectNull = false): ?string
     {
-        return !is_null($this->user_ID_DB) ? $this->user_ID_DB: $this->getUserID();
+        if ($reflectNull) return $this->user_ID_DB;
+        return !empty($this->user_ID_DB) ? $this->user_ID_DB : $this->getUserID();
     }
 
     /**
@@ -331,16 +342,47 @@ class Individual
     #[ORM\PreUpdate]
     public function wastedSpace(LifecycleEventArgs $args)
     {
-        if ($this->getUserID() === $this->getUserIDDB()) {
+        $this->setUserIDDB(str_replace(["_"], ' ', $this->getUserIDDB()));
+        if ($this->getUserID() === $this->getUserIDDB() || empty($this->user_ID_DB)) {
             $this->setUserIDDB(null);
         }
+
         if (!isset($this->edit_Count) || $this->edit_Count < 1) $this->setEditCount(1);
+
         if ($this->getLastNameCurrent() === $this->getLastNameAtBirth()) {
             $this->setLastNameCurrent(null);
         }
+
         if (empty($this->getFirstName()) && !empty($this->getPreferredName())) {
             $this->setFirstName($this->getPreferredName())
                 ->setPreferredName(null);
+        }
+
+        if ($this->getPrivacy() > 7) {
+            switch ($this->getPrivacy()) {
+                case 20:
+                    $this->setPrivacy(0);
+                    break;
+                case 30:
+                    $this->setPrivacy(2);
+                    break;
+                case 35:
+                    $this->setPrivacy(4);
+                    break;
+                case 40:
+                    $this->setPrivacy(6);
+                    break;
+                case 14:
+                case 50:
+                    $this->setPrivacy(14);
+                    break;
+                case 15:
+                case 60:
+                    $this->setPrivacy(15);
+                    break;
+                default:
+                    dd($this->getPrivacy(), $this);
+            }
         }
     }
 
@@ -575,16 +617,17 @@ class Individual
      */
     public function setGender(?string $gender): Individual
     {
-        $this->gender = in_array($gender, $this->getGenderList(true)) ? $gender : null;
+        $this->gender = in_array($gender, static::getGenderList(true)) ? $gender : null;
         return $this;
     }
 
     /**
-     * @return array
+     * @param bool $withNull
+     * @return array|string[]
      */
-    public function getGenderList(bool $withNull = false): array
+    static public function getGenderList(bool $withNull = false): array
     {
-        return $withNull ? array_merge([null], $this->genderList) : $this->genderList;
+        return $withNull ? array_merge([null], static::$genderList) : static::$genderList;
     }
 
     /**
@@ -714,18 +757,18 @@ class Individual
     }
 
     /**
-     * @return bool
+     * @return int
      */
-    public function isPageID(): bool
+    public function getPageID(): int
     {
         return $this->page_ID;
     }
 
     /**
-     * @param bool $page_ID
-     * @return Individual
+     * @param int $page_ID
+     * @return $this
      */
-    public function setPageID(bool $page_ID): Individual
+    public function setPageID(int $page_ID): Individual
     {
         $this->page_ID = $page_ID;
         return $this;
@@ -978,13 +1021,21 @@ class Individual
 
     /**
      * @param \DateTimeImmutable|null $date
+     * @param bool $decade
      * @return string
      */
-    public function parseEventDate(?\DateTimeImmutable $date): string
+    public function parseEventDate(?\DateTimeImmutable $date, bool $decade = false): string
     {
         if (is_null($date)) return '';
         $yearValid = (bool)intval($date->format('G'));
         if (!$yearValid) return '';
+        if ($decade) {
+            $year = $date->format('Y');
+            while ((int)$year % 10 !== 0) {
+                $year -= 1;
+            }
+            return $year;
+        }
         $monthValid = (bool)intval($date->format('i'));
         $dayValid = (bool)intval($date->format('s'));
         if ($dayValid) {
@@ -995,5 +1046,62 @@ class Individual
 
         }
         return $date->format('Y');
+    }
+
+    /**
+     * @return string
+     */
+    public function getBirthDateFirstNameString(): string
+    {
+        $result = $this->getBirthDate() === null ? '' : $this->getBirthDate()->format('Ymd');
+        $result .= $this->getFirstName();
+        return $result;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAge(): array
+    {
+        $result = [];
+        if ($this->getBirthDate() instanceof \DateTimeImmutable && $this->getDeathDate() instanceof \DateTimeImmutable) {
+            $diff = $this->getDeathDate()->diff($this->getBirthDate());
+            if ($this->getBirthDate()->format('G') === '1' && $this->getDeathDate()->format('G') === '1') {
+                $result['{y}'] = $diff->y;
+                if ($this->getBirthDate()->format('i') === '01' && $this->getDeathDate()->format('i') === '01') {
+                    $result['{m}'] = $diff->m;
+                    if ($this->getBirthDate()->format('s') === '01' && $this->getDeathDate()->format('s') === '01') {
+                         $result['{d}'] = $diff->d;
+                         $result['status'] = 'full';
+                    } else {
+                        $result['status'] = 'year_mon';
+                    }
+                } else {
+                    $result['status'] = 'year_only';
+                }
+            }
+        } else {
+            $result['status'] = 'no_age';
+        }
+        return $result;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getMarriages(): ArrayCollection
+    {
+
+        return $this->marriages = $this->marriages ?? new ArrayCollection();
+    }
+
+    /**
+     * @param ArrayCollection $marriages
+     * @return Individual
+     */
+    public function setMarriages(ArrayCollection $marriages): Individual
+    {
+        $this->marriages = $marriages;
+        return $this;
     }
 }

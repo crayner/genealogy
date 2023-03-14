@@ -11,7 +11,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class GenealogyController extends AbstractController
 {
-
     /**
      * @param DumpPeopleUsers $individual
      * @param DumpPeopleMarriage $marriage
@@ -24,7 +23,26 @@ class GenealogyController extends AbstractController
 
         if (is_array($offset)) dd($offset);
         if ($offset > 0) {
-            return $this->render('wikitree/dump_wikitree.html.twig', ['offset' => $offset, 'manager' => $individual]);
+            return $this->render('wikitree/dump_individual.html.twig', ['offset' => $offset, 'manager' => $individual]);
+        }
+
+        // $marriage->execute();
+
+        return $this->redirectToRoute('wikitree_biography');
+    }
+
+    /**
+     * @param DumpPeopleMarriage $marriage
+     * @return Response
+     */
+    #[Route('/marriage/parse', name: 'marriage_parse')]
+    public function marriageParse(DumpPeopleMarriage $marriage): Response
+    {
+        $offset = $marriage->execute();
+
+        if (is_array($offset)) dd($offset);
+        if ($offset > 0) {
+            return $this->render('wikitree/dump_marriage.html.twig', ['offset' => $offset, 'manager' => $marriage]);
         }
 
         // $marriage->execute();

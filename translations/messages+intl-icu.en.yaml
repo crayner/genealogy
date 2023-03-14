@@ -15,6 +15,13 @@ birth:
     unknown:
         father: Unknown Father
         mother: Unknown Mother
+    details: >-
+        { status, select,
+            in {Born in <strong>{date}</strong> in <strong>{location}</strong>.}
+            decade_only {Born in {date}s.}
+            on_the {Born on the <strong>{date}</strong> in <strong>{location}</strong>}
+            other {Born without status in <strong>{date}</strong> in <strong>{location}</strong>}
+        }
 Data: Data
 Nothing done yet.: Nothing done yet.
 Login & Generate Biography: Login & Generate Biography
@@ -46,6 +53,30 @@ marriage:
             one {Together they had one child.}
             other {Together they had # children.}
         }
+    details:
+        date: >-
+            {gender, select,
+                Female {
+                    { date_status, select,
+                        on {Wife of <strong><a href="{link}">{name}</a></strong> - married on {date}}
+                        certain {Wife of <strong><a href="{link}">{name}</a></strong> - married in {date}}
+                        other {Wife of <strong><a href="{link}">{name}</a></strong> - married in {date}status?}}}
+                Male {
+                    { date_status, select,
+                        on {Husband of <strong><a href="{link}">{name}</a></strong> - married on {date}}
+                        certain {Husband of <strong><a href="{link}">{name}</a></strong> - married in {date}}
+                        other {Husband of <strong><a href="{link}">{name}</a></strong> - married in {date}status?}}}
+                other {
+                    { date_status, select,
+                        on {Spouse of <strong><a href="{link}">{name}</a></strong> - married on {date}}
+                        certain {Spouse of <strong><a href="{link}">{name}</a></strong> - married in {date}}
+                        other {Spouse of <strong><a href="{link}">{name}</a></strong> - married in {date}status?}}}}
+        location: >-
+            { location_status, select,
+                certain { in {location}}
+                uncertain { in {location} uncertain}
+                other {location status?}
+            }
 death:
     sentence: >-
         { tense, select,
@@ -78,6 +109,13 @@ death:
         display: , aged {age}
         calculation: , age calculation was not performed
     unknown: "{name} passed away{citation}..."
+    details: >-
+        { status, select,
+            in {Died in <strong>{date}</strong> in <strong>{location}</strong>.}
+            decade_only {Died in {date}s.}
+            on_the {Died on the <strong>{date}</strong>, aged <strong>{age}</strong> in <strong>{location}</strong>}
+            other {Death without status in {date} in {location}}
+        }
 WikiTree User name: WikiTree User name
 Usually an email address: Usually an email address
 WikiTree Password: WikiTree Password
@@ -210,3 +248,38 @@ Update Medal Changes: Update Medal Changes
 Medal Update Help: "Paste the contents of the profile here.  Modify the Biography by submitting the form.  The data will appear ready to copy from the window.  Copy and paste back to the profile, completely replace the profile content.  To the left are the highlighted changes."
 Modify Biography: Modify Biography
 Dump Wikitree Management: Dump Wikitree Management
+age:
+    details:
+        year_only: >-
+            { count, plural,
+                =0 {zero years old}
+                one {one year}
+                other {# years}
+            }
+        no_limit: >-
+            { status, select,
+                other {translation for "status" has not been set for death.details.no_limit}
+            }
+parent:
+    details: >-
+        { gender, select,
+            Female {Daughter of {father} and {mother}.}
+            Male {Son of {father} and {mother}.}
+            other {Child of {father} and {mother}.}
+        }
+sibling:
+    list: >-
+        { gender, select,
+            Female {Sister of {list}}
+            Male {Brother of {list}}
+            other {Sibling of {list}}
+        }
+children:
+    list: >-
+        { gender, select,
+            Female {Mother of {list}}
+            Male {Father of {list}}
+            other {Parent of {list}}
+        }
+last_modified: 'Last Modified {date}.'
+created_on: 'Created {date}.'

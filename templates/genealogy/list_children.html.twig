@@ -1,0 +1,8 @@
+{% trans_default_domain 'messages' %}
+{% if manager.children|length > 0 %}
+    {% set list = '' %}
+    {% for child in manager.children %}
+        {% set list = list ~ "<a href=\"" ~ path('genealogy_modify_record', {individual: child.userID}) ~ "\">" ~ manager.genealogyFullName(child) ~ "</a>, " %}
+    {% endfor %}
+    <p>{{ 'children.list'|trans({list: list, gender: manager.individual.gender})|trim(', ')|raw }}</p>
+{% endif %}

@@ -11,20 +11,18 @@
  * Date: 30/03/2021
  * Time: 08:58
  */
-
 namespace App\Repository;
 
-
-use App\Entity\ProfilesManagers;
+use App\Entity\ParseParent;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * Class ProfilesManagersRepository
+ * Class ParseParentRepository
  * @selectPure App\Repository
  * @author  Craig Rayner <craig@craigrayner.com>
  */
-class ProfilesManagersRepository extends ServiceEntityRepository
+class ParseParentRepository extends ServiceEntityRepository
 {
     /**
      * IndividualRepository constructor.
@@ -32,6 +30,6 @@ class ProfilesManagersRepository extends ServiceEntityRepository
      */
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, ProfilesManagers::class);
+        parent::__construct($registry, ParseParent::class);
     }
 }

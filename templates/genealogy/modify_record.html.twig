@@ -17,6 +17,7 @@
     {% include 'genealogy/list_marriages.html.twig' %}
     {% include 'genealogy/list_children.html.twig' %}
     <p>{{ 'death.details'|trans(death_details)|raw }}</p>
+    <p>{{ 'last_modified'|trans({date: manager.individual.lastTouched|date('d M Y')}) }} | {{ 'created_on'|trans({date: manager.individual.createdOn|date('d M Y')}) }}</p>
     {{ dump(manager) }}
 {% endblock body %}
 

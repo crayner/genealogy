@@ -50,4 +50,35 @@ class IndividualRepository extends ServiceEntityRepository
         }
         return $individual;
     }
+
+    /**
+     * @param array $criteria
+     * @return array|null
+     */
+    public function findLike(array $criteria): ?array
+    {
+        $query = $this->createQueryBuilder('i');
+        $where = '';
+        foreach ($criteria as $field => $value) {
+            $where .= 'i.' . $field . ' LIKE :' . strtolower($field) . ' AND ';
+            $query->setParameter(strtolower($field), $value);
+        }
+
+        $query->where(substr($where, 0,-5));
+        return $query->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param string $userID
+     * @return Individual|null
+     */
+    public function findOneByUserID(string $userID): ?Individual
+    {
+        $individual = $this->findOneBy(['user_ID' => $userID]);
+        while (!empty($individual->getUserIDDB(true))) {
+            $individual = $this->findOneBy(['user_ID' => $individual->getUserIDDB()]);
+        }
+        return $individual;
+    }
 }

@@ -1,0 +1,11 @@
+{% trans_default_domain 'messages' %}
+{% if age_details.status is same as('no_age') %}
+    {% set age = '' %}
+{% else %}
+    {% if (limit is same as('year')) %}
+        {% set age = 'age.details.year_only'|trans(age_details|merge({count: age_details['{y}']})) %}
+    {% else %}
+        {% set age = 'age.details.no_limit'|trans(age_details) %}
+    {% endif %}
+{% endif %}
+{{ age }}

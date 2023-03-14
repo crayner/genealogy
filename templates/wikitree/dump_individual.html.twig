@@ -1,0 +1,23 @@
+{% trans_default_domain 'messages' %}
+
+{% extends "base.html.twig" %}
+{% block title %}{{  'Dump Wikitree Management'|trans }}{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <script>
+        window.onload = function(){
+            setTimeout(function(){
+                window.location.href = "{{ path('dump', {'offset': offset}) }}";
+            }, 200);
+        }
+    </script>
+{% endblock stylesheets %}
+{% block body %}
+    <h1 style="text-align: center">{{ 'Dump Wikitree Management'|trans }}</h1>
+    <p>{{ offset }}</p>
+    <p>{{ manager.notFound }} - {{ manager.corrected }}</p>
+{% endblock body %}
+
+{% block javascripts %}
+   {{ parent() }}
+{% endblock %}
