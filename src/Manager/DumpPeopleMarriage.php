@@ -46,7 +46,7 @@ class DumpPeopleMarriage
     {
         $fileName = realpath(__DIR__ . '/../../../dumps/dump_people_marriages.csv');
 
-        $offset = array_key_exists('offset', $_GET) ? $_GET['offset'] : 11;
+        $offset = array_key_exists('offset', $_GET) ? $_GET['offset'] : 1;
         $count = 0;
 
         $file = new \SplFileObject($fileName);

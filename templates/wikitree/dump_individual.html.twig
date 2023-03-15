@@ -1,7 +1,7 @@
 {% trans_default_domain 'messages' %}
 
 {% extends "base.html.twig" %}
-{% block title %}{{  'Dump Wikitree Management'|trans }}{% endblock %}
+{% block title %}{{  'Parsing Individuals from Wikitree Dump'|trans }}{% endblock %}
 {% block stylesheets %}
     {{ parent() }}
     <script>
@@ -13,7 +13,7 @@
     </script>
 {% endblock stylesheets %}
 {% block body %}
-    <h1 style="text-align: center">{{ 'Dump Wikitree Management'|trans }}</h1>
+    <h1 style="text-align: center">{{ 'Parsing Individuals from Wikitree Dump'|trans }}</h1>
     <p>{{ offset }}</p>
     <p>{{ manager.notFound }} - {{ manager.corrected }}</p>
 {% endblock body %}

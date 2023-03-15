@@ -63,20 +63,6 @@ class DumpPeopleUsers
         $count = 0;
 
         $file = new \SplFileObject($fileName);
-        if ($offset === 'debug') {
-            $line = explode("\t", trim($file->current()));
-            dump($line);
-            $file->next();
-            $file->current();
-            $file->next();
-            $line = explode("\t", trim($file->current()));
-            $individual = $this->createIndividual($line);
-            $this->getEntityManager()->persist($individual);
-            dump($individual);
-            $this->getEntityManager()->flush();
-            dump($individual);
-            return $line;
-        }
         $file->seek($offset);
 
         $lines = [];
