@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Manager\CategoryManager;
+use App\Manager\CategoryParse;
 use App\Manager\DumpPeopleMarriage;
 use App\Manager\DumpPeopleUsers;
 use App\Manager\IndividualManager;
@@ -18,7 +20,7 @@ class GenealogyController extends AbstractController
      * @param DumpPeopleMarriage $marriage
      * @return Response
      */
-    #[Route('/dump', name: 'dump')]
+    #[Route('/individual/parse', name: 'individual_parse')]
     public function dump(DumpPeopleUsers $individual, DumpPeopleMarriage $marriage): Response
     {
         $offset = $individual->execute();
@@ -58,11 +60,11 @@ class GenealogyController extends AbstractController
     }
 
     /**
-     * @param ManagersParse $manager
+     * @param ManagerParse $manager
      * @return Response
      * @throws UniqueConstraintViolationException
      */
-    #[Route('/managers/parse', name: 'manager_parse')]
+    #[Route('/manager/parse', name: 'manager_parse')]
     public function managersParse(ManagerParse $manager): Response
     {
         $offset = $manager->execute();
@@ -83,6 +85,28 @@ class GenealogyController extends AbstractController
     }
 
     /**
+     * @param CategoryParse $manager
+     * @return Response
+     * @throws UniqueConstraintViolationException
+     */
+    #[Route('/category/parse', name: 'category_parse')]
+    public function categoryParse(CategoryParse $manager): Response
+    {
+        $offset = $manager->execute();
+
+        if ($offset > 0) {
+            return $this->render('wikitree/dump_marriage.html.twig', [
+                'offset' => $offset,
+                'manager' => $manager,
+                'title' => 'Parsing Categories from Wikitree Dump',
+                'route' => 'category_parse'
+            ]);
+        }
+
+        return $this->redirectToRoute('wikitree_biography');
+    }
+
+    /**
      * @param IndividualManager $manager
      * @return Response
      */
@@ -91,5 +115,16 @@ class GenealogyController extends AbstractController
     {
         $manager->retrieveIndividual($_GET['individual']);
         return $this->render('genealogy/modify_record.html.twig', ['manager' => $manager]);
+    }
+
+    /**
+     * @param CategoryManager $manager
+     * @return Response
+     */
+    #[Route('/genealogy/modify/category', name: 'genealogy_modify_category')]
+    public function modifyCategory(CategoryManager $manager): Response
+    {
+        $manager->retrieveCategory($_GET['category']);
+        return $this->render('genealogy/modify_category.html.twig', ['manager' => $manager]);
     }
 }
