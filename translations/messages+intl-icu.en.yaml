@@ -60,22 +60,26 @@ marriage:
                     { date_status, select,
                         on {Wife of <strong><a href="{link}">{name}</a></strong> - married on {date}}
                         certain {Wife of <strong><a href="{link}">{name}</a></strong> - married in {date}}
+                        empty {Wife of <strong><a href="{link}">{name}</a></strong> - marriage date unknown}
                         other {Wife of <strong><a href="{link}">{name}</a></strong> - married in {date}status?}}}
                 Male {
                     { date_status, select,
                         on {Husband of <strong><a href="{link}">{name}</a></strong> - married on {date}}
                         certain {Husband of <strong><a href="{link}">{name}</a></strong> - married in {date}}
-                        other {Husband of <strong><a href="{link}">{name}</a></strong> - married in {date}status?}}}
+                        empty {Husband of <strong><a href="{link}">{name}</a></strong> - marriage date unknown}
+                        other {Husband of <strong><a href="{link}">{name}</a></strong> - married in {date}}}}
                 other {
                     { date_status, select,
                         on {Spouse of <strong><a href="{link}">{name}</a></strong> - married on {date}}
                         certain {Spouse of <strong><a href="{link}">{name}</a></strong> - married in {date}}
-                        other {Spouse of <strong><a href="{link}">{name}</a></strong> - married in {date}status?}}}}
+                        empty {Spouse of <strong><a href="{link}">{name}</a></strong> - marriage date unknown}
+                        other {Spouse of <strong><a href="{link}">{name}</a></strong> - married in {date} [status?]}}}}
         location: >-
             { location_status, select,
-                certain { in {location}}
-                uncertain { in {location} uncertain}
-                other {location status?}
+                certain { in {location}.}
+                uncertain {, location {location} uncertain.}
+                empty {, location unknown.}
+                other { {location} status?}
             }
 death:
     sentence: >-
@@ -109,13 +113,20 @@ death:
         display: , aged {age}
         calculation: , age calculation was not performed
     unknown: "{name} passed away{citation}..."
-    details: >-
-        { status, select,
-            in {Died in <strong>{date}</strong> in <strong>{location}</strong>.}
-            decade_only {Died in {date}s.}
-            on_the {Died on the <strong>{date}</strong>, aged <strong>{age}</strong> in <strong>{location}</strong>}
-            other {Death without status in {date} in {location}}
-        }
+    details:
+        date: >-
+            { status, select,
+                in {Died in <strong>{date}</strong>}
+                decade_only {Died in {date}s.}
+                on_the {Died on the <strong>{date}</strong>, aged <strong>{age}</strong>}
+                other {Death without status in {date}}
+            }
+        location: >-
+            { location_status, select,
+                ok { in <strong>{location}</strong>.}
+                empty {.}
+                other {location status not set correctly {location}}
+            }
 WikiTree User name: WikiTree User name
 Usually an email address: Usually an email address
 WikiTree Password: WikiTree Password
@@ -235,7 +246,7 @@ Daily Quota Remaining: >-
         one { You have only one category to change before you reach your daily limit. }
         other { You have # categories to change before you reach your daily limit.}
     }
-"sibling sentence": >-
+sibling sentence: >-
     { sex, select,
         female {{name} is the sister of:}
         male {{name} is the brother of:}
@@ -283,3 +294,10 @@ children:
         }
 last_modified: 'Last Modified {date}.'
 created_on: 'Created {date}.'
+Genealogy Modify Record: 'Genealogy Modify Record'
+Genealogy Modify Category: Genealogy Modify Category
+on Wikitree: on Wikitree
+Individual Profiles: 'Individual Profiles'
+'No individual profiles found for ': 'No individual profiles found for {name}.'
+'Parsing Categories from Wikitree Dump': 'Parsing Categories from Wikitree Dump'
+'Parsing Individuals from Wikitree Dump': 'Parsing Individuals from Wikitree Dump'

@@ -16,6 +16,11 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
 #[ORM\Entity(repositoryClass: IndividualRepository::class)]
 #[ORM\Table(name: 'individual', options: ['collate' => 'utf8mb4_unicode_ci'])]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\Index(columns: ['mother'], name: 'mother')]
+#[ORM\Index(columns: ['father'], name: 'father')]
+#[ORM\UniqueConstraint(name: 'source', columns: ['source_ID'])]
+#[ORM\UniqueConstraint(name: 'userID', columns: ['user_ID'])]
+#[ORM\UniqueConstraint(name: 'userIDDB', columns: ['user_ID_DB'])]
 class Individual
 {
     /**
@@ -65,49 +70,49 @@ class Individual
     /**
      * @var string|null
      */
-    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $prefix;
 
     /**
      * @var string
      */
-    #[ORM\Column(type: 'string', length: 128)]
+    #[ORM\Column(type: 'string', length: 255)]
     private string $first_Name;
 
     /**
      * @var string|null
      */
-    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $preferred_Name;
 
     /**
      * @var string|null
      */
-    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $middle_Name;
 
     /**
      * @var string|null
      */
-    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $nick_Names;
 
     /**
      * @var string|null
      */
-    #[ORM\Column(type: 'string', length: 128)]
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $last_Name_At_Birth;
 
     /**
      * @var string|null
      */
-    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $last_Name_Current;
 
     /**
      * @var string|null
      */
-    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $last_Name_Other;
 
     /**
@@ -147,32 +152,32 @@ class Individual
     /**
      * @var string|null
      */
-    #[ORM\Column(type: 'string', length: 191, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $birth_Location;
 
     /**
      * @var string|null
      */
-    #[ORM\Column(type: 'string', length: 191, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $death_Location;
 
     /**
      * @var string|null
      */
-    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $photo;
 
     /**
      * @var Individual|null
      */
-    #[ORM\OneToOne(targetEntity: Individual::class)]
+    #[ORM\ManyToOne(targetEntity: Individual::class)]
     #[ORM\JoinColumn(name: 'father')]
     private ?Individual $father;
 
     /**
      * @var Individual|null
      */
-    #[ORM\OneToOne(targetEntity: Individual::class)]
+    #[ORM\ManyToOne(targetEntity: Individual::class)]
     #[ORM\JoinColumn(name: 'mother')]
     private ?Individual $mother;
 
@@ -218,7 +223,7 @@ class Individual
     /**
      * @var string|null
      */
-    #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $background;
 
     /**
@@ -251,6 +256,16 @@ class Individual
     private ArrayCollection $marriages;
 
     /**
+     * @var Collection
+     */
+    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'individuals')]
+    #[ORM\JoinTable(name: 'individual_category')]
+    #[ORM\JoinColumn(name: 'category', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'individual', referencedColumnName: 'id')]
+    #[ORM\OrderBy(['name' => 'ASC'])]
+    private Collection $categories;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -258,6 +273,7 @@ class Individual
         $this->managers = new ArrayCollection();
         $this->profiles = new ArrayCollection();
         $this->marriages = new ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
 
     /**
@@ -680,7 +696,7 @@ class Individual
      */
     public function setBirthLocation(?string $birth_Location): Individual
     {
-        $this->birth_Location = empty($birth_Location) ? null : $birth_Location;
+        $this->birth_Location = substr(empty($birth_Location) ? null : $birth_Location, 0, 255);
         return $this;
     }
 
@@ -698,7 +714,7 @@ class Individual
      */
     public function setDeathLocation(?string $death_Location): Individual
     {
-        $this->death_Location = empty($death_Location) ? null : $death_Location;
+        $this->death_Location = substr(empty($death_Location) ? null : $death_Location, 0, 255);
         return $this;
     }
 
@@ -1102,6 +1118,36 @@ class Individual
     public function setMarriages(ArrayCollection $marriages): Individual
     {
         $this->marriages = $marriages;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param Collection $categories
+     * @return Individual
+     */
+    public function setCategories(Collection $categories): Individual
+    {
+        $this->categories = $categories;
+        return $this;
+    }
+
+    /**
+     * @param Category $category
+     * @return $this
+     */
+    public function addCategory(Category $category): Individual
+    {
+        if ($this->getCategories()->contains($category)) return $this;
+        $this->getCategories()->add($category);
+        $category->addIndividual($this);
         return $this;
     }
 }

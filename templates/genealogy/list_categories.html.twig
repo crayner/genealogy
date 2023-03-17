@@ -1,0 +1,10 @@
+{% trans_default_domain 'messages' %}
+{% if manager.individual.categories|length > 0 %}
+    <p>{{ 'Categories'|trans }}:
+    {% for category in manager.individual.categories %}
+        <p><a href="{{ absolute_url(path('genealogy_modify_category', {category: category.name})) }}" target="_blank">{{ category.name }}</a></p>
+        {% if manager.individual.categories|last is not same as(category) %}
+            {{ ' | ' }}
+        {% endif %}
+    {% endfor %}</p>
+{% endif %}

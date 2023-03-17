@@ -7,18 +7,20 @@
 {% endblock stylesheets %}
 {% block body %}
     <h1 style="text-align: center">{{ 'Genealogy Modify Record'|trans }}</h1>
-    <h2>{{ manager.genealogyFullName }}</h2>
-    <p>{{ 'birth.details'|trans(manager.birthDetails)|raw }}</p>
-    {% set age = include('genealogy/age_details.html.twig', {age_details: manager.individual.age, limit: 'year'})|trim %}
-    {% set death_details = manager.deathDetails|merge({age: age}) %}
-    {% set parents = include('genealogy/parent_details.html.twig', {details: manager.parentDetails}) %}
-    <p>{{ parents|raw }}</p>
-    {% include 'genealogy/sibling_list.html.twig' %}
-    {% include 'genealogy/list_marriages.html.twig' %}
-    {% include 'genealogy/list_children.html.twig' %}
-    <p>{{ 'death.details'|trans(death_details)|raw }}</p>
-    <p>{{ 'last_modified'|trans({date: manager.individual.lastTouched|date('d M Y')}) }} | {{ 'created_on'|trans({date: manager.individual.createdOn|date('d M Y')}) }}</p>
-    {{ dump(manager) }}
+    {% if manager.individual is not same as(null) %}
+        <h2>{{ manager.genealogyFullName }}</h2>
+        <p>{{ 'birth.details'|trans(manager.birthDetails)|raw }}</p>
+        {% set age = include('genealogy/age_details.html.twig', {age_details: manager.individual.age, limit: 'year'})|trim %}
+        {% set death_details = manager.deathDetails|merge({age: age}) %}
+        {% set parents = include('genealogy/parent_details.html.twig', {details: manager.parentDetails}) %}
+        <p>{{ parents|raw }}</p>
+        {% include 'genealogy/sibling_list.html.twig' %}
+        {% include 'genealogy/list_marriages.html.twig' %}
+        {% include 'genealogy/list_children.html.twig' %}
+        <p>{{ 'death.details.date'|trans(death_details)|raw }}{{ 'death.details.location'|trans(death_details) }}</p>
+        {% include 'genealogy/list_categories.html.twig' %}
+        <p>{{ 'last_modified'|trans({date: manager.individual.lastTouched|date('d M Y')}) }} | {{ 'created_on'|trans({date: manager.individual.createdOn|date('d M Y')}) }}</p>
+    {% endif %}
 {% endblock body %}
 
 {% block javascripts %}

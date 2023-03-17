@@ -3,7 +3,6 @@
 namespace App\Manager;
 
 use App\Entity\Individual;
-use App\Entity\Marriage;
 use App\Repository\IndividualRepository;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;

@@ -7,7 +7,7 @@
     <script>
         window.onload = function(){
             setTimeout(function(){
-                window.location.href = "{{ path('dump', {'offset': offset}) }}";
+                window.location.href = "{{ path('individual_parse', {'offset': offset}) }}";
             }, 200);
         }
     </script>

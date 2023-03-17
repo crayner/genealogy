@@ -8,11 +8,12 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Class Individual
  * @author  Craig Rayner <craig@craigrayner.com>
- * 30/03/2021 08:58
  * @selectPure App\Entity
  */
 #[ORM\Entity(repositoryClass: MarriageRepository::class)]
 #[ORM\Table(name: 'marriage', options: ['collate' => 'utf8mb4_unicode_ci'])]
+#[ORM\Index(columns: ['wife'], name: 'wife')]
+#[ORM\Index(columns: ['husband'], name: 'husband')]
 class Marriage
 {
     /**
@@ -40,13 +41,13 @@ class Marriage
     /**
      * @var \DateTimeImmutable|null
      */
-    #[ORM\Column(name: 'marriage_date', type: 'datetime_immutable', nullable: true, options: ['comment' => '(DC2Type:datetime_immutable)'])]
+    #[ORM\Column(name: 'marriage_date', type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $marriageDate;
 
     /**
      * @var string|null
      */
-    #[ORM\Column(name: 'marriage_date_status', type: 'enum', nullable: true)]
+    #[ORM\Column(name: 'marriage_date_status', type: 'enum', length: 32, nullable: true)]
     private ?string $marriageDateStatus;
 
     /**
@@ -62,16 +63,16 @@ class Marriage
     /**
      * @var \DateTimeImmutable|null
      */
-    #[ORM\Column(name: 'marriage_end_date', type: 'datetime_immutable', nullable: true, options: ['comment' => '(DC2Type:datetime_immutable)'])]
+    #[ORM\Column(name: 'marriage_end_date', type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $marriageEndDate;
 
     /**
      * @var string|null
      */
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: 'string', nullable: true, length: 191)]
     private ?string $location;
 
-    #[ORM\Column(name: 'location_status', type: 'enum', nullable: true)]
+    #[ORM\Column(name: 'location_status', type: 'enum', length: 32, nullable: true)]
     private ?string $locationStatus;
 
     /**

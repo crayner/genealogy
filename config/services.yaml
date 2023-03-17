@@ -39,9 +39,6 @@ services:
             $profiles: '%profiles%'
         calls:
             - setJoiners: ['%joiners%']
-    App\Manager\CategoryManager:
-        arguments:
-            $loader: '%loader%'
     App\Manager\RemoveCategoryManager:
         arguments:
             $loader: '%loader%'

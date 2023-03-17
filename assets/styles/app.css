@@ -1,3 +1,74 @@
 body {
-    background-color: lightgray;
+    background-color: #f6ffed;
+}
+.body {
+    align-content: center;
+}
+.container {
+    width: 100%;
+}
+.formElement {
+    border: solid 1px black;
+}
+.formLabel {
+    text-align: left;
+}
+.formWidget {
+    width: 45%;
+    float: right;
+}
+.formWidget input, .formWidget textarea, .formWidget select {
+    width: 95%;
+}
+.formWidget select {
+    min-width: 98%;
+    max-width: 98%;
+}
+.formWidget select.multipleChoice {
+    height: 240px;
+    margin-top: 5px;
+}
+.formWidget button {
+    float: right;
+    margin-right: 30px;
+}
+.formLabel {}
+.help-text {
+    font-style: italic;
+}
+.copyData {
+    color: blue;
+}
+.right_half {
+    float: right;
+    max-width: 540px;
+    width: 40%
+}
+.left-half {
+    float:left;
+}
+h1 {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: darkgreen;
+}
+h2 {
+    font-size: 1.75em;
+    font-weight: bold;
+    color: darkgreen;
+}
+h3 {
+    font-size: 1.25em;
+    font-weight: bold;
+    color: darkgreen;
+}
+.centre {
+    text-align: center;
+}
+a {
+    font-size: 1.0em;
+    color: darkgreen;
+}
+a:visited {
+    color: darkgreen;
 }

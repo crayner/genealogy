@@ -76,6 +76,7 @@ class IndividualRepository extends ServiceEntityRepository
     public function findOneByUserID(string $userID): ?Individual
     {
         $individual = $this->findOneBy(['user_ID' => $userID]);
+        if ($individual === null) return null;
         while (!empty($individual->getUserIDDB(true))) {
             $individual = $this->findOneBy(['user_ID' => $individual->getUserIDDB()]);
         }

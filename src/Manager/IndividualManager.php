@@ -12,9 +12,9 @@ use Doctrine\ORM\EntityManagerInterface;
 class IndividualManager extends GenealogySecurityManager
 {
     /**
-     * @var Individual
+     * @var Individual|null
      */
-    var Individual $individual;
+    var ?Individual $individual;
 
     /**
      * @var IndividualRepository
@@ -37,6 +37,11 @@ class IndividualManager extends GenealogySecurityManager
     var Collection $siblings;
 
     /**
+     * @var IndividualNameManager
+     */
+    var IndividualNameManager $nameManager;
+
+    /**
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(EntityManagerInterface $entityManager)
@@ -49,18 +54,18 @@ class IndividualManager extends GenealogySecurityManager
     }
 
     /**
-     * @return Individual
+     * @return Individual|null
      */
-    public function getIndividual(): Individual
+    public function getIndividual(): ?Individual
     {
         return $this->individual;
     }
 
     /**
-     * @param Individual $individual
-     * @return IndividualManager
+     * @param Individual|null $individual
+     * @return $this
      */
-    public function setIndividual(Individual $individual): IndividualManager
+    public function setIndividual(?Individual $individual): IndividualManager
     {
         $this->individual = $individual;
         return $this;
@@ -73,6 +78,7 @@ class IndividualManager extends GenealogySecurityManager
     public function retrieveIndividual(string $individualID): IndividualManager
     {
         $this->individual = $this->getRepository()->findOneByUserID($individualID);
+        if ($this->getIndividual() === null) return $this;
         if (!is_null($this->individual->getFather())) $this->individual->getFather()->getFirstName();
         if (!is_null($this->individual->getMother())) $this->individual->getMother()->getFirstName();
 
@@ -113,44 +119,9 @@ class IndividualManager extends GenealogySecurityManager
      */
     public function getGenealogyFullName(?Individual $individual = null): string
     {
-        $name = '';
         $individual = is_null($individual) ? $this->getIndividual() : $individual;
-        $access = $this->isFamilyTreePublic($individual);
 
-        if ($access) $name .= ' ' . $individual->getPrefix();
-        if ($access) $name .= ' ' . $individual->getFirstName();
-
-        if ($access) {
-            if (!empty($individual->getMiddleName())) $name .= ' ' . $individual->getMiddleName();
-        } else {
-            if (!empty($individual->getMiddleName())) $name .= ' ' . substr($individual->getMiddleName(), 0, 1) . '.';
-        }
-
-        if ($access && $individual->getNickNames() !== null) {
-            $name .= ' "' . $individual->getNickNames() .'"';
-        }
-
-        $name .= ' ' . $individual->getLastNameCurrent();
-
-        if ($access && $individual->getLastNameCurrent() !== $individual->getLastNameAtBirth()) {
-            $name .= ' formerly ' . $individual->getLastNameAtBirth();
-        }
-        if ($access && $individual->getLastNameOther() !== null) {
-            $name .= ' aka ' . $individual->getLastNameOther();
-        }
-
-        if ($access && $individual->getBirthDate() instanceof \DateTimeImmutable) {
-            $name .= ' (' . $individual->getBirthDate()->format('Y');
-        } elseif ($access && !$individual->getBirthDate() instanceof \DateTimeImmutable) {
-            $name .= ' ( ?';
-        }
-        if ($access && $individual->getDeathDate() instanceof \DateTimeImmutable) {
-            $name .= ' - ' . $individual->getDeathDate()->format('Y') . ')';
-        } elseif ($access && !$individual->getDeathDate() instanceof \DateTimeImmutable) {
-            $name .= ' - ? )';
-        }
-        if ($access) $name .= ' ' . $individual->getSuffix();
-        return trim($name);
+        return $this->getNameManager()->getFullNameWithDates($individual);
     }
 
     /**
@@ -240,6 +211,7 @@ class IndividualManager extends GenealogySecurityManager
     {
         $access = $this->isFamilyTreePublic($this->getIndividual());
         $result['status'] = 'in';
+        $result['location_status'] = 'empty';
         $result['date'] = '';
         $result['location'] = '';
 
@@ -250,6 +222,7 @@ class IndividualManager extends GenealogySecurityManager
                 $result['status'] = 'on_the';
             }
             $result['location'] = $this->getIndividual()->getDeathLocation();
+            if (!empty($result['location'])) $result['location_status'] = 'ok';
 
         } else {
             $result['date'] = $this->getIndividual()->parseEventDate($this->getIndividual()->getDeathDate(), true);
@@ -302,6 +275,11 @@ class IndividualManager extends GenealogySecurityManager
 
         return $individual->getMarriages();
     }
+
+    /**
+     * @param Marriage $spouse
+     * @return array
+     */
     public function getMarriageDetails(Marriage $spouse): array
     {
         $result = [];
@@ -309,13 +287,35 @@ class IndividualManager extends GenealogySecurityManager
         $result['date'] = $this->getIndividual()->parseEventDate($spouse->getMarriageDate());
         if (strlen($result['date']) > 8) {
             $result['date'] = $spouse->getMarriageDate()->format('l, jS F Y');
-            $result['date_status'] = $result['date_status'] === 'certain' ? 'on' : $result['date_status'];
+            $result['date_status'] = ($result['date_status'] === 'certain' || $result['date_status'] === null) ? 'on' : $result['date_status'];
+        } elseif (empty($result['date'])) {
+            $result['date_status'] = 'empty';
         }
         $result['name'] = $this->getIndividual() === $spouse->getHusband() ? $this->getGenealogyFullName($spouse->getWife()) : $this->getGenealogyFullName($spouse->getHusband());
         $result['location'] = $spouse->getLocation();
         $result['location_status'] = $spouse->getLocationStatus();
         $result['gender'] = $this->getIndividual()->getGender();
         $result['spouse_id'] = $this->getIndividual() === $spouse->getHusband() ? $spouse->getWife()->getUserID() : $spouse->getHusband()->getUserID();
+        if ($result['date_status'] === null) {
+            //do stuff
+        }
+        if ($result['location_status'] === null) {
+            if (empty($result['location']))
+            {
+                $result['location_status'] = 'empty';
+            } else {
+                $result['location_status'] = 'certain';
+            }
+        }
+
         return $result;
+    }
+
+    /**
+     * @return IndividualNameManager
+     */
+    public function getNameManager(): IndividualNameManager
+    {
+        return $this->nameManager = $this->nameManager ?? new IndividualNameManager();
     }
 }

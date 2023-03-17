@@ -32,7 +32,7 @@ class ParseParent
     /**
      * @var string
      */
-    #[ORM\Column(type: 'enum')]
+    #[ORM\Column(type: 'enum', length: 32)]
     private string $relationship;
 
     /**
