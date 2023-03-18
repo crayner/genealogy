@@ -99,10 +99,10 @@ class Category
     var ?DescriptionPage $descriptionPage;
 
     /**
-     * @var ArrayCollection|null
+     * @var array|ArrayCollection
      */
-    #[ORM\Column(name: 'webpages', type: 'json', nullable: true, options: ['collate' => 'utf8mb4_unicode_ci'])]
-    var ?ArrayCollection $webpages;
+    #[ORM\Column(name: 'webpages', type: 'json', options: ['collate' => 'utf8mb4_unicode_ci'])]
+    var ArrayCollection|array $webpages;
     public function __construct()
     {
         $this->individuals = new ArrayCollection();
@@ -140,11 +140,12 @@ class Category
     }
 
     /**
-     * @param Individual $individual
+     * @param Individual|null $individual
      * @return $this
      */
-    public function addIndividual(Individual $individual): Category
+    public function addIndividual(?Individual $individual): Category
     {
+        if (is_null($individual)) return $this;
         if ($this->getIndividuals()->contains($individual)) return $this;
         $this->getIndividuals()->add($individual);
         $individual->addCategory($this);
@@ -316,20 +317,22 @@ class Category
     }
 
     /**
-     * @return ArrayCollection
+     * @param bool $array
+     * @return ArrayCollection|array
      */
-    public function getWebpages(): ArrayCollection
+    public function getWebpages(bool $array = true): ArrayCollection|array
     {
+        if ($array) $this->webpages->toArray();
         return $this->webpages;
     }
 
     /**
-     * @param ArrayCollection $webpages
+     * @param ArrayCollection|array $webpages
      * @return Category
      */
-    public function setWebpages(ArrayCollection $webpages): Category
+    public function setWebpages(ArrayCollection|array $webpages): Category
     {
-        $this->webpages = $webpages;
+        $this->webpages = is_array($webpages) ? new ArrayCollection($webpages) :$webpages;
         return $this;
     }
 }

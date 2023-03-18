@@ -5,7 +5,7 @@ body {
     align-content: center;
 }
 .container {
-    width: 100%;
+    flex: 9;
 }
 .formElement {
     border: solid 1px black;
@@ -62,6 +62,11 @@ h3 {
     font-weight: bold;
     color: darkgreen;
 }
+h4 {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: darkgreen;
+}
 .centre {
     text-align: center;
 }
@@ -71,4 +76,22 @@ a {
 }
 a:visited {
     color: darkgreen;
+}
+.flexbox-container {
+    display: flex;
+}
+.main {
+    flex:6;
+    padding: 0 2px;
+    border: 1px solid darkgreen;
+}
+.sidebar {
+    flex:3;
+    padding: 0 2px;
+    margin-left: -1px;
+    border: 1px solid darkgreen;
+}
+.border {
+    background-color: white;
+    flex: 1;
 }

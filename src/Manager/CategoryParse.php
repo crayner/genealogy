@@ -105,7 +105,6 @@ class CategoryParse
     private function createCategory(array $line, array $lines, string $name): ?Category
     {
         $individual = $this->getIndividualRepository()->findOneBySourceID($line[0]);
-        if (is_null($individual)) return null;
 
         $category = $this->getCategoryRepository()->findOneByName($name);
         if (str_contains($name, 'Cemetery')) {

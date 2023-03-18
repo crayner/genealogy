@@ -1,0 +1,66 @@
+{% trans_default_domain 'messages' %}
+
+{% extends "base.html.twig" %}
+{% block title %}{{  'Genealogy Modify Category'|trans }}{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock stylesheets %}
+{% block body %}
+<div class="flexbox-container">
+    <div class="border"></div>
+    <div class="container">
+        <h1 class="centre">{{ 'Category'|trans }}</h1>
+        {% if manager.category is not same as(null) %}
+            <h2 class="centre">{{ manager.category.name }}</h2>
+        {% endif %}
+    </div>
+    <div class="border"></div>
+</div>
+<div class="flexbox-container" style="clear: both">
+    <div class="border"></div>
+    <div class="main">
+        {% if manager.category is not same as(null) %}
+        {% if manager.category.parents|length > 0 %}
+            <p>{{ 'Categories'|trans }}
+                {% for category in manager.category.parents %}
+                    <a href="{{ path('genealogy_modify_category', {category: category.name}) }}" target="_blank">{{ category.name }}</a>
+                    {% if loop.index < manager.category.parents|length %}{{ ' | ' }}{% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+        <h3>{{ 'Individual Profiles'|trans }}</h3>
+        {% if manager.category.individuals|length < 1 %}
+            <p>{{ 'No individual profiles found for '|trans({name: manager.category.name}) }}</p>
+        {% else %}
+            {% set count = (manager.category.individuals|length / 3)|force_to_int + 1 %}
+            <div style="width: 100%; clear: both;">
+                <div style="width: 33%; float: left;">
+                    {% for individual in manager.category.individuals %}
+                    <p style="width: 95%;"><strong><a href="{{ path('genealogy_modify_record', {individual: individual.userID}) }}" target="_blank">{{ manager.nameManager.shortName(individual) }}</a></strong>
+                        {% if manager.nameManager.shortEventDate(individual, 'birth') is not same as('') %}
+                            {{ ' ' }}{{ manager.nameManager.shortEventDate(individual, 'birth') }}
+                        {% endif %}
+                        {% if individual.birthLocation is not same as('') %}
+                            {{ ' ' }}{{ individual.birthLocation }}
+                        {% endif %}
+                        {% if manager.nameManager.shortEventDate(individual, 'death') is not same as('') %}
+                            {{ ' - ' }}{{ manager.nameManager.shortEventDate(individual, 'death') }}
+                        {% endif %}
+                    </p>
+                    {% if loop.index is divisible by(count) and loop.index is not same as(manager.category.individuals|length)  %}</div><div style="width: 33%; float: left;">{% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        {% endif %}
+        <p style="clear: both"><a href="https://www.wikitree.com/wiki/Category:{{ app.request.get('category')|replace({" ": "_", ",": "\%2C"}) }}" target="_blank">{{ app.request.get('category') }} {{ 'on Wikitree'|trans }}</a></p>
+    </div>
+    <div class="sidebar"><h4 class="centre">Sidebar</h4></div>
+    <div class="border"></div>
+</div>
+    {{ dump() }}
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

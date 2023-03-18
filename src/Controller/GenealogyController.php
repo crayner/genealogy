@@ -125,6 +125,6 @@ class GenealogyController extends AbstractController
     public function modifyCategory(CategoryManager $manager): Response
     {
         $manager->retrieveCategory($_GET['category']);
-        return $this->render('genealogy/modify_category.html.twig', ['manager' => $manager]);
+        return $this->render('genealogy/category.html.twig', ['manager' => $manager]);
     }
 }
