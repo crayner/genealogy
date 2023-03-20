@@ -40,13 +40,13 @@ class Individual
     /**
      * @var string
      */
-    #[ORM\Column(type: 'string', length: 64, unique: true)]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     private string $user_ID;
 
     /**
      * @var string|null
      */
-    #[ORM\Column(type: 'string', length: 64, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $user_ID_DB;
 
     /**
