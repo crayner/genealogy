@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use App\Repository\CategoryRepository;
@@ -12,8 +11,13 @@ use Doctrine\ORM\PersistentCollection;
 #[ORM\Table(name: 'category', options: ['collate' => 'utf8mb4_unicode_ci'])]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'discriminator', type: 'string', length: 32)]
-#[ORM\DiscriminatorMap(['cemetery' => Cemetery::class, 'theme' => Theme::class, 'location' => Location::class, 'category' => Category::class])]
-#[ORM\Index(columns: ['location'], name: 'location', options: ['nullable'])]
+#[ORM\DiscriminatorMap([
+    'category' => Category::class,
+    'cemetery' => Cemetery::class,
+    'collection' => \App\Entity\Collection::class,
+    'location' => Location::class,
+    'migrant' => Migrant::class,
+    'theme' => Theme::class])]
 #[ORM\UniqueConstraint(name: 'name', columns: ['name'])]
 class Category
 {

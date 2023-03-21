@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
+use App\Form\LocationType;
+use App\Form\ParentCategoryType;
 use App\Manager\CategoryManager;
 use App\Manager\CategoryParse;
 use App\Manager\DumpPeopleMarriage;
@@ -110,21 +113,29 @@ class GenealogyController extends AbstractController
      * @param IndividualManager $manager
      * @return Response
      */
-    #[Route('/genealogy/modify/record', name: 'genealogy_modify_record')]
+    #[Route('/genealogy/record/modify', name: 'genealogy_record_modify')]
     public function modifyRecord(IndividualManager $manager): Response
     {
         $manager->retrieveIndividual($_GET['individual']);
-        return $this->render('genealogy/modify_record.html.twig', ['manager' => $manager]);
+        return $this->render('genealogy/individual.html.twig', ['manager' => $manager]);
     }
 
     /**
      * @param CategoryManager $manager
      * @return Response
      */
-    #[Route('/genealogy/modify/category', name: 'genealogy_modify_category')]
-    public function modifyCategory(CategoryManager $manager): Response
+    #[Route('/genealogy/category/modify', name: 'genealogy_category_modify')]
+    public function categoryModify(CategoryManager $manager): Response
     {
-        $manager->retrieveCategory($_GET['category']);
-        return $this->render('genealogy/category.html.twig', ['manager' => $manager]);
+        if (!$manager->getCategory() instanceof Category) $manager->retrieveCategory($_GET['category']);
+
+        $location = $this->createForm(LocationType::class, ['id' => $manager->getCategory()->getId(), 'field' => $manager->getCategory()->getLocation()], ['method' => 'POST', 'action' => $this->generateUrl('category_form_location')]);
+        $parents = $this->createForm(ParentCategoryType::class, ['id' => $manager->getCategory()->getId(), 'field' => $manager->getCategory()->getParents()], ['method' => 'POST', 'action' => $this->generateUrl('category_form_parents')]);
+
+        return $this->render('genealogy/category.html.twig', [
+            'manager' => $manager,
+            'location_form' => $location->createView(),
+            'parents_form' => $parents->createView(),
+        ]);
     }
 }

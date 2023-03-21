@@ -2,3 +2,4 @@ twig:
     default_path: '%kernel.project_dir%/templates'
     globals:
         max_daily_count: "%max_daily_count%"
+    form_themes: ['genealogy/form/form_flex_layout.html.twig']

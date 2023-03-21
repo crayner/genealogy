@@ -1,0 +1,10 @@
+{% trans_default_domain 'messages' %}
+
+            {{ encore_entry_link_tags('app') }}
+
+    <div class="sidebar-form" id="{{ identifier }}">
+        {{ form_start(form) }}
+        {{ form_row(form.field)}}
+        {{ form_row(form.doit)}}
+        {{ form_end(form) }}
+    </div>

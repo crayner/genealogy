@@ -60,25 +60,25 @@ marriage:
                     { date_status, select,
                         on {Wife of <strong><a href="{link}">{name}</a></strong> - married on {date}}
                         certain {Wife of <strong><a href="{link}">{name}</a></strong> - married in {date}}
-                        empty {Wife of <strong><a href="{link}">{name}</a></strong> - marriage date unknown}
+                        empty {Wife of <strong><a href="{link}">{name}</a></strong> }
                         other {Wife of <strong><a href="{link}">{name}</a></strong> - married in {date}status?}}}
                 Male {
                     { date_status, select,
                         on {Husband of <strong><a href="{link}">{name}</a></strong> - married on {date}}
                         certain {Husband of <strong><a href="{link}">{name}</a></strong> - married in {date}}
-                        empty {Husband of <strong><a href="{link}">{name}</a></strong> - marriage date unknown}
+                        empty {Husband of <strong><a href="{link}">{name}</a></strong> }
                         other {Husband of <strong><a href="{link}">{name}</a></strong> - married in {date}}}}
                 other {
                     { date_status, select,
                         on {Spouse of <strong><a href="{link}">{name}</a></strong> - married on {date}}
                         certain {Spouse of <strong><a href="{link}">{name}</a></strong> - married in {date}}
-                        empty {Spouse of <strong><a href="{link}">{name}</a></strong> - marriage date unknown}
+                        empty {Spouse of <strong><a href="{link}">{name}</a></strong> }
                         other {Spouse of <strong><a href="{link}">{name}</a></strong> - married in {date} [status?]}}}}
         location: >-
             { location_status, select,
                 certain { in {location}.}
                 uncertain {, location {location} uncertain.}
-                empty {, location unknown.}
+                empty {.}
                 other { {location} status?}
             }
 death:
@@ -301,3 +301,10 @@ Individual Profiles: 'Individual Profiles'
 'No individual profiles found for ': 'No individual profiles found for {name}.'
 'Parsing Categories from Wikitree Dump': 'Parsing Categories from Wikitree Dump'
 'Parsing Individuals from Wikitree Dump': 'Parsing Individuals from Wikitree Dump'
+'Location': Location
+'This item requires a location': 'This item requires a location'
+'Save Location': 'Save Location'
+'Save Parent Categories': 'Save Parent Categories'
+'Parent Categories': 'Parent Categories'
+'Add one or more parent category.': 'Add one or more parent category.'
+'Categories': 'Categories'

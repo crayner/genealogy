@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CemeteryRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class Cemetery extends Location
+class Cemetery extends Category
 {
     /**
      * @var Location|null
@@ -37,14 +37,22 @@ class Cemetery extends Location
     public function getLocation(): ?Location
     {
         $this->location = $this->location ?? null;
+        if (is_null($this->location)) {
+            foreach ($this->getParents() as $category) {
+                if ($category instanceof Location) {
+                    $this->setLocation($category);
+                    break;
+                }
+            }
+        }
         return $this->location;
     }
 
     /**
-     * @param ?Location $location
-     * @return ?Location
+     * @param Location|null $location
+     * @return Cemetery|null
      */
-    public function setLocation(?Location $location): ?Location
+    public function setLocation(?Location $location): ?Cemetery
     {
         $this->location = $location;
         return $this;

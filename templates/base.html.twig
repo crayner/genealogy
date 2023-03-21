@@ -1,3 +1,4 @@
+{% trans_default_domain 'messages' %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -14,15 +15,29 @@
         {% endblock %}
     </head>
     <body>
-        <div class="body">
-            <div class="container">
-                {% block body %}
-                    This is it
-                    {%  dump(stuff) %}
-                {% endblock %}
+    {% block body %}
+        <div class="flexbox-container">
+            <div class="border"></div>
+            <div class="header">
+                {% block header %}
+                    <h1>Genealogy Base Template (Header)</h1>
+                {% endblock header %}
             </div>
+            <div class="border"></div>
         </div>
-        {% block javascripts %}
+        <div class="flexbox-container">
+            <div class="border"></div>
+            <div class="main">
+            {% block main %}
+                <h3>Genealogy Base Template (Main)</h3>
+            {% endblock main %}
+            </div>
+            <div class="sidebar">{% block sidebar %}<h4 class="centre">Genealogy Base Template (Sidebar)</h4>{% endblock sidebar %}</div>
+            <div class="border"></div>
+        </div>
+
+    {% endblock body %}
+    {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
             <script src="{{ asset('multiselect-master/multiselect.min.js') }}"></script>
         {% endblock %}

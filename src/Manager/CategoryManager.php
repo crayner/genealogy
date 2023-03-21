@@ -3,8 +3,12 @@
 namespace App\Manager;
 
 use App\Entity\Category;
+use App\Entity\Location;
 use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class CategoryManager
 {
@@ -26,12 +30,18 @@ class CategoryManager
     var IndividualNameManager $nameManager;
 
     /**
+     * @var SessionInterface
+     */
+    var SessionInterface $session;
+
+    /**
      * @param EntityManagerInterface $entityManager
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, RequestStack $stack)
     {
         $this->entityManager = $entityManager;
         $this->categoryRepository = $this->entityManager->getRepository(Category::class);
+        $this->session = $stack->getSession();
     }
 
     /**
@@ -39,7 +49,7 @@ class CategoryManager
      */
     public function getCategory(): ?Category
     {
-        return $this->category;
+        return $this->category = $this->category ?? null;
     }
 
     /**
@@ -59,6 +69,16 @@ class CategoryManager
     public function retrieveCategory(?string $categoryName): ?Category
     {
         $this->setCategory($this->getCategoryRepository()->findOneBy(['name' => $categoryName]));
+        return $this->getCategory();
+    }
+
+    /**
+     * @param string|null $categoryName
+     * @return Category|null
+     */
+    public function retrieveCategoryByID(?string $categoryName): ?Category
+    {
+        $this->setCategory($this->getCategoryRepository()->find($categoryName));
         return $this->getCategory();
     }
 
@@ -84,5 +104,39 @@ class CategoryManager
     public function getNameManager(): IndividualNameManager
     {
         return $this->nameManager = $this->nameManager ?? new IndividualNameManager();
+    }
+
+    /**
+     * @param Location $location
+     * @param Category $category
+     * @return void
+     */
+    public function saveLocation(Location $location, Category $category)
+    {
+        $category->addParent($location);
+        $this->getEntityManager()->persist($category);
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @param Collection $parents
+     * @param Category $category
+     * @return void
+     */
+    public function saveParents(Collection $parents, Category $category)
+    {
+        foreach ($parents as $parent) {
+            $category->addParent($parent);
+            $this->getEntityManager()->persist($category);
+        }
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @return SessionInterface
+     */
+    protected function getSession(): SessionInterface
+    {
+        return $this->session;
     }
 }

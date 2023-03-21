@@ -26,16 +26,6 @@ class Location extends Category
     var ?\DateTimeImmutable $endDate;
 
     /**
-     * {{CategoryInfoBox Location
-    |webpage=
-    |webpagetext=
-    |webpage1=
-    |webpagetext1=
-    |searchwebpage=
-    }}
-     */
-
-    /**
      * @return string|null
      */
     public function getCoordinates(): ?string
