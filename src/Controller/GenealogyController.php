@@ -124,13 +124,13 @@ class GenealogyController extends AbstractController
      * @param CategoryManager $manager
      * @return Response
      */
-    #[Route('/genealogy/category/modify', name: 'genealogy_category_modify')]
-    public function categoryModify(CategoryManager $manager): Response
+    #[Route('/genealogy/category/{category}/modify', name: 'genealogy_category_modify')]
+    public function categoryModify(?Category $category, CategoryManager $manager): Response
     {
-        if (!$manager->getCategory() instanceof Category) $manager->retrieveCategory($_GET['category']);
+        if (!$manager->getCategory() instanceof Category) $manager->setCategory($category);
 
-        $location = $this->createForm(LocationType::class, ['id' => $manager->getCategory()->getId(), 'field' => $manager->getCategory()->getLocation()], ['method' => 'POST', 'action' => $this->generateUrl('category_form_location')]);
-        $parents = $this->createForm(ParentCategoryType::class, ['id' => $manager->getCategory()->getId(), 'field' => $manager->getCategory()->getParents()], ['method' => 'POST', 'action' => $this->generateUrl('category_form_parents')]);
+        $location = $this->createForm(LocationType::class, ['id' => $manager->getCategory()->getId(), 'location' => $manager->getCategory()->getLocation()], ['method' => 'POST', 'action' => $this->generateUrl('category_form_location')]);
+        $parents = $this->createForm(ParentCategoryType::class, ['id' => $manager->getCategory()->getId()], ['method' => 'POST', 'action' => $this->generateUrl('category_form_parent_add')]);
 
         return $this->render('genealogy/category.html.twig', [
             'manager' => $manager,

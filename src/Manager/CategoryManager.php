@@ -119,17 +119,16 @@ class CategoryManager
     }
 
     /**
-     * @param Collection $parents
-     * @param Category $category
-     * @return void
+     * @param Category|null $category
+     * @return CategoryManager
      */
-    public function saveParents(Collection $parents, Category $category)
+    public function saveCategory(?Category $category = null): CategoryManager
     {
-        foreach ($parents as $parent) {
-            $category->addParent($parent);
-            $this->getEntityManager()->persist($category);
-        }
+        if (is_null($category)) $this->category = $this->getCategory();
+        if (is_null($category)) return $this;
+        $this->getEntityManager()->persist($category);
         $this->getEntityManager()->flush();
+        return $this;
     }
 
     /**

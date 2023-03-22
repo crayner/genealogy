@@ -47,6 +47,7 @@ Encore
 
     .configureBabel((config) => {
         config.plugins.push('@babel/plugin-proposal-class-properties');
+        config.plugins.push('macros');
     })
 
     // enables @babel/preset-env polyfills

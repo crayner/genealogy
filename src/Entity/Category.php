@@ -205,6 +205,17 @@ class Category
     }
 
     /**
+     * @param Category $category
+     * @return $this
+     */
+    public function removeParent(Category $category): Category
+    {
+        if (!$this->getParents()->contains($category)) return $this;
+        $this->getParents()->removeElement($category);
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getProject(): ?string

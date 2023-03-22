@@ -1,0 +1,16 @@
+{% trans_default_domain 'messages' %}
+
+{% extends 'genealogy/form/default_field_form.html.twig' %}
+
+{% block field %}
+    {% dump(manager) %}
+    {% if manager.category.parents|length > 0 %}
+        <label class="form_label">{{ 'Existing Categories'|trans({count: manager.category.parents|length}) }}</label>
+        <ul class="remove_list">
+        {% for category in manager.category.parents %}
+            <li>{{ category.name }} <span {{ react_component('remove_parent_category', {path: path('category_form_parent_remove', {parent: category.id, category: manager.category.id}), title: 'Remove this category'|trans}) }}></span></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {{ parent() }}
+{% endblock field %}

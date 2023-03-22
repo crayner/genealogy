@@ -305,6 +305,13 @@ Individual Profiles: 'Individual Profiles'
 'This item requires a location': 'This item requires a location'
 'Save Location': 'Save Location'
 'Save Parent Categories': 'Save Parent Categories'
-'Parent Categories': 'Parent Categories'
-'Add one or more parent category.': 'Add one or more parent category.'
+'Parent Category': 'Parent Category'
+'Add a parent category.': 'Add a parent category.'
 'Categories': 'Categories'
+'Existing Categories': >-
+    { count, plural,
+        one {Existing Category}
+        other {Existing Categories}
+    }
+'Remove this category': Remove this category
+'Modify parent categories': Modify parent categories

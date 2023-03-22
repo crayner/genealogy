@@ -31,4 +31,23 @@ class CategoryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Category::class);
     }
+
+    /**
+     * @param $id
+     * @param $lockMode
+     * @param $lockVersion
+     * @return Category|null
+     */
+    public function find($id, $lockMode = null, $lockVersion = null): ?Category
+    {
+        $name = $id;
+        $id = intval($name);
+        $result = $this->createQueryBuilder('c')
+            ->where('c.id = :id OR c.name = :name')
+            ->setParameter('id', $id)
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getResult();
+        return $result[0] ?? null;
+    }
 }

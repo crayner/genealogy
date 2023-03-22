@@ -19,7 +19,7 @@ class LocationType extends CategoryType
         $options['doit'] = 'Save Location';
         parent::buildForm($builder, $options);
         $builder
-            ->add('field', EntityType::class,
+            ->add('location', EntityType::class,
                 [
                     'choice_label' => 'name',
                     'class' => Location::class,

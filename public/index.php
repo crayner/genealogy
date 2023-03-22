@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
-$_SERVER['APP_DEBUG'] = ($_SERVER['APP_ENV'] && $_SERVER['APP_ENV'] === 'dev') || $_SERVER['APP_DEBUG'];
+$_SERVER['APP_DEBUG'] = ($_SERVER['APP_ENV'] && $_SERVER['APP_ENV'] === 'dev') || $_SERVER['APP_DEBUG'] ?? false;
 
 if (key_exists('APP_DEBUG', $_SERVER) && $_SERVER['APP_DEBUG']) {
     umask(0000);

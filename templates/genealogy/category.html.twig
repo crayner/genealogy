@@ -19,7 +19,7 @@
                             <a href="{{ path('genealogy_category_modify', {category: category.name}) }}" target="_blank">{{ category.name }}</a>
                             {% if loop.index < manager.category.parents|length %}{{ ' | ' }}{% endif %}
                         {% endfor %}
-                    </p>
+                        <span {{ react_component('edit_parent_categories', {id: 'edit_parent_categories', title: 'Modify parent categories'|trans}) }}></span></p>
                 {% endif %}
                 </div>
                 <div class="main-container">
@@ -49,13 +49,11 @@
                     </div>
                 {% endif %}
             {% endif %}
-        </div>{% dump %}
+        </div>
     {% endblock main %}
 {% block sidebar %}
-    {% include 'genealogy/form/default_field_form.html.twig' with {identifier: location_form.vars.id ~ '_form', form: location_form} %}
-    <hr />
-    {% include 'genealogy/form/default_field_form.html.twig' with {identifier: parents_form.vars.id ~ '_form', form: parents_form} %}
-    <hr />
+    {% include 'genealogy/form/default_field_form.html.twig' with {identifier: location_form.vars.id ~ '_form', form: location_form, field: location_form.location} %}
+    {% include 'genealogy/form/parent_category_manage.html.twig' with {identifier: parents_form.vars.id ~ '_form', form: parents_form, field: parents_form.parent} %}
     <p style="clear: both"><a href="https://www.wikitree.com/wiki/Category:{{ app.request.get('category')|replace({" ": "_", ",": "\%2C"}) }}" target="_blank">{{ app.request.get('category') }} {{ 'on Wikitree'|trans }}</a></p>
 {% endblock sidebar %}
 {% block javascripts %}

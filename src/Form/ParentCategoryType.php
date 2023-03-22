@@ -20,7 +20,7 @@ class ParentCategoryType extends CategoryType
         $options['doit'] = 'Save Parent Categories';
         parent::buildForm($builder, $options);
         $builder
-            ->add('field', EntityType::class,
+            ->add('parent', EntityType::class,
                 [
                     'choice_label' => 'name',
                     'class' => Category::class,
@@ -32,9 +32,8 @@ class ParentCategoryType extends CategoryType
                     },
                     'choice_value' => 'id',
                     'placeholder' => '',
-                    'multiple' => true,
-                    'label' => 'Parent Categories',
-                    'help' => 'Add one or more parent category.',
+                    'label' => 'Parent Category',
+                    'help' => 'Add a parent category.',
                     'required' => false,
                 ]
             )

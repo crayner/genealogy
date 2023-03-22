@@ -1,13 +1,19 @@
 {
     "devDependencies": {
         "@babel/preset-react": "^7.0.0",
+        "@hotwired/stimulus": "^3.0.0",
         "@symfony/stimulus-bridge": "^2.0.0",
+        "@symfony/ux-react": "file:vendor/symfony/ux-react/assets",
         "@symfony/webpack-encore": "^1.0.0",
         "core-js": "^3.0.0",
+        "eslint-plugin-react": "^7.32.2",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
         "regenerator-runtime": "^0.13.2",
         "stimulus": "^2.0.0",
         "webpack-notifier": "^1.6.0"
     },
+    "start": "react-scripts --openssl-legacy-provider start",
     "license": "UNLICENSED",
     "private": true,
     "scripts": {
@@ -15,5 +21,18 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
+    },
+    "dependencies": {
+        "@fortawesome/fontawesome-svg-core": "^6.3.0",
+        "@fortawesome/free-brands-svg-icons": "^6.3.0",
+        "@fortawesome/free-regular-svg-icons": "^6.3.0",
+        "@fortawesome/free-solid-svg-icons": "^6.3.0",
+        "@fortawesome/react-fontawesome": "^0.2.0",
+        "babel-plugin-macros": "^3.1.0",
+        "babel-preset-react": "^6.24.1",
+        "nth-check": "2.1.1",
+        "prop-types": "^15.8.1",
+        "react-fontawesome": "^1.7.1",
+        "react-select": "^5.7.1"
     }
 }

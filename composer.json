@@ -35,6 +35,7 @@
         "symfony/translation": "6.2.*",
         "symfony/twig-bundle": "^6.0",
         "symfony/uid": "6.2.*",
+        "symfony/ux-react": "^2.7",
         "symfony/validator": "6.2.*",
         "symfony/webpack-encore-bundle": "^1.16",
         "symfony/yaml": "^6.0",
