@@ -82,4 +82,24 @@ class IndividualRepository extends ServiceEntityRepository
         }
         return $individual;
     }
+
+    /**
+     * @param $id
+     * @param $lockMode
+     * @param $lockVersion
+     * @return Individual|null
+     */
+    public function find($id, $lockMode = null, $lockVersion = null): ?Individual
+    {
+        $name = $id;
+        $id = intval($name);
+        $result = $this->createQueryBuilder('i')
+            ->where('i.id = :id OR i.user_ID = :name')
+            ->setParameter('id', $id)
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getResult();
+        return $result[0] ?? null;
+    }
+
 }

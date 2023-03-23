@@ -1,0 +1,8 @@
+{% trans_default_domain 'messages' %}
+
+{% extends 'genealogy/form/default_field_form.html.twig' %}
+
+{% block field %}
+    <div {{ react_component('category_location', {form: form.location}) }}></div>
+    {% do form.location.setRendered() %}
+{% endblock field %}

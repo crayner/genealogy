@@ -25,17 +25,18 @@
             </div>
             <div class="border"></div>
         </div>
+        {% block content %}
         <div class="flexbox-container">
             <div class="border"></div>
-            <div class="main">
-            {% block main %}
-                <h3>Genealogy Base Template (Main)</h3>
-            {% endblock main %}
-            </div>
-            <div class="sidebar">{% block sidebar %}<h4 class="centre">Genealogy Base Template (Sidebar)</h4>{% endblock sidebar %}</div>
+                <div class="main">
+                {% block main %}
+                    <h3>Genealogy Base Template (Main)</h3>
+                {% endblock main %}
+                </div>
+                <div class="sidebar">{% block sidebar %}<h4 class="centre">Genealogy Base Template (Sidebar)</h4>{% endblock sidebar %}</div>
             <div class="border"></div>
         </div>
-
+        {% endblock content %}
     {% endblock body %}
     {% block javascripts %}
             {{ encore_entry_script_tags('app') }}

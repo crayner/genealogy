@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\Individual;
 use App\Form\LocationType;
 use App\Form\ParentCategoryType;
 use App\Manager\CategoryManager;
@@ -111,12 +112,17 @@ class GenealogyController extends AbstractController
 
     /**
      * @param IndividualManager $manager
+     * @param Individual|null $individual
      * @return Response
      */
-    #[Route('/genealogy/record/modify', name: 'genealogy_record_modify')]
-    public function modifyRecord(IndividualManager $manager): Response
+    #[Route('/genealogy/record/{individual}/modify', name: 'genealogy_record_modify')]
+    public function modifyRecord(IndividualManager $manager, Individual $individual): Response
     {
-        $manager->retrieveIndividual($_GET['individual']);
+        if ($individual instanceof Individual) {
+            $manager->setIndividual($individual);
+        } else {
+            $manager->retrieveIndividual($_GET['individual']);
+        }
         return $this->render('genealogy/individual.html.twig', ['manager' => $manager]);
     }
 

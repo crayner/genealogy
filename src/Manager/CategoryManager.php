@@ -5,10 +5,11 @@ namespace App\Manager;
 use App\Entity\Category;
 use App\Entity\Location;
 use App\Repository\CategoryRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Serializer\SerializerAwareInterface;
 
 class CategoryManager
 {
@@ -35,13 +36,21 @@ class CategoryManager
     var SessionInterface $session;
 
     /**
-     * @param EntityManagerInterface $entityManager
+     * @var RouterInterface
      */
-    public function __construct(EntityManagerInterface $entityManager, RequestStack $stack)
+    var RouterInterface $router;
+
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param RequestStack $stack
+     * @param SerializerAwareInterface $serialiser
+     */
+    public function __construct(EntityManagerInterface $entityManager, RequestStack $stack, RouterInterface $router)
     {
         $this->entityManager = $entityManager;
         $this->categoryRepository = $this->entityManager->getRepository(Category::class);
         $this->session = $stack->getSession();
+        $this->router = $router;
     }
 
     /**
@@ -137,5 +146,33 @@ class CategoryManager
     protected function getSession(): SessionInterface
     {
         return $this->session;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategoryProps(): array
+    {
+        $result = [
+            'id' => $this->getCategory()->getId(),
+            'name' => $this->getCategory()->getName(),
+        ];
+        foreach ($this->getCategory()->getIndividuals() as $q=>$individual) {
+            $result['individuals'][] = $individual->toArray();
+            $result['individuals'][$q]['path'] = $this->getRouter()->generate('genealogy_record_modify', ['individual' => $individual->getUserID()]);
+        }
+        foreach ($this->getCategory()->getParents() as $q=>$parent) {
+            $result['parents'][$q] = $parent->toArray();
+            $result['parents'][$q]['path'] = $this->getRouter()->generate('genealogy_category_modify', ['category' => $parent->getId()]);
+        }
+        return $result;
+    }
+
+    /**
+     * @return RouterInterface
+     */
+    protected function getRouter(): RouterInterface
+    {
+        return $this->router;
     }
 }

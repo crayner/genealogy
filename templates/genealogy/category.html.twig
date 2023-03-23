@@ -51,11 +51,25 @@
             {% endif %}
         </div>
     {% endblock main %}
+    {% block content %}
+        <div id="category-content"></div>
+    {% endblock content %}
 {% block sidebar %}
-    {% include 'genealogy/form/default_field_form.html.twig' with {identifier: location_form.vars.id ~ '_form', form: location_form, field: location_form.location} %}
+    {% include 'genealogy/form/category_location.html.twig' with {identifier: location_form.vars.id ~ '_form', form: location_form, field: location_form.location} %}
     {% include 'genealogy/form/parent_category_manage.html.twig' with {identifier: parents_form.vars.id ~ '_form', form: parents_form, field: parents_form.parent} %}
     <p style="clear: both"><a href="https://www.wikitree.com/wiki/Category:{{ app.request.get('category')|replace({" ": "_", ",": "\%2C"}) }}" target="_blank">{{ app.request.get('category') }} {{ 'on Wikitree'|trans }}</a></p>
 {% endblock sidebar %}
 {% block javascripts %}
+    {% set translations = {} %}
+    {% set translations = translations|merge({Category: 'Category'|trans}) %}
+    {% set translations = translations|merge({Categories: 'Categories'|trans}) %}
+    {% set translations = translations|merge({'IndividualProfiles': 'Individual Profiles'|trans}) %}
+    <script>
+        window.CATEGORY_PROPS = [];
+        window.CATEGORY_PROPS.category = {{ manager.categoryProps|json_encode|raw }};
+        window.CATEGORY_PROPS.translations = {{ translations|json_encode|raw }};
+    </script>
+
+    {{ encore_entry_script_tags('category') }}
     {{ parent() }}
 {% endblock %}

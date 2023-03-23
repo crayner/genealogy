@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ORM\Table(name: 'category', options: ['collate' => 'utf8mb4_unicode_ci'])]
@@ -37,6 +38,7 @@ class Category
     #[ORM\JoinColumn(name: 'individual', referencedColumnName: 'id')]
     #[ORM\InverseJoinColumn(name: 'category', referencedColumnName: 'id')]
     #[ORM\OrderBy(['last_Name_At_Birth' => 'ASC', 'first_Name' => 'ASC'])]
+    #[MaxDepth(2)]
     var Collection $individuals;
 
     /**
@@ -59,6 +61,7 @@ class Category
     #[ORM\JoinColumn(name: 'category', referencedColumnName: 'id')]
     #[ORM\InverseJoinColumn(name: 'parent', referencedColumnName: 'id')]
     #[ORM\OrderBy(['name' => 'ASC'])]
+    #[MaxDepth(2)]
     var Collection $parents;
 
     /**
@@ -105,7 +108,7 @@ class Category
     /**
      * @var array|ArrayCollection
      */
-    #[ORM\Column(name: 'webpages', type: 'json', options: ['collate' => 'utf8mb4_unicode_ci'])]
+    #[ORM\Column(name: 'webpages', type: 'json', nullable: true, options: ['collate' => 'utf8mb4_unicode_ci'])]
     var ArrayCollection|array $webpages;
     public function __construct()
     {
@@ -349,5 +352,16 @@ class Category
     {
         $this->webpages = is_array($webpages) ? new ArrayCollection($webpages) :$webpages;
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+        ];
     }
 }

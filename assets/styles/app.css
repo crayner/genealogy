@@ -1,5 +1,5 @@
 body {
-    background-color: #f6ffed;
+    background-color: white;
 }
 .body {
     align-content: center;
@@ -85,6 +85,7 @@ a:visited {
     display: flex;
     clear: both;
     min-height: 75px;
+    background-color: #f6ffed;
 }
 .flexbox {
     display: flex;

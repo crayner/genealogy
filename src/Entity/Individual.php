@@ -1,11 +1,13 @@
 <?php
 namespace App\Entity;
 
+use App\Manager\IndividualNameManager;
 use App\Repository\IndividualRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Class Individual
@@ -263,6 +265,7 @@ class Individual
     #[ORM\JoinColumn(name: 'category', referencedColumnName: 'id')]
     #[ORM\InverseJoinColumn(name: 'individual', referencedColumnName: 'id')]
     #[ORM\OrderBy(['name' => 'ASC'])]
+    #[MaxDepth(2)]
     private Collection $categories;
 
     /**
@@ -1149,5 +1152,41 @@ class Individual
         $this->getCategories()->add($category);
         $category->addIndividual($this);
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getShortName(),
+            'birthDate' => $this->getNameManager()->getShortEventDate($this, 'birth'),
+            'birthLocation' => $this->getBirthLocation(),
+            'deathDate' => $this->getNameManager()->getShortEventDate($this, 'death'),
+            'deathLocation' => $this->getDeathLocation(),
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    protected function getShortName(): string
+    {
+        return $this->getNameManager()->getShortName($this);
+    }
+
+    /**
+     * @var IndividualNameManager
+     */
+    private IndividualNameManager $nameManager;
+
+    /**
+     * @return IndividualNameManager
+     */
+    protected function getNameManager(): IndividualNameManager
+    {
+        return $this->nameManager = $this->nameManager ?? new IndividualNameManager();
     }
 }
