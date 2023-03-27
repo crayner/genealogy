@@ -315,3 +315,22 @@ Individual Profiles: 'Individual Profiles'
     }
 'Remove this category': Remove this category
 'Modify parent categories': Modify parent categories
+'Category Name': 'Category Name'
+'Category Type': 'Category Type'
+'cemetery': Cemetery
+'category': Category
+'location': Location
+'theme': Theme
+'migrant': Migrant
+'structure': Structure
+'collection': 'Collection'
+'template':
+    'open':
+        'name': 'Open Name Form'
+        'parent': 'Open Parent Category Form'
+    'close':
+        'name': 'Close Name Form'
+        'parent': 'Close Parent Category Form'
+    'save':
+        'name': 'Save Name Form'
+        'parent': 'Save Parent Category Form'

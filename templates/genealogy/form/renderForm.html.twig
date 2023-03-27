@@ -1,0 +1,17 @@
+<!-- Form React Script -->
+<script type="text/javascript">
+    function cssLinks(){
+        {% set link = encore_entry_css_files('form') %}
+        {% for css in link %}
+        var newLink = document.createElement("link");
+        newLink.href = '{{ asset(css) }}'
+        newLink.rel = 'stylesheet'
+        newLink.type = 'text/css'
+        newLink.media = 'screen'
+        document.head.appendChild(newLink)
+        {% endfor %}
+    }
+    window.FORM_PROPS = {{ props|json_encode|raw }}
+        window.FORM_PROPS.cssLinks = cssLinks();
+</script>
+{{ encore_entry_script_tags('form') }}

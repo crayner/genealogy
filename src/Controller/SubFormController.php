@@ -63,4 +63,26 @@ class SubFormController extends AbstractController
         $manager->getEntityManager()->flush();
         return $this->forward(GenealogyController::class.'::categoryModify', ['manager' => $manager], ['category' => $manager->getCategory()->getName()]);
     }
+
+    /**
+     * @param Request $request
+     * @param CategoryManager $manager
+     * @return Response
+     */
+    #[Route('/genealogy/category/name/save', name: 'category_name_save', methods: ['POST'])]
+    public function saveCategoryName(Request $request, CategoryManager $manager): Response
+    {
+        return $this->forward(GenealogyController::class.'::categoryModify', ['manager' => $manager], ['category' => $manager->getCategory()->getName()]);
+    }
+
+    /**
+     * @param Request $request
+     * @param CategoryManager $manager
+     * @return Response
+     */
+    #[Route('/genealogy/category/Parent/save', name: 'category_parent_save', methods: ['POST'])]
+    public function saveCategoryParent(Request $request, CategoryManager $manager): Response
+    {
+        return $this->forward(GenealogyController::class.'::categoryModify', ['manager' => $manager], ['category' => $manager->getCategory()->getName()]);
+    }
 }

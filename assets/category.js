@@ -10,6 +10,5 @@ const root = ReactDOMClient.createRoot(container);
 
 // Initial render: Render an element to the root.
 root.render(<CategoryApp
-    category={window.CATEGORY_PROPS.category}
-    translations={window.CATEGORY_PROPS.translations}
+    {...window.CATEGORY_PROPS}
 />);

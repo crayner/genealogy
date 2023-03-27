@@ -110,6 +110,25 @@ class Category
      */
     #[ORM\Column(name: 'webpages', type: 'json', nullable: true, options: ['collate' => 'utf8mb4_unicode_ci'])]
     var ArrayCollection|array $webpages;
+
+    /**
+     * @var string
+     */
+    var string $categoryType;
+
+    /**
+     * @var array|string[]
+     */
+    static public array $categoryTypeList = [
+        'category',
+        'cemetery',
+        'collection',
+        'location',
+        'migrant',
+        'theme',
+        'structure'
+    ];
+
     public function __construct()
     {
         $this->individuals = new ArrayCollection();
@@ -363,5 +382,40 @@ class Category
             'id' => $this->getId(),
             'name' => $this->getName(),
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategoryType(): string
+    {
+        if (isset($this->categoryType)) return $this->categoryType;
+        switch (get_class($this)) {
+            case Location::class:
+                $this->categoryType = 'location';
+                break;
+            case Cemetery::class:
+                $this->categoryType = 'cemetery';
+                break;
+            default:
+                dump(get_class($this));
+                $this->categoryType = 'category';
+        }
+        return $this->categoryType;
+    }
+
+    /**
+     * @param bool $choice
+     * @return array|string[]
+     */
+    public static function getCategoryTypeList(bool $choice = false): array
+    {
+        if ($choice) {
+            $choices = [];
+            foreach (self::$categoryTypeList as $choice)
+                $choices[$choice] = $choice;
+            return $choices;
+        }
+        return self::$categoryTypeList;
     }
 }

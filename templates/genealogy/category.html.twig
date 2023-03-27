@@ -7,50 +7,6 @@
 {% endblock stylesheets %}
     {% block header %}
     {% endblock header %}
-    {% block main %}
-        <div class="main-container">
-            {% if manager.category is not same as(null) %}
-                <h2>{{ 'Category'|trans }}: {{ manager.category.name }}</h2>
-            {% endif %}
-            {% if manager.category is not same as(null) %}
-                {% if manager.category.parents|length > 0 %}
-                    <p>{{ 'Categories'|trans }}
-                        {% for category in manager.category.parents %}
-                            <a href="{{ path('genealogy_category_modify', {category: category.name}) }}" target="_blank">{{ category.name }}</a>
-                            {% if loop.index < manager.category.parents|length %}{{ ' | ' }}{% endif %}
-                        {% endfor %}
-                        <span {{ react_component('edit_parent_categories', {id: 'edit_parent_categories', title: 'Modify parent categories'|trans}) }}></span></p>
-                {% endif %}
-                </div>
-                <div class="main-container">
-                <h3>{{ 'Individual Profiles'|trans }}</h3>
-                {% if manager.category.individuals|length < 1 %}
-                    <p>{{ 'No individual profiles found for '|trans({name: manager.category.name}) }}</p>
-                {% else %}
-                    {% set count = (manager.category.individuals|length / 3)|force_to_int %}
-                    {% if manager.category.individuals|length is not divisible by(3) %}{% set count = count + 1 %}{% endif %}
-                    <div class="flexbox">
-                        <div>
-                            {% for individual in manager.category.individuals %}
-                            <p style="padding-right: 3px"><strong><a href="{{ path('genealogy_record_modify', {individual: individual.userID}) }}" target="_blank">{{ manager.nameManager.shortName(individual) }}</a></strong>
-                                {% if manager.nameManager.shortEventDate(individual, 'birth') is not same as('') %}
-                                    {{ ' ' }}{{ manager.nameManager.shortEventDate(individual, 'birth') }}
-                                {% endif %}
-                                {% if individual.birthLocation is not same as('') %}
-                                    {{ ' ' }}{{ individual.birthLocation }}
-                                {% endif %}
-                                {% if manager.nameManager.shortEventDate(individual, 'death') is not same as('') %}
-                                    {{ ' - ' }}{{ manager.nameManager.shortEventDate(individual, 'death') }}
-                                {% endif %}
-                            </p>
-                            {% if loop.index is divisible by(count) and loop.index is not same as(manager.category.individuals|length)  %}</div><div>{% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endif %}
-            {% endif %}
-        </div>
-    {% endblock main %}
     {% block content %}
         <div id="category-content"></div>
     {% endblock content %}
@@ -64,10 +20,19 @@
     {% set translations = translations|merge({Category: 'Category'|trans}) %}
     {% set translations = translations|merge({Categories: 'Categories'|trans}) %}
     {% set translations = translations|merge({'IndividualProfiles': 'Individual Profiles'|trans}) %}
+    {% for name, template in form.vars.template %}
+        {% set openName = "template.open." ~ name %}
+        {% set translations = translations|merge({(openName): openName|trans}) %}
+        {% set openName = "template.close." ~ name %}
+        {% set translations = translations|merge({(openName): openName|trans}) %}
+        {% set openName = "template.save." ~ name %}
+        {% set translations = translations|merge({(openName): openName|trans}) %}
+    {% endfor %}
     <script>
         window.CATEGORY_PROPS = [];
-        window.CATEGORY_PROPS.category = {{ manager.categoryProps|json_encode|raw }};
         window.CATEGORY_PROPS.translations = {{ translations|json_encode|raw }};
+        window.CATEGORY_PROPS.category = {{ manager.categoryProps|json_encode|raw }};
+        window.CATEGORY_PROPS.form = {{ full_form|json_encode|raw }}
     </script>
 
     {{ encore_entry_script_tags('category') }}

@@ -4,18 +4,21 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Individual;
+use App\Form\CategoryType;
 use App\Form\LocationType;
 use App\Form\ParentCategoryType;
 use App\Manager\CategoryManager;
 use App\Manager\CategoryParse;
 use App\Manager\DumpPeopleMarriage;
 use App\Manager\DumpPeopleUsers;
+use App\Manager\FormManager;
 use App\Manager\IndividualManager;
 use App\Manager\ManagerParse;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class GenealogyController extends AbstractController
 {
@@ -116,7 +119,7 @@ class GenealogyController extends AbstractController
      * @return Response
      */
     #[Route('/genealogy/record/{individual}/modify', name: 'genealogy_record_modify')]
-    public function modifyRecord(IndividualManager $manager, Individual $individual): Response
+    public function modifyRecord(IndividualManager $manager, ?Individual $individual = null): Response
     {
         if ($individual instanceof Individual) {
             $manager->setIndividual($individual);
@@ -131,17 +134,15 @@ class GenealogyController extends AbstractController
      * @return Response
      */
     #[Route('/genealogy/category/{category}/modify', name: 'genealogy_category_modify')]
-    public function categoryModify(?Category $category, CategoryManager $manager): Response
+    public function categoryModify(?Category $category, CategoryManager $manager, FormManager $formManager): Response
     {
         if (!$manager->getCategory() instanceof Category) $manager->setCategory($category);
-
-        $location = $this->createForm(LocationType::class, ['id' => $manager->getCategory()->getId(), 'location' => $manager->getCategory()->getLocation()], ['method' => 'POST', 'action' => $this->generateUrl('category_form_location')]);
-        $parents = $this->createForm(ParentCategoryType::class, ['id' => $manager->getCategory()->getId()], ['method' => 'POST', 'action' => $this->generateUrl('category_form_parent_add')]);
+        $form = $this->createForm(CategoryType::class, $manager->getCategory(), ['method' => 'POST', 'action' => $this->generateUrl('category_name_save', [], UrlGenerator::ABSOLUTE_URL)]);
 
         return $this->render('genealogy/category.html.twig', [
             'manager' => $manager,
-            'location_form' => $location->createView(),
-            'parents_form' => $parents->createView(),
+            'full_form' => $formManager->extractForm($form),
+            'form' => $form->createView(),
         ]);
     }
 }
