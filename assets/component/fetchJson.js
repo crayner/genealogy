@@ -16,7 +16,7 @@ export function fetchJson(url, options, locale) {
         locale = '';
 
     const host = window.location.protocol + '//' + window.location.hostname + '';
-console.log(host + locale + url);
+
     return fetch(host + locale + url, ({
         ...options,
         credentials: 'same-origin',

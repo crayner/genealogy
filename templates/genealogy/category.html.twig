@@ -20,6 +20,7 @@
     {% set translations = translations|merge({Category: 'Category'|trans}) %}
     {% set translations = translations|merge({Categories: 'Categories'|trans}) %}
     {% set translations = translations|merge({'IndividualProfiles': 'Individual Profiles'|trans}) %}
+    {% set translations = translations|merge({'onWikitree': 'onWikitree'|trans}) %}
     {% for name, template in form.vars.template %}
         {% set openName = "template.open." ~ name %}
         {% set translations = translations|merge({(openName): openName|trans}) %}

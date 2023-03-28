@@ -24,7 +24,6 @@ export default function SubmitForm(props) {
         closeForm,
         translations,
         section,
-        form
     } = props;
 
     const closeFormTitle = 'template.close.' + section;
@@ -42,7 +41,6 @@ export default function SubmitForm(props) {
 SubmitForm.propTypes = {
     onClick: PropTypes.func.isRequired,
     closeForm: PropTypes.func.isRequired,
-    form: PropTypes.object.isRequired,
     translations: PropTypes.object.isRequired,
     section: PropTypes.string.isRequired,
 }

@@ -32,7 +32,7 @@ class Cemetery extends Category
     var ?string $billionGraves;
 
     /**
-     * @return ?Location
+     * @return Location|null
      */
     public function getLocation(): ?Location
     {
@@ -50,9 +50,9 @@ class Cemetery extends Category
 
     /**
      * @param Location|null $location
-     * @return Cemetery|null
+     * @return Cemetery
      */
-    public function setLocation(?Location $location): ?Cemetery
+    public function setLocation(?Location $location): Cemetery
     {
         $this->location = $location;
         return $this;

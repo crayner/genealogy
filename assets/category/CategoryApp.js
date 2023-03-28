@@ -4,8 +4,7 @@ import PropTypes from 'prop-types'
 import IndividualList from "./IndividualList";
 import SidebarManager from "./SidebarManager";
 import SetFormElementValue from "../form/SetFormElementValue";
-import {setFormElement, getFormElementById, followUrl, buildFormData, isOKtoSave} from "../form/FormManager";
-import {setMessageByName, cancelMessageByName} from "../form/MessageManager";
+import {setFormElement, getFormElementById, followUrl, buildFormData} from "../form/FormManager";
 import {fetchJson} from '../Component/fetchJson'
 import {initialiseSections} from "./SectionsManager";
 import OpenFormSection from "./OpenFormSection";
@@ -14,12 +13,10 @@ import OpenFormSection from "./OpenFormSection";
 export default class CategoryApp extends Component {
     constructor(props) {
         super(props);
-        this.messages = []
 
         this.state  = {
             category: props.category,
             form: props.form,
-            messages: this.messages,
             sections: initialiseSections(props.form.template),
         };
         this.translations = props.translations;
@@ -57,16 +54,8 @@ export default class CategoryApp extends Component {
                 followUrl(element.attr.onChange, element);
             }
 
-            if (element.errors.length > 0)
-                element.errors.map(error => {
-                    setMessageByName(element.id, (element.label ? element.label : element.name) + + ' (' + (!(!element.value || /^\s*$/.test(element.value)) ? JSON.stringify(element.value) : '{empty}') + '): ' + error)
-                })
-            else
-                cancelMessageByName(element.id)
-
             setFormElement(element, this.form)
             this.setState({
-                messages: this.messages,
                 form: this.form,
                 template: this.template,
                 sections: this.state.sections
@@ -78,7 +67,6 @@ export default class CategoryApp extends Component {
         let sections = this.state.sections;
         sections[sectionName] = true;
         this.setState({
-            messages: this.state.messages,
             form: this.state.form,
             template: this.state.template,
             sections: sections,
@@ -89,7 +77,6 @@ export default class CategoryApp extends Component {
         let sections = this.state.sections;
         sections[sectionName] = false;
         this.setState({
-            messages: this.state.messages,
             form: this.state.form,
             template: this.state.template,
             sections: sections,
@@ -97,43 +84,27 @@ export default class CategoryApp extends Component {
     }
 
     handleSave(section) {
-        this.data = buildFormData({}, this.form)
-        console.log(this.form)
-        if (isOKtoSave(this.messages)) {
-            this.messages = []
-            fetchJson(
-                this.form.template[section].action,
-                {method: this.form.method, body: JSON.stringify(this.data)},
-                false)
-                .then(data => {
-                    this.elementList = {}
-                    this.messages = this.messages.concat(data.messages)
-                    this.form = data.form
-                    if (!(!data.template || /^\s*$/.test(data.template)))
-                        this.template = data.template
-                    this.setState({
-                        form: this.form,
-                        messages: this.messages,
-                        template: this.template,
-                    })
-                }).catch(error => {
-                console.error('Error: ', error)
-                this.messages.push({level: 'danger', message: error})
+        this.data = buildFormData({}, this.form);
+        fetchJson(
+            this.form.template[section].action,
+            {method: this.form.method, body: JSON.stringify(this.data)},
+            false)
+            .then(data => {
+                this.elementList = {}
+                this.form = data.form
+                if (!(!data.template || /^\s*$/.test(data.template)))
+                    this.template = data.template
                 this.setState({
                     form: this.form,
-                    messages: this.messages,
                     template: this.template,
                 })
-            })
-        } else {
-            const message = {level: 'dark', message: translateMessage(this.translations, 'All errors must be cleared before the form can be saved!')}
-            this.messages.push(message)
+            }).catch(error => {
+            console.error('Error: ', error)
             this.setState({
                 form: this.form,
-                messages: this.messages,
                 template: this.template,
             })
-        }
+        })
     }
 
     render() {

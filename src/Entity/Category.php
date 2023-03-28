@@ -106,10 +106,10 @@ class Category
     var ?DescriptionPage $descriptionPage;
 
     /**
-     * @var array|ArrayCollection
+     * @var ArrayCollection
      */
-    #[ORM\Column(name: 'webpages', type: 'json', nullable: true, options: ['collate' => 'utf8mb4_unicode_ci'])]
-    var ArrayCollection|array $webpages;
+    #[ORM\Column(name: 'webpages', type: 'json', options: ['collate' => 'utf8mb4_unicode_ci'])]
+    var ArrayCollection $webpages;
 
     /**
      * @var string
@@ -359,6 +359,7 @@ class Category
      */
     public function getWebpages(bool $array = true): ArrayCollection|array
     {
+        if (!isset($this->webpages)) $this->webpages = new ArrayCollection();
         if ($array) $this->webpages->toArray();
         return $this->webpages;
     }
@@ -369,7 +370,7 @@ class Category
      */
     public function setWebpages(ArrayCollection|array $webpages): Category
     {
-        $this->webpages = is_array($webpages) ? new ArrayCollection($webpages) :$webpages;
+        $this->webpages = is_array($webpages) ? new ArrayCollection($webpages) : $webpages;
         return $this;
     }
 
@@ -417,5 +418,23 @@ class Category
             return $choices;
         }
         return self::$categoryTypeList;
+    }
+
+    /**
+     * @return Location|null
+     */
+    public function getLocation(): ?Location
+    {
+        return null;
+    }
+
+    /**
+     * @param Location|null $location
+     * @return Category
+     */
+    public function setLocation(?Location $location): Category
+    {
+        $this->location = null;
+        return $this;
     }
 }

@@ -137,7 +137,7 @@ class GenealogyController extends AbstractController
     public function categoryModify(?Category $category, CategoryManager $manager, FormManager $formManager): Response
     {
         if (!$manager->getCategory() instanceof Category) $manager->setCategory($category);
-        $form = $this->createForm(CategoryType::class, $manager->getCategory(), ['method' => 'POST', 'action' => $this->generateUrl('category_name_save', [], UrlGenerator::ABSOLUTE_URL)]);
+        $form = $this->createForm(CategoryType::class, $manager->getCategory(), ['method' => 'POST', 'action' => $this->generateUrl('category_name_save')]);
 
         return $this->render('genealogy/category.html.twig', [
             'manager' => $manager,

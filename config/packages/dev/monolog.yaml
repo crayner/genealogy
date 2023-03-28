@@ -27,7 +27,7 @@ monolog:
             max_files: 10
             channels: ["doctrine"]
         main_debug:
-            type: stream
+            type: rotating_file
             path: "%kernel.logs_dir%/%kernel.environment%.debug.log"
             level: debug
             channels: ["!event","!wikitree","!doctrine"]

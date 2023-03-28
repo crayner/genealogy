@@ -24,7 +24,8 @@ export default function InputRow(props) {
     const {
         form,
         translations,
-        widget_only
+        widget_only,
+        handleChange
     } = props;
 
     function getLabelClass(child) {
@@ -53,7 +54,7 @@ export default function InputRow(props) {
         <FormElement>
             <FormElementLabel htmlFor={form.id}>{form.label}</FormElementLabel>
             <br />
-            <FormElementInput type={form.type} id={form.id} name={form.full_name} required={getRequiredAttribute(form)} defaultValue={form.value} />
+            <FormElementInput type={form.type} id={form.id} name={form.full_name} required={getRequiredAttribute(form)} defaultValue={form.value} onChange={(e) => handleChange(e, form)} />
             <br />
             <HelpText id={`${form.id}_help`} className="help-text">{form.help}</HelpText>
         </FormElement>
@@ -63,6 +64,7 @@ export default function InputRow(props) {
 InputRow.propTypes = {
     translations: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
+    handleChange: PropTypes.func.isRequired,
     widget_only: PropTypes.bool
 }
 InputRow.defaultTypes = {

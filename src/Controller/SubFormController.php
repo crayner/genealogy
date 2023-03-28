@@ -2,10 +2,13 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Form\CategoryType;
 use App\Form\LocationType;
 use App\Form\ParentCategoryType;
 use App\Manager\CategoryManager;
+use App\Manager\FormManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -67,12 +70,32 @@ class SubFormController extends AbstractController
     /**
      * @param Request $request
      * @param CategoryManager $manager
-     * @return Response
+     * @return JsonResponse
      */
     #[Route('/genealogy/category/name/save', name: 'category_name_save', methods: ['POST'])]
-    public function saveCategoryName(Request $request, CategoryManager $manager): Response
+    public function saveCategoryName(Request $request, CategoryManager $manager, FormManager $formManager): JsonResponse
     {
-        return $this->forward(GenealogyController::class.'::categoryModify', ['manager' => $manager], ['category' => $manager->getCategory()->getName()]);
+        $content = [];
+        if ($request->getContentTypeFormat() === 'json' && $request->getMethod('POST')) {
+            $content = json_decode($request->getContent(), true);
+            $manager->retrieveCategoryByID($content['id']);
+
+            $form = $this->createForm(CategoryType::class, $manager->getCategory(), ['method' => 'POST', 'action' => $this->generateUrl('category_name_save')]);
+dump($content, $manager->getCategory());
+            if ($content['name'] !== $manager->getCategory()->getName()) {
+                $manager->getCategory()->setName($content['name']);
+                $manager->getEntityManager()->persist($manager->getCategory());
+                $manager->getEntityManager()->flush();
+            }
+
+            $manager->writeCategoryDiscriminator($content['categoryType']);
+        }
+
+        return new JsonResponse(
+            [
+                'form' => $formManager->extractForm($form),
+            ],
+            200);
     }
 
     /**

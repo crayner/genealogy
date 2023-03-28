@@ -1,5 +1,5 @@
 export default function FormValidation(element) {
-    element.errors = []
+    element.errors = [];
     element.constraints.map(constraint => {
         switch (constraint.class){
             case 'NotBlank':

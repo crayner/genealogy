@@ -3,7 +3,10 @@
 namespace App\Manager;
 
 use App\Entity\Category;
+use App\Entity\Cemetery;
 use App\Entity\Location;
+use App\Entity\Migrant;
+use App\Entity\Theme;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -174,5 +177,65 @@ class CategoryManager
     protected function getRouter(): RouterInterface
     {
         return $this->router;
+    }
+
+    /**
+     * @param string $categoryType
+     * @return $this
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function writeCategoryDiscriminator(string $categoryType): CategoryManager
+    {
+        if ($this->getCategoryType() === $categoryType || !$this->checkCategoryType($categoryType)) return $this;
+        $query = "UPDATE category SET discriminator = :categoryType WHERE id = :categoryId";
+        $stmt = $this->getEntityManager()->getConnection()->prepare( $query );
+        $resultSet = $stmt->executeQuery(['categoryType' => $categoryType, 'categoryId' => $this->getCategory()->getId()]);
+
+        $id = $this->getCategory()->getId();
+        $this->setCategory(null);
+        $this->retrieveCategoryByID($id);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCategoryType(): string
+    {
+        switch (get_class($this->getCategory())) {
+            case (Location::class):
+                return 'location';
+                break;
+            case (Category::class):
+                return 'category';
+                break;
+            case (Cemetery::class):
+                return 'cemetery';
+                break;
+            case (App\Entity\Collection::class):
+                return 'collection';
+                break;
+            case (Migrant::class):
+                return 'migrant';
+                break;
+            case (Theme::class):
+                return 'theme';
+                break;
+            default:
+                dd(get_class($this->getCategory()));
+        }
+    }
+
+    /**
+     * @param string $categoryType
+     * @return bool
+     */
+    protected function checkCategoryType(string $categoryType): bool
+    {
+        return match ($categoryType) {
+            'category', 'cemetery', 'collection', 'location', 'migrant', 'theme' => true,
+            default => false,
+        };
     }
 }

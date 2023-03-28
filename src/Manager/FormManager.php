@@ -9,10 +9,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
-use Twig\Markup;
 
 class FormManager
 {
@@ -52,15 +48,22 @@ class FormManager
     private array $props;
 
     /**
-     * CollectionManager constructor.
-     * @param Environment $twig
+     * @var MessageManager
      */
-    public function __construct(Environment $twig, RequestStack $stack, TranslatorInterface $translator, FormErrorsParser $parser)
+    private MessageManager $messageManager;
+
+    /**
+     * @param Environment $twig
+     * @param RequestStack $stack
+     * @param FormErrorsParser $parser
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(Environment $twig, RequestStack $stack, FormErrorsParser $parser, TranslatorInterface $translator)
     {
         $this->twig = $twig;
         $this->stack = $stack;
-        $this->translator = $translator;
         $this->parser = $parser;
+        $this->translator = $translator;
         $this->data = [];
     }
 
@@ -289,7 +292,7 @@ class FormManager
      * @param string $transDomain
      * @return array
      */
-    public function getFormErrors(FormInterface $form, string $transDomain = 'System'): array
+    public function getFormErrors(FormInterface $form, string $transDomain = 'messages'): array
     {
         if (!$form->isSubmitted() || false) return [];
 
@@ -297,6 +300,7 @@ class FormManager
 
         $errorList = $this->getParser()->parseErrors($form);
         $errorList = is_array($errorList) ? $errorList: [];
+        
 
         foreach($errorList as $q=>$w) {
             $errorList[$q]['messages'] = [];
@@ -305,8 +309,9 @@ class FormManager
                 $messages->addMessage('danger', $error->getMessage(), [], false);
             }
         }
+
         if (empty($errorList))
-            $messages->addMessage('success', 'All details were saved successfully.', [], 'System');
+            $messages->addMessage('success', 'All details were saved successfully.', [], 'messages');
 
         return $messages->serialiseTranslatedMessages($this->getTranslator());
     }
@@ -817,20 +822,16 @@ class FormManager
     }
 
     /**
-     * getMessageManager
-     *
-     * @return mixed
+     * @return MessageManager
      */
-    private function getMessageManager()
+    private function getMessageManager(): MessageManager
     {
-        return $this->getTemplateManager()->getMessageManager();
+        return $this->messageManager = !isset($this->messageManager) ? new MessageManager('messages') : $this->messageManager;
     }
 
     /**
-     * validateButton
-     *
-     * @param $button
-     * @return mixed
+     * @param $url
+     * @return array|false
      */
     private function validateUrl($url)
     {
@@ -850,5 +851,15 @@ class FormManager
         $resolver->setAllowedValues('url_type', ['redirect', 'json']);
         $url = $resolver->resolve($url);
         return $url;
+    }
+
+    /**
+     * @param Symfony\Contracts\Translation\TranslatorInterface $translator
+     * @return FormManager
+     */
+    public function setTranslator(Symfony\Contracts\Translation\TranslatorInterface $translator): FormManager
+    {
+        $this->translator = $translator;
+        return $this;
     }
 }

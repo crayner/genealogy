@@ -21,10 +21,10 @@ export default function FormRender(props) {
         return children.map((child, i) => {
             switch (child.type) {
                 case 'text':
-                    return <InputRow key={i} translations={translations} form={child} />
+                    return <InputRow key={i} translations={translations} form={child} handleChange={handleChange} />
                     break;
                 case 'hidden':
-                    return <InputRow key={i} translations={translations} form={child} widget_only={true}/>
+                    return <InputRow key={i} translations={translations} form={child} widget_only={true} handleChange={handleChange} />
                     break;
                 case 'choice':
                     return <ChoiceRow key={i} translations={translations} form={child} handleChange={handleChange} />
