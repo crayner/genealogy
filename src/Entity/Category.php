@@ -106,10 +106,10 @@ class Category
     var ?DescriptionPage $descriptionPage;
 
     /**
-     * @var ArrayCollection
+     * @var ArrayCollection|array
      */
     #[ORM\Column(name: 'webpages', type: 'json', options: ['collate' => 'utf8mb4_unicode_ci'])]
-    var ArrayCollection $webpages;
+    var ArrayCollection|array $webpages;
 
     /**
      * @var string
@@ -414,7 +414,7 @@ class Category
         if ($choice) {
             $choices = [];
             foreach (self::$categoryTypeList as $choice)
-                $choices[$choice] = $choice;
+                $choices[ucfirst($choice)] = $choice;
             return $choices;
         }
         return self::$categoryTypeList;

@@ -10,7 +10,7 @@ export const FormElement = styled.div`
     flex: 1;
 `
 const DarkGreenSpan = styled.span`
-    color: darkgreen;
+    color: #003300;
 `
 const DarkRedSpan = styled.span`
     color: darkred;

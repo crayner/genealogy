@@ -2,33 +2,37 @@
 import React from "react"
 import FormValidation from "./FormValidation";
 
-let elementList = {};
+let elementList;
 
 export function getFormElementById(form, id, refresh = false) {
+    form = {...form};
     if (refresh === true)
         elementList = {}
-    if (typeof elementList[id] === 'undefined')
-        elementList = buildElementList({}, form)
+    if (typeof elementList[id] === 'undefined' || elementList === {})
+        elementList = buildElementList({}, form);
     return elementList[id]
 }
 
 function buildElementList(list, form) {
-    list[form.id] = form
+    form = {...form};
+    list[form.id] = form;
     form.children.map(child => {
-        buildElementList(list, child)
+        buildElementList(list, child);
     })
     return list
 }
 
 export function setFormElement(element, form) {
+    form = {...form};
     if (element.id === form.id)
     {
-        form = {...element}
-        return form
+        return {...element};
     }
-    form.children.map(child => {
-        setFormElement(element, child)
+    form.children.map((child, i) => {
+        child = setFormElement(element, {...child});
+        form.children[i] = {...child};
     })
+    return form;
 }
 
 export function followUrl(details,element) {

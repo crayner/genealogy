@@ -80,8 +80,8 @@ class SubFormController extends AbstractController
             $content = json_decode($request->getContent(), true);
             $manager->retrieveCategoryByID($content['id']);
 
-            $form = $this->createForm(CategoryType::class, $manager->getCategory(), ['method' => 'POST', 'action' => $this->generateUrl('category_name_save')]);
-dump($content, $manager->getCategory());
+            $form = $this->createForm(CategoryType::class, $manager->getCategory(), ['method' => 'POST', 'manager' => $manager]);
+
             if ($content['name'] !== $manager->getCategory()->getName()) {
                 $manager->getCategory()->setName($content['name']);
                 $manager->getEntityManager()->persist($manager->getCategory());
@@ -101,11 +101,18 @@ dump($content, $manager->getCategory());
     /**
      * @param Request $request
      * @param CategoryManager $manager
-     * @return Response
+     * @param FormManager $formManager
+     * @return JsonResponse
      */
-    #[Route('/genealogy/category/Parent/save', name: 'category_parent_save', methods: ['POST'])]
-    public function saveCategoryParent(Request $request, CategoryManager $manager): Response
+    #[Route('/genealogy/category/parents/save', name: 'category_parents_save', methods: ['POST'])]
+    public function saveCategoryParent(Request $request, CategoryManager $manager, FormManager $formManager): JsonResponse
     {
-        return $this->forward(GenealogyController::class.'::categoryModify', ['manager' => $manager], ['category' => $manager->getCategory()->getName()]);
+        $form = $this->createForm(CategoryType::class, $manager->getCategory(), ['method' => 'POST', 'manager' => $manager]);
+
+        return new JsonResponse(
+            [
+                'form' => $formManager->extractForm($form),
+            ],
+            200);
     }
 }

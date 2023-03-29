@@ -3,6 +3,7 @@ namespace App\Form;
 
 use App\Entity\Category;
 use App\Entity\Location;
+use App\Manager\CategoryManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -30,14 +31,15 @@ class CategoryType extends AbstractType
             ->add('name', TextType::class,
                 [
                     'label' => 'Category Name',
-                    'help' => 'a little bit of help.'
                 ]
             )
             ->add('categoryType', ChoiceType::class,
                 [
                     'label' => 'Category Type',
                     'choices' => Category::getCategoryTypeList(true),
-                    'placeholder' => 'You must select a category type'
+                    'placeholder' => 'You must select a category type',
+                    'help' => 'categoryTypeHelp',
+                    'help_translation_parameters' => ['category' => basename(get_class($options['data'])) ?: 'Category'],
                 ]
             )
             ->add('location', EntityType::class,
@@ -56,9 +58,15 @@ class CategoryType extends AbstractType
             )
             ->add('parents', CollectionType::class,
                 [
-                    'label' => 'Parent Category',
-                    'help' => 'Add a parent category.',
+                    'label' => 'Parent Categories',
+                    'help' => 'Add/Remove a parent category.',
                     'required' => false,
+                    'entry_type' => EntityType::class,
+                    'entry_options' => [
+                        'class' => Category::class,
+                        'choice_value' => 'id',
+                        'choices' => [],
+                    ]
                 ]
             )
             ->add('doit', SubmitType::class,
@@ -81,6 +89,8 @@ class CategoryType extends AbstractType
                 'template' => [],
             ]
         );
+        $resolver->setRequired(['manager']);
+        $resolver->setAllowedTypes('manager', CategoryManager::class);
     }
 
     /**
@@ -114,13 +124,12 @@ class CategoryType extends AbstractType
         $template['name']['action'] = '/genealogy/category/name/save';
         $template['name']['name'] = 'name';
 
-        $template['parent']['elements'] = ['location', 'parents'];
-        $template['parent']['action'] = $options['action'];
-        $template['parent']['name'] = 'parent';
+        $template['parents']['elements'] = ['location', 'parents'];
+        $template['parents']['action'] = '/genealogy/category/parents/save';
+        $template['parents']['name'] = 'parents';
 
         foreach ($template as $name => $x) {
             $template[$name] = $resolver->resolve($x);
-
         }
         $view->vars['template'] = $template;
     }

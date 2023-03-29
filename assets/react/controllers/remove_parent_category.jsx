@@ -18,7 +18,7 @@ class EditParentCategories extends Component {
 
     render() {
         return (
-            <span style={{color: 'darkgreen'}} title={this.title} onClick={this.removeCategory}>
+            <span style={{color: '#003300'}} title={this.title} onClick={this.removeCategory}>
                 <FontAwesomeIcon icon={solid('delete-left')}/>
             </span>
         );

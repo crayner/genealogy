@@ -160,11 +160,11 @@ class CategoryManager
             'id' => $this->getCategory()->getId(),
             'name' => $this->getCategory()->getName(),
         ];
-        foreach ($this->getCategory()->getIndividuals() as $q=>$individual) {
+        foreach ($this->getCategory()->getIndividuals() as $q => $individual) {
             $result['individuals'][] = $individual->toArray();
             $result['individuals'][$q]['path'] = $this->getRouter()->generate('genealogy_record_modify', ['individual' => $individual->getUserID()]);
         }
-        foreach ($this->getCategory()->getParents() as $q=>$parent) {
+        foreach ($this->getCategory()->getParents() as $q => $parent) {
             $result['parents'][$q] = $parent->toArray();
             $result['parents'][$q]['path'] = $this->getRouter()->generate('genealogy_category_modify', ['category' => $parent->getId()]);
         }
@@ -188,7 +188,7 @@ class CategoryManager
     {
         if ($this->getCategoryType() === $categoryType || !$this->checkCategoryType($categoryType)) return $this;
         $query = "UPDATE category SET discriminator = :categoryType WHERE id = :categoryId";
-        $stmt = $this->getEntityManager()->getConnection()->prepare( $query );
+        $stmt = $this->getEntityManager()->getConnection()->prepare($query);
         $resultSet = $stmt->executeQuery(['categoryType' => $categoryType, 'categoryId' => $this->getCategory()->getId()]);
 
         $id = $this->getCategory()->getId();

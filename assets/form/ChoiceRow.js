@@ -1,23 +1,16 @@
 'use strict';
 
-import React from "react"
-import PropTypes from 'prop-types'
-import {FormElement, HelpText, FormElementLabel} from './InputRow'
-import styled from 'styled-components';
-
-
-const FormElementSelect = styled.select`
-    height: 30px;
-    width: 100%;
-    border-radius: 10px;
-`
+import React from "react";
+import PropTypes from 'prop-types';
+import {FormElement, HelpText, FormElementLabel} from './InputRow';
+import Autocomplete from "./Autocomplete";
 
 export default function ChoiceRow(props) {
     const {
         form,
         translations,
         widget_only,
-        handleChange
+        handleFormChange
     } = props;
 
     function getLabelClass(child) {
@@ -28,53 +21,85 @@ export default function ChoiceRow(props) {
         return result;
     }
 
-    function getRequiredAttribute(child) {
-        let result = '';
-        if (child.required === 'Required') {
-            result = 'required';
-        }
-        return result;
-    }
-
-    function getChoices(choices) {
-        let result = [];
-        if (form.placeholder) {
-            result.push(<option key='placeholder' value=''>{form.placeholder}</option>);
-        }
-        if (typeof choices === "object") {
-            Object.keys(choices).map(i => {
-                const choice = choices[i];
-                result.push(<option key={i} value={choice.value}>{choice.label}</option>);
-            })
-        } else {
-            choices.map((choice, i) => {
-                result.push(<option key={i} value={choice.value}>{choice.label}</option>);
-            })
-        }
-        return result;
-    }
-
     if (widget_only) {
         return (
-            <FormElementSelect onChange={(e) => handleChange(e, form)} type={form.type} id={form.id} name={form.full_name} required={getRequiredAttribute(form)} defaultValue={form.value} >{getChoices(form.choices)}</FormElementSelect>
+            <Select styles={{height: '30px', width: '100%', borderRadius: '10px'}} defaultValue={form.value} value={form.value} placeholder={form.placeholder} options={getChoices(form)} />
         );
     }
+
+    function getForm(form) {
+        if (!('state' in form)) {
+            form['state'] = {
+                activeSuggestion: 0,
+                filteredSuggestions: [],
+                showSuggestions: false,
+                userInput: ""
+            };
+            if (!form.multiple && form.value) {
+                form.state.userInput = getLabelOfValue(form);
+            }
+        }
+
+        return form;
+    }
+
+    function getLabelOfValue(form) {
+        let value = form.value;
+        let label = '';
+        getChoices(form).filter((suggestion) => {
+            if (suggestion.value.toLowerCase() === value.toLowerCase()) label = suggestion.label;
+        })
+        if (label === '') label = value;
+        return label;
+    }
+
+    //onChange={(e) => handleChange(e, form)} type={form.type} id={form.id} name={form.full_name} required={getRequiredAttribute(form)} defaultValue={form.value}
 
     return (
         <FormElement>
             <FormElementLabel htmlFor={form.id}>{form.label}</FormElementLabel>
             <br />
-            <FormElementSelect onChange={(e) => handleChange(e, form)} type={form.type} id={form.id} name={form.full_name} required={getRequiredAttribute(form)} defaultValue={form.value} >{getChoices(form.choices)}</FormElementSelect>
+            <Autocomplete
+                suggestions={getChoices(form)}
+                translations={translations}
+                form={getForm({...form})}
+                handleFormChange={handleFormChange}
+                />
             <br />
             <HelpText id={`${form.id}_help`} className="help-text">{form.help}</HelpText>
         </FormElement>
     )
 }
 
+
+export function getRequiredAttribute(child) {
+    let result = '';
+    if (child.required === 'Required') {
+        result = 'required';
+    }
+    return result;
+}
+
+export function getChoices(form) {
+    const choices = {...form.choices};
+    let result = [];
+    if (typeof choices === "object") {
+        Object.keys(choices).map(i => {
+            const choice = choices[i];
+            result.push({value: choice.value, label: choice.label});
+        })
+    } else {
+        choices.map((choice, i) => {
+            result.push({value: choice.value, label: choice.label});
+        })
+    }
+    return result;
+}
+
 ChoiceRow.propTypes = {
     translations: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
-    handleChange: PropTypes.func.isRequired,
+    handleFormChange: PropTypes.func.isRequired,
     widget_only: PropTypes.bool
 }
 ChoiceRow.defaultTypes = {

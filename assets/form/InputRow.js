@@ -6,19 +6,23 @@ import styled from 'styled-components';
 
 export const FormElement = styled.div`
     flex: 1;
+    margin-right: 6px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid #003300;
 `
-const FormElementInput = styled.input`
+export const FormElementInput = styled.input`
     height: 25px;
     width: 100%;
     border-radius: 10px;
+    border: 1px solid #003300;
 `
 export const FormElementLabel = styled.label`
     font-weight: bold;
-    color: darkgreen;
+    color: #003300;
 `
 export const HelpText = styled.div`
     font-style: italic;
-    color: darkgreen;
+    color: #003300;
 `
 export default function InputRow(props) {
     const {
@@ -29,7 +33,7 @@ export default function InputRow(props) {
     } = props;
 
     function getLabelClass(child) {
-        var result = 'form_label';
+        let result = 'form_label';
         if (child.required === 'Required') {
             result += ' required';
         }
@@ -37,7 +41,7 @@ export default function InputRow(props) {
     }
 
     function getRequiredAttribute(child) {
-        var result = '';
+        let result = '';
         if (child.required === 'Required') {
             result = 'required';
         }
@@ -46,7 +50,7 @@ export default function InputRow(props) {
 
     if (widget_only) {
         return (
-            <FormElementInput type={form.type} id={form.id} name={form.full_name} required={getRequiredAttribute(form)} defaultValue={form.value}/>
+            <FormElementInput type={form.type} id={form.id} name={form.full_name} required={getRequiredAttribute(form)} defaultValue={form.value} />
         );
     }
 

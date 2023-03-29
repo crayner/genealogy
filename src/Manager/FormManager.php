@@ -158,9 +158,9 @@ class FormManager
         if (! empty($vars['placeholder']))
             $vars['placeholder'] = $this->getTranslator()->trans($vars['placeholder'], [], $vars['translation_domain']);
 
-        $vars['help_params'] = array_key_exists('help_params', $vars) ? $vars['help_params'] : [];
+        $vars['help_translation_parameters'] = array_key_exists('help_translation_parameters', $vars) ? $vars['help_translation_parameters'] : [];
         if (! empty($vars['help']))
-            $vars['help'] = $this->getTranslator()->trans($vars['help'], $vars['help_params'], $vars['translation_domain']);
+            $vars['help'] = $this->getTranslator()->trans($vars['help'], $vars['help_translation_parameters'], $vars['translation_domain']);
         else
             $vars['help'] = '';
 
@@ -203,6 +203,7 @@ class FormManager
             $vars['constraints'] = $this->extractConstraints($vars);
         else
             $vars['constraints'] = [];
+
         return $vars;
     }
 

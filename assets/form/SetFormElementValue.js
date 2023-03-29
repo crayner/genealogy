@@ -2,34 +2,39 @@
 
 import FormValidation from './FormValidation'
 
-export default function SetFormElementValue(event,element,type) {
+export default function SetFormElementValue(event, element, type) {
     switch (type) {
         case 'time':
-            element = setTimeValue(event,element)
-            break
+            element = setTimeValue(event, element);
+            break;
         case 'text':
-            element = setStringValue(event,element)
-            break
+            element = setStringValue(event, element);
+            break;
         case 'choice':
-            element = setChoiceValue(event,element)
-            break
+            element = setChoiceValue(event, element);
+            break;
         default:
-            console.error('How do I handle the type === ' + type)
-            console.log(event,element)
+            console.error('How do I handle the type === ' + type);
+            console.log(event, element)
     }
-    element = FormValidation(element)
-    return element
+    element = FormValidation(element);
 
     if (element.block_prefixes.includes('hillrange_toggle')) {
-        element.value = element.value === '1' ? '0' : '1'
-        element.data = element.value === '1'
+        element.value = element.value === '1' ? '0' : '1';
+        element.data = element.value === '1';
     }
     element = FormValidation(element)
+    return element;
 }
 
 function setTimeValue(event, element){
     let section = event.target.getAttribute('time-type')
-    let value = event.target.value
+    let value;
+    if ('value' in event) {
+        value = event.value;
+    } else {
+        value = event.target.value
+    }
 
     if (typeof element.value !== 'object' || element.value === null)
         element.value = {hour: '0', minute: '0', second: '0'}
@@ -92,29 +97,48 @@ function setTimeValue(event, element){
     return element
 }
 
-function setStringValue(event,element){
-    const value = event.target.value
+function setStringValue(event, element){
+    let value;
+    if ('value' in event) {
+        value = event.value;
+    } else {
+        value = event.target.value
+    }
     element.value = value
     element.data = value
     return element
 }
 
-function setChoiceValue(event,element){
+function setChoiceValue(event, element){
     if (element.multiple === true) {
-        let value = element.value
-        const newValue = event.target.value
-        if (value.includes(newValue)) {
-            const index = value.indexOf(newValue)
-            value.splice(index, 1)
+        let value = element.value;
+        let newValue;
+        if ('value' in event) {
+            newValue = event.value;
         } else {
-            value.push(newValue)
+            newValue = event.target.value;
         }
-        element.value = value
-        return element
+        if (value.includes(newValue)) {
+            const index = value.indexOf(newValue);
+            value.splice(index, 1);
+        } else {
+            value.push(newValue);
+        }
+        element.value = value;
+        element.data = value;
+        return element;
     }
 
-    const value = event.target.value
-    element.value = value
-    element.data = value
-    return element
+    let value;
+    if ('value' in event) {
+        value = event.value;
+    } else if (typeof event.target === 'object' && 'target' in event.target) {
+        value = event.target.value;
+    } else if (typeof event.currentTarget === 'object' && 'innerText' in event.currentTarget) {
+        value = event.currentTarget.innerText
+    }
+
+    element.value = value;
+    element.data = value;
+    return element;
 }

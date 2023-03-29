@@ -21,7 +21,7 @@ class EditParentCategories extends Component {
 
     render() {
         return (
-            <span id={this.id} style={{color: 'darkgreen'}} onClick={this.sayHello} title={this.title}>
+            <span id={this.id} style={{color: '#003300'}} onClick={this.sayHello} title={this.title}>
                 <FontAwesomeIcon icon={solid('pencil')}/>
             </span>
         );
