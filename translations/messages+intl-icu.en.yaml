@@ -337,3 +337,7 @@ Individual Profiles: 'Individual Profiles'
 'Save Category': 'Save Category'
 'NoSuggestions': 'No suggestions available.'
 'categoryTypeHelp': "The current category is {category}.  This should not be changed without good cause."
+'noParentCategories': 'No assigned parent categories.'
+'No suggestions available.': 'No suggestions available.'
+'closeMessage': 'Close this message.'
+'Data Save: Success!': 'Data Save: Success!'

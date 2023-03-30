@@ -42,7 +42,9 @@ export default function Autocomplete(props) {
         translations,
         suggestions,
         handleFormChange,
-        multiple
+        fetchChoices,
+        multiple,
+        section,
     } = props;
 
     function onKeyDown(e, form) {
@@ -72,18 +74,20 @@ export default function Autocomplete(props) {
     function onChange(e) {
         const userInput = e.currentTarget.value;
 
+        let fetchedSuggestions = fetchChoices(suggestions, form, section, userInput);
         const splitInput = userInput.split(' ');
-        const filteredSuggestions = suggestions.filter(suggestion => {
+
+        let filteredSuggestions = fetchedSuggestions.filter(suggestion => {
             if (suggestion.label.toLowerCase().indexOf(userInput.toLowerCase()) > -1) return suggestion;
             let ok = true;
-            splitInput.map((testString) => {
+            splitInput.map((testString, i) => {
                 if (suggestion.label.toLowerCase().indexOf(testString.toLowerCase()) < 0) ok = false;
             })
             if (ok) return suggestion;
         });
 
         form.state.activeSuggestion = 0;
-        form.state.filteredSuggestions = filteredSuggestions;
+        form.state.filteredSuggestions = fetchedSuggestions;
         form.state.showSuggestions = true;
         form.state.userInput = e.currentTarget.value;
         let value = {value: e.currentTarget.innerText.toLowerCase(), label: e.currentTarget.innerText}
@@ -91,35 +95,57 @@ export default function Autocomplete(props) {
     }
 
     function onClick(e) {
+        let value;
+        form.state.filteredSuggestions.filter((suggestion,i) => {
+            if (e.currentTarget.innerText === suggestion.label) value = form.state.filteredSuggestions[i];
+        })
+
         form.state.activeSuggestion = 0;
         form.state.filteredSuggestions = []
         form.state.showSuggestions = false;
         form.state.userInput = e.currentTarget.innerText;
-        let value = {value: e.currentTarget.innerText.toLowerCase(), label: e.currentTarget.innerText}
         handleFormChange(e, form, value);
     }
 
+    function getSuggestionList() {
+        let searchList = form.state.userInput.split(' ');
+        let i = 0;
+        const initialList = Object.keys(form.state.filteredSuggestions).map(index => {
+            let suggestion = form.state.filteredSuggestions[index];
+            if (suggestion.label.toLowerCase().indexOf(searchList[0].toLowerCase()) === 0) {
+                if (index === form.state.activeSuggestion) {
+                    return (<SuggestionActive key={i++} onClick={(e) => onClick(e)}>{suggestion.label}</SuggestionActive>);
+                }
+                return (<Suggestion key={i++} onClick={(e) => onClick(e)}>{suggestion.label}</Suggestion>);
+            }
+        });
+        let remainingList = [];
+        Object.keys(form.state.filteredSuggestions).map(index => {
+            let suggestion = form.state.filteredSuggestions[index];
+            if (suggestion.label.toLowerCase().indexOf(searchList[0].toLowerCase()) !== 0) {
+                searchList.map(search => {
+                    if (suggestion.label.toLowerCase().indexOf(search.toLowerCase()) > -1) {
+                        if (index === form.state.activeSuggestion) {
+                            remainingList.push(<SuggestionActive key={i++} onClick={(e) => onClick(e)}>{suggestion.label}</SuggestionActive>);
+                        }
+                        remainingList.push(<Suggestion key={i++} onClick={(e) => onClick(e)}>{suggestion.label}</Suggestion>);
+                    }
+                })
+            }
+        });
+        return(
+            <SuggestionList>
+                {initialList}
+                {remainingList}
+            </SuggestionList>
+        );
 
-
+    }
     function getSuggestedListComponent() {
         let suggestionsListComponent;
         if (form.state.showSuggestions && form.state.userInput) {
             if (form.state.filteredSuggestions.length > 0) {
-                suggestionsListComponent = (
-                    <SuggestionList>
-                        {Object.keys(form.state.filteredSuggestions).map(index => {
-                            let suggestion = form.state.filteredSuggestions[index];
-
-                            // Flag the active suggestion with a class
-                            if (index === form.state.activeSuggestion) {
-                                return (<SuggestionActive key={suggestion.value} onClick={(e) => onClick(e)}>{suggestion.label}</SuggestionActive>)
-                            }
-                            return (
-                                <Suggestion key={suggestion.value} onClick={(e) => onClick(e)}>{suggestion.label}</Suggestion>
-                            );
-                        })}
-                    </SuggestionList>
-                );
+                suggestionsListComponent = getSuggestionList();
             } else {
                 suggestionsListComponent = (
                     <NoSuggestions>
@@ -150,6 +176,9 @@ Autocomplete.propTypes = {
     form: PropTypes.object.isRequired,
     suggestions: PropTypes.array,
     multiple: PropTypes.bool,
+    fetchChoices: PropTypes.func.isRequired,
+    handleFormChange: PropTypes.func.isRequired,
+    section: PropTypes.string.isRequired,
 }
 Autocomplete.defaultTypes = {
     suggestions: [],

@@ -6,14 +6,12 @@
     {{ parent() }}
 {% endblock stylesheets %}
     {% block header %}
+        <div id="category-header"></div>
     {% endblock header %}
     {% block content %}
         <div id="category-content"></div>
     {% endblock content %}
 {% block sidebar %}
-    {% include 'genealogy/form/category_location.html.twig' with {identifier: location_form.vars.id ~ '_form', form: location_form, field: location_form.location} %}
-    {% include 'genealogy/form/parent_category_manage.html.twig' with {identifier: parents_form.vars.id ~ '_form', form: parents_form, field: parents_form.parent} %}
-    <p style="clear: both"><a href="https://www.wikitree.com/wiki/Category:{{ app.request.get('category')|replace({" ": "_", ",": "\%2C"}) }}" target="_blank">{{ app.request.get('category') }} {{ 'on Wikitree'|trans }}</a></p>
 {% endblock sidebar %}
 {% block javascripts %}
     {% set translations = {} %}
@@ -21,7 +19,6 @@
     {% set translations = translations|merge({Categories: 'Categories'|trans}) %}
     {% set translations = translations|merge({IndividualProfiles: 'Individual Profiles'|trans}) %}
     {% set translations = translations|merge({onWikitree: 'onWikitree'|trans}) %}
-    {% set translations = translations|merge({NoSuggestions: 'No suggestions available.'|trans}) %}
     {% for name, template in form.vars.template %}
         {% set openName = "template.open." ~ name %}
         {% set translations = translations|merge({(openName): openName|trans}) %}
@@ -30,6 +27,10 @@
         {% set openName = "template.save." ~ name %}
         {% set translations = translations|merge({(openName): openName|trans}) %}
     {% endfor %}
+    {% set translations = translations|merge({NoSuggestions: 'No suggestions available.'|trans}) %}
+    {% set translations = translations|merge({noParentCategories: 'noParentCategories'|trans}) %}
+    {% set translations = translations|merge({closeMessage: 'closeMessage'|trans}) %}
+    {% set translations = translations|merge({'Data Save: Success!': 'Data Save: Success!'|trans}) %}
     <script>
         window.CATEGORY_PROPS = [];
         window.CATEGORY_PROPS.translations = {{ translations|json_encode|raw }};

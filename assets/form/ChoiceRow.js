@@ -10,7 +10,9 @@ export default function ChoiceRow(props) {
         form,
         translations,
         widget_only,
-        handleFormChange
+        handleFormChange,
+        fetchChoices,
+        section
     } = props;
 
     function getLabelClass(child) {
@@ -27,32 +29,6 @@ export default function ChoiceRow(props) {
         );
     }
 
-    function getForm(form) {
-        if (!('state' in form)) {
-            form['state'] = {
-                activeSuggestion: 0,
-                filteredSuggestions: [],
-                showSuggestions: false,
-                userInput: ""
-            };
-            if (!form.multiple && form.value) {
-                form.state.userInput = getLabelOfValue(form);
-            }
-        }
-
-        return form;
-    }
-
-    function getLabelOfValue(form) {
-        let value = form.value;
-        let label = '';
-        getChoices(form).filter((suggestion) => {
-            if (suggestion.value.toLowerCase() === value.toLowerCase()) label = suggestion.label;
-        })
-        if (label === '') label = value;
-        return label;
-    }
-
     //onChange={(e) => handleChange(e, form)} type={form.type} id={form.id} name={form.full_name} required={getRequiredAttribute(form)} defaultValue={form.value}
 
     return (
@@ -62,13 +38,41 @@ export default function ChoiceRow(props) {
             <Autocomplete
                 suggestions={getChoices(form)}
                 translations={translations}
-                form={getForm({...form})}
+                form={getForm(form)}
                 handleFormChange={handleFormChange}
+                section={section}
+                fetchChoices={fetchChoices}
                 />
             <br />
             <HelpText id={`${form.id}_help`} className="help-text">{form.help}</HelpText>
         </FormElement>
     )
+}
+
+export function getForm(form) {
+    form = {...form};
+    if (typeof form.state !== 'object') {
+        form['state'] = {
+            activeSuggestion: 0,
+            filteredSuggestions: [],
+            showSuggestions: false,
+            userInput: ""
+        };
+        if (!(typeof form.value === 'object' || typeof form.value === 'array')) {
+            form.state.userInput = getLabelOfValue(form);
+        }
+    }
+    return form;
+}
+
+function getLabelOfValue(form) {
+    let value = form.value;
+    let label = '';
+    getChoices(form).filter((suggestion) => {
+        if (suggestion.value.toLowerCase() === value.toLowerCase()) label = suggestion.label;
+    })
+    if (label === '') label = value;
+    return label;
 }
 
 
@@ -100,7 +104,9 @@ ChoiceRow.propTypes = {
     translations: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
     handleFormChange: PropTypes.func.isRequired,
-    widget_only: PropTypes.bool
+    fetchChoices: PropTypes.func.isRequired,
+    widget_only: PropTypes.bool,
+    section: PropTypes.string.isRequired,
 }
 ChoiceRow.defaultTypes = {
     widget_only: false

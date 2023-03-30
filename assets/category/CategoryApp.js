@@ -1,5 +1,5 @@
 'use strict';
-import React, { Component } from "react"
+import React, {Component, Fragment} from "react"
 import PropTypes from 'prop-types'
 import IndividualList from "./IndividualList";
 import SidebarManager from "./SidebarManager";
@@ -10,6 +10,7 @@ import {initialiseSections} from "./SectionsManager";
 import OpenFormSection from "./OpenFormSection";
 import styled from "styled-components";
 import { Sidebar, Main, MainContainer, H3, Border, FlexboxContainer } from '../component/StyledCSS';
+import useMessageTimeout from "../component/useTimeout";
 
 export const DarkGreenP = styled.p`
     color: #003300;
@@ -23,6 +24,7 @@ export default class CategoryApp extends Component {
             category: props.category,
             form: props.form,
             sections: initialiseSections(props.form.template),
+            messages: [],
         };
         this.translations = props.translations;
         this.form = props.form
@@ -33,6 +35,9 @@ export default class CategoryApp extends Component {
         this.handleOpenForm = this.handleOpenForm.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
+        this.removeParentCategory = this.removeParentCategory.bind(this);
+        this.fetchChoices = this.fetchChoices.bind(this);
+        this.clearMessage = this.clearMessage.bind(this);
 
         this.functions = {
             renderParents: this.renderParents,
@@ -41,15 +46,24 @@ export default class CategoryApp extends Component {
             handleOpenForm: this.handleOpenForm,
             handleClose: this.handleClose,
             handleFormChange: this.handleFormChange,
+            removeParentCategory: this.removeParentCategory,
+            fetchChoices: this.fetchChoices,
+            clearMessage: this.clearMessage,
         }
     }
 
     renderParents(parents) {
-        var result = parents.map((parent, i, array) => {
-            if (array.length - 1 === i) {
-                return (<span key={i}><a href={parent.path}>{parent.name}</a></span>)
+        if (typeof parents === 'undefined') {
+            return (<DarkGreenP>{this.translations.Categories}: {this.translations.noParentCategories} <OpenFormSection sectionName={'parents'} translations={this.translations} handleOpenForm={this.handleOpenForm} /></DarkGreenP>)
+
+        }
+        const result = Object.keys(parents).map( i => {
+            i = Number(i);
+            const parent = parents[i];
+            if (parents.length - 1 === i) {
+                return (<Fragment key={i}><a href={parent.path}>{parent.name}</a></Fragment>)
             }
-            return (<span key={i}><a href={parent.path}>{parent.name}</a> | </span>)
+            return (<Fragment key={i}><a href={parent.path}>{parent.name}</a> | </Fragment>)
         })
         return (<DarkGreenP>{this.translations.Categories}: {result} <OpenFormSection sectionName={'parents'} translations={this.translations} handleOpenForm={this.handleOpenForm} /></DarkGreenP>)
     }
@@ -62,6 +76,36 @@ export default class CategoryApp extends Component {
     }
 
     handleFormChange(event, element, value) {
+
+        if (element.type === 'collection') {
+            if (value.value !== '') {
+                if (typeof element.value !== 'object') element.value = [];
+                element.value.push(value);
+                element.data = element.value;
+                this.form = setFormElement(element, this.form);
+                this.setState({
+                    form: this.form,
+                });
+                return;
+            } else {
+                this.form = setFormElement(element, this.form);
+                this.setState({
+                    form: this.form,
+                });
+                return;
+            }
+        }
+
+        if (element.type === 'choice') {
+            element.value = value.value;
+            element.data = element.value;
+            this.form = setFormElement(element, this.form);
+            this.setState({
+                form: this.form,
+            });
+            return;
+        }
+
         if (typeof value === 'object') {
             value = value.value;
         } else {
@@ -71,7 +115,7 @@ export default class CategoryApp extends Component {
 
         event.target.value = value;
         this.form = setFormElement(element, this.form);
-        this.elementChange(event, element.id, element.type)
+        this.elementChange(event, element.id, element.type === 'collection' ? 'choice' : element.type)
     }
 
     elementChange(event, id, type) {
@@ -119,26 +163,98 @@ export default class CategoryApp extends Component {
             false)
             .then(data => {
                 this.elementList = {}
-                this.form = data.form
-                if (!(!data.template || /^\s*$/.test(data.template)))
-                    this.template = data.template
+                this.form = data.form;
+                let messages = {...this.state.messages};
+                if (typeof data.message === 'object')  {
+                    const x = messages.length + 1;
+                    messages[x] = data.message;
+                    if (messages[x].timeOut > 0) {
+                        this.messageTimeout(messages[x]);
+                    }
+                }
+                let sections = {...this.state.sections};
+                sections[section] = false;
                 this.setState({
                     form: this.form,
-                    template: this.template,
-                })
+                    messages: messages,
+                    sections: sections,
+                });
             }).catch(error => {
             console.error('Error: ', error)
             this.setState({
                 form: this.form,
-                template: this.template,
             })
         })
+    }
+
+    messageTimeout(message) {
+        const tick = () => this.clearMessage(message.id);
+        const timer = window.setTimeout(tick, message.timeOut);
+        return () => window.clearTimeout(timer);
+    }
+
+    removeParentCategory(section, parent){
+        const template = this.form.template[section];
+        const value = this.form.value.id;
+        let remove = template['remove'];
+        remove = remove.replace('{category}', value);
+        remove = remove.replace('{parent}', parent);
+        fetchJson(
+            remove,
+            {method: 'POST', body: JSON.stringify(this.data)},false)
+            .then(data => {
+                this.elementList = {};
+                this.form = data.form;
+                this.setState({
+                    form: this.form,
+                    category: data.category
+                })
+            }).catch(error => {
+            console.error('Error: ', error);
+            this.setState({
+                form: this.form,
+            })
+        })
+    }
+
+    fetchChoices(suggestions, form, section, search) {
+        if (search.length < 3) return suggestions;
+        if (typeof this.form.template[section].fetch[form.name] === 'string') {
+            fetchJson(
+                this.form.template[section].fetch[form.name],
+                {method: 'POST', body: JSON.stringify({search: search})},false)
+                .then(data => {
+                    form.choices = data.choices
+                    form.state.filteredSuggestions = data.choices
+                    this.form = setFormElement(form, this.form);
+
+                    this.setState({
+                        form: this.form,
+                    })
+
+                }).catch(error => {
+                console.error('Error: ', error);
+                return suggestions;
+            })
+        }
+
+        return suggestions;
+    }
+
+    clearMessage(id) {
+        const result = Object.keys(this.state.messages).filter(index => {
+            const message = this.state.messages[index]
+            if (message.id !== id) return message;
+        });
+        this.setState({
+            messages: result
+        });
     }
 
     render() {
         return (
             <FlexboxContainer>
-                <Border></Border>
+                <Border />
                 <Main>
                     <MainContainer>
                     <H3>{this.translations['Category']}: { this.state.category.name } <OpenFormSection sectionName={'name'} translations={this.translations} handleOpenForm={this.handleOpenForm} /></H3>
@@ -157,6 +273,8 @@ export default class CategoryApp extends Component {
                         form={this.state.form}
                         functions={this.functions}
                         sections={this.state.sections}
+                        messages={this.state.messages}
+                        clearMessage={this.clearMessage}
                     />
                 </Sidebar>
                 <Border />

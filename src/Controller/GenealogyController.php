@@ -5,8 +5,6 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Entity\Individual;
 use App\Form\CategoryType;
-use App\Form\LocationType;
-use App\Form\ParentCategoryType;
 use App\Manager\CategoryManager;
 use App\Manager\CategoryParse;
 use App\Manager\DumpPeopleMarriage;
@@ -138,7 +136,6 @@ class GenealogyController extends AbstractController
     {
         if (!$manager->getCategory() instanceof Category) $manager->setCategory($category);
         $form = $this->createForm(CategoryType::class, $manager->getCategory(), ['method' => 'POST', 'manager' => $manager]);
-
         return $this->render('genealogy/category.html.twig', [
             'manager' => $manager,
             'full_form' => $formManager->extractForm($form),

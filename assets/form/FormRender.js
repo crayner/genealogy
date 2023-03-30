@@ -16,6 +16,8 @@ export default function FormRender(props) {
         handleSave,
         handleClose,
         handleFormChange,
+        removeParentCategory,
+        fetchChoices,
         identifier,
         sections
     } = props;
@@ -30,10 +32,10 @@ export default function FormRender(props) {
                     return <InputRow key={i} translations={translations} form={child} widget_only={true} handleChange={handleChange} />
                     break;
                 case 'choice':
-                    return <ChoiceRow key={i} translations={translations} form={child} handleFormChange={handleFormChange} />
+                    return <ChoiceRow key={i} translations={translations} form={child} handleFormChange={handleFormChange} fetchChoices={fetchChoices} section={identifier} />
                     break;
                 case 'collection':
-                    return (<CollectionRow key={i} translations={translations} form={child} handleChange={handleFormChange} />)
+                    return <CollectionRow key={i} translations={translations} form={child} fetchChoices={fetchChoices} handleFormChange={handleFormChange} removeParentCategory={removeParentCategory} section={identifier} />
                     break;
                 case 'submit':
                     return <SubmitForm key={i} onClick={handleSave} form={form} closeForm={handleClose} translations={translations} section={identifier} />
@@ -47,7 +49,7 @@ export default function FormRender(props) {
     if (sections[identifier]) {
         return (
             <SidebarForm id={'form_' + form.name + '_' + identifier}>
-                <form className={form.name} method={form.method} action={form.action}>
+                <form className={form.name} method={form.method} id={form.id}>
                     {displayChildrenForms(form.children)}
                 </form>
             </SidebarForm>
@@ -61,8 +63,10 @@ FormRender.propTypes = {
     translations: PropTypes.object.isRequired,
     handleChange: PropTypes.func.isRequired,
     handleFormChange: PropTypes.func.isRequired,
+    removeParentCategory: PropTypes.func.isRequired,
     handleSave: PropTypes.func.isRequired,
     handleClose: PropTypes.func.isRequired,
+    fetchChoices: PropTypes.func.isRequired,
     identifier: PropTypes.string.isRequired,
     form: PropTypes.object.isRequired,
     sections: PropTypes.object.isRequired

@@ -14,15 +14,19 @@
     </head>
     <body>
     {% block body %}
-        <div class="flexbox-container">
-            <div class="border"></div>
-            <div class="header">
-                {% block header %}
-                    <h1>Genealogy Base Template (Header)</h1>
-                {% endblock header %}
+        {% block headerContent %}
+        <div id="header-content">
+            <div class="flexbox-container">
+                <div class="border"></div>
+                <div class="header">
+                    {% block header %}
+                        <h1 class="centre">Genealogy Base Template (Header)</h1>
+                    {% endblock header %}
+                </div>
+                <div class="border"></div>
             </div>
-            <div class="border"></div>
         </div>
+        {% endblock headerContent %}
         {% block content %}
         <div class="flexbox-container">
             <div class="border"></div>

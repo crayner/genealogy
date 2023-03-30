@@ -50,4 +50,32 @@ class CategoryRepository extends ServiceEntityRepository
             ->getResult();
         return $result[0] ?? null;
     }
+
+    /**
+     * @param string $search
+     * @return array
+     */
+    public function findBySearch(string $search): array
+    {
+        $search = explode(' ', $search);
+        $where = '';
+        $parameters = [];
+        foreach ($search as $q=>$w) {
+            $where .= ' AND LOWER(c.name) LIKE :name'.$q;
+            $parameters['name'.$q] = $w;
+        }
+        $where = '(' . substr($where, 5) . ')';
+        $query = $this->createQueryBuilder('c')
+            ->where($where)
+            ->setMaxResults(10000)
+            ->select(['c.name AS label','c.id AS value'])
+            ->orderBy('c.name', 'ASC')
+        ;
+        foreach ($parameters as $q => $w) {
+            $query->setParameter($q, strtolower("%".$w."%"));
+        }
+        return $query
+            ->getQuery()
+            ->getResult();
+    }
 }

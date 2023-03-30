@@ -3,7 +3,10 @@ namespace App\Form;
 
 use App\Entity\Category;
 use App\Entity\Location;
+use App\Form\DataTransformer\EntityCollectionTransformer;
 use App\Manager\CategoryManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -19,6 +22,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CategoryType extends AbstractType
 {
+    /**
+     * @var EntityCollectionTransformer
+     */
+    private EntityCollectionTransformer $transformer;
+
+    /**
+     * @param EntityCollectionTransformer $transformer
+     */
+    public function __construct(EntityCollectionTransformer $transformer) {
+        $this->transformer = $transformer;
+        $this->transformer->setEntityClass(Category::class);
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -41,21 +57,34 @@ class CategoryType extends AbstractType
                     'help' => 'categoryTypeHelp',
                     'help_translation_parameters' => ['category' => basename(get_class($options['data'])) ?: 'Category'],
                 ]
-            )
-            ->add('location', EntityType::class,
-                [
-                    'choice_label' => 'name',
-                    'class' => Location::class,
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('l')
-                            ->orderBy('l.name', 'ASC');
-                    },
-                    'choice_value' => 'id',
-                    'placeholder' => '',
-                    'label' => 'Location',
-                    'help' => 'This item requires a location',
-                ]
-            )
+            );
+        if ($options['data'] instanceof Location) {
+            $builder
+                ->add('location', EntityType::class,
+                    [
+                        'choice_label' => 'name',
+                        'class' => Location::class,
+                        'query_builder' => function (EntityRepository $er) {
+                            return $er->createQueryBuilder('l')
+                                ->where("l INSTANCE OF :location")
+                                ->setParameter('location', 'location')
+                                ->orderBy('l.name', 'ASC');
+                        },
+                        'choice_value' => 'id',
+                        'placeholder' => '',
+                        'label' => 'Location',
+                        'help' => 'This item requires a location',
+                    ]
+                );
+        } else {
+            $builder
+                ->add('location', HiddenType::class,
+                    [
+                        'data' => null,
+                    ]
+                );
+        }
+        $builder
             ->add('parents', CollectionType::class,
                 [
                     'label' => 'Parent Categories',
@@ -66,7 +95,8 @@ class CategoryType extends AbstractType
                         'class' => Category::class,
                         'choice_value' => 'id',
                         'choices' => [],
-                    ]
+                        'multiple' => true,
+                    ],
                 ]
             )
             ->add('doit', SubmitType::class,
@@ -75,6 +105,9 @@ class CategoryType extends AbstractType
                 ]
             )
         ;
+        $builder->get('parents')
+            ->addModelTransformer($this->transformer);
+
     }
 
     /**
@@ -115,10 +148,16 @@ class CategoryType extends AbstractType
             'action',
             'name',
         ]);
+        $resolver->setDefaults([
+            'remove' => null,
+            'fetch' => null,
+        ]);
 
         $resolver->setAllowedTypes('elements', 'array');
         $resolver->setAllowedTypes('action', 'string');
         $resolver->setAllowedTypes('name', 'string');
+        $resolver->setAllowedTypes('remove', ['string', 'null']);
+        $resolver->setAllowedTypes('fetch', ['array', 'null']);
         $template = $options['template'];
         $template['name']['elements'] = ['name', 'categoryType'];
         $template['name']['action'] = '/genealogy/category/name/save';
@@ -126,6 +165,8 @@ class CategoryType extends AbstractType
 
         $template['parents']['elements'] = ['location', 'parents'];
         $template['parents']['action'] = '/genealogy/category/parents/save';
+        $template['parents']['remove'] = '/genealogy/category/parent/{category}/{parent}/remove';
+        $template['parents']['fetch']['parents'] = '/genealogy/category/parents/fetch';
         $template['parents']['name'] = 'parents';
 
         foreach ($template as $name => $x) {

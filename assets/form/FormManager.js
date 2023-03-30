@@ -43,13 +43,20 @@ export function followUrl(details,element) {
 }
 
 export function buildFormData(data, form) {
-    if (form.children.length > 0) {
+    form = {...form};
+    if (form.children.length > 0 && form.type !== 'collection') {
         form.children.map(child => {
-            data[child.name] = buildFormData({}, child)
+            data[child.name] = buildFormData({}, child);
         })
-        return data
+        return data;
     } else {
-        return form.value
+        if (typeof form.value === 'object' && form.value !== null) {
+            let result = form.value.map(value => {
+                return value;
+            })
+            return result;
+        }
+        return form.value;
     }
 }
 

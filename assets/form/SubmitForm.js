@@ -9,10 +9,10 @@ import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/
 export const FormElement = styled.div`
     flex: 1;
 `
-const DarkGreenSpan = styled.span`
+export const DarkGreenSpan = styled.span`
     color: #003300;
 `
-const DarkRedSpan = styled.span`
+export const DarkRedSpan = styled.span`
     color: darkred;
 `
 const Rightp = styled.p` 

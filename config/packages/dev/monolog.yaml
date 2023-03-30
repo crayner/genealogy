@@ -11,8 +11,9 @@ monolog:
             level: debug
             channels: ["request"]
         php:
-            type: stream
+            type: rotating_file
             path: "%kernel.logs_dir%/%kernel.environment%.php.log"
+            max_files: 10
             level: debug
             channels: ["php"]
         wikitree:
@@ -29,6 +30,7 @@ monolog:
         main_debug:
             type: rotating_file
             path: "%kernel.logs_dir%/%kernel.environment%.debug.log"
+            max_files: 10
             level: debug
             channels: ["!event","!wikitree","!doctrine"]
         # uncomment to get logging in your browser

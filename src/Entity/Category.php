@@ -217,24 +217,25 @@ class Category
 
     /**
      * @param Category $category
-     * @return $this
+     * @return bool
      */
-    public function addParent(Category $category): Category
+    public function addParent(Category $category): bool
     {
-        if ($this->getParents()->contains($category)) return $this;
+        if ($this->getParents()->contains($category)) return false;
+        if ($this->isEqual($category)) return false;
         $this->getParents()->add($category);
-        return $this;
+        return true;
     }
 
     /**
      * @param Category $category
-     * @return $this
+     * @return bool
      */
-    public function removeParent(Category $category): Category
+    public function removeParent(Category $category): bool
     {
-        if (!$this->getParents()->contains($category)) return $this;
+        if (!$this->getParents()->contains($category)) return false;
         $this->getParents()->removeElement($category);
-        return $this;
+        return true;
     }
 
     /**
@@ -398,6 +399,9 @@ class Category
             case Cemetery::class:
                 $this->categoryType = 'cemetery';
                 break;
+            case Category::class:
+                $this->categoryType = 'category';
+                break;
             default:
                 dump(get_class($this));
                 $this->categoryType = 'category';
@@ -436,5 +440,24 @@ class Category
     {
         $this->location = null;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLabel(): string
+    {
+        return $this->getName();
+    }
+
+    /**
+     * @param Category $category
+     * @return bool
+     */
+    public function isEqual(Category $category): bool
+    {
+        if ($category->getId() === $this->getId()) return true;
+        if ($category->getName() === $this->getName()) return true;
+        return false;
     }
 }
