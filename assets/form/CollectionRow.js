@@ -32,17 +32,13 @@ export default function CollectionRow(props) {
     } = props;
 
     function getExistingValues(form){
-        if (typeof form.value === 'array' && form.value.length > 0) {
-            return form.value.map((item,i) => {
-                return (<DarkGreenListP key={i}>{item.label} <OrangeSpan><FontAwesomeIcon icon={solid('eraser')} onClick={(e) => removeParentCategory(section, item.value)} title={translations[removeParentCategory]} /></OrangeSpan></DarkGreenListP>);
-            })
-        } else if (typeof form.value === 'object' && form.value.length > 0) {
+        if (typeof form.value === 'object' && form.value.length > 0) {
             return Object.keys(form.value).map(i => {
                 const item = form.value[i];
-                return (<DarkGreenListP key={i}>{item.label} <OrangeSpan><FontAwesomeIcon icon={solid('eraser')} onClick={(e) => removeParentCategory(section, item.value)} title={translations[removeParentCategory]} /></OrangeSpan></DarkGreenListP>);
+                return (<DarkGreenListP key={item.value}>{item.label} <OrangeSpan><FontAwesomeIcon icon={solid('eraser')} onClick={(e) => removeParentCategory(section, item.value)} title={translations[removeParentCategory]} /></OrangeSpan></DarkGreenListP>);
             })
         }
-        return null;
+        return [];
     }
 
     return (
