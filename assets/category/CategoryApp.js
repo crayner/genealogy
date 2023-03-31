@@ -10,7 +10,7 @@ import {initialiseSections} from "./SectionsManager";
 import OpenFormSection from "./OpenFormSection";
 import styled from "styled-components";
 import { Sidebar, Main, MainContainer, H3, Border, FlexboxContainer } from '../component/StyledCSS';
-import useMessageTimeout from "../component/useTimeout";
+import RenderCategoryParents from "./RenderCategoryParents";
 
 export const DarkGreenP = styled.p`
     color: #003300;
@@ -29,7 +29,6 @@ export default class CategoryApp extends Component {
         this.translations = props.translations;
         this.form = props.form
 
-        this.renderParents = this.renderParents.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.handleOpenForm = this.handleOpenForm.bind(this);
@@ -40,7 +39,6 @@ export default class CategoryApp extends Component {
         this.clearMessage = this.clearMessage.bind(this);
 
         this.functions = {
-            renderParents: this.renderParents,
             handleChange: this.handleChange,
             handleSave: this.handleSave,
             handleOpenForm: this.handleOpenForm,
@@ -50,22 +48,6 @@ export default class CategoryApp extends Component {
             fetchChoices: this.fetchChoices,
             clearMessage: this.clearMessage,
         }
-    }
-
-    renderParents(parents) {
-        if (typeof parents === 'undefined') {
-            return (<DarkGreenP>{this.translations.Categories}: {this.translations.noParentCategories} <OpenFormSection sectionName={'parents'} translations={this.translations} handleOpenForm={this.handleOpenForm} /></DarkGreenP>)
-
-        }
-        const result = Object.keys(parents).map( i => {
-            i = Number(i);
-            const parent = parents[i];
-            if (parents.length - 1 === i) {
-                return (<Fragment key={i}><a href={parent.path}>{parent.name}</a></Fragment>)
-            }
-            return (<Fragment key={i}><a href={parent.path}>{parent.name}</a> | </Fragment>)
-        })
-        return (<DarkGreenP>{this.translations.Categories}: {result} <OpenFormSection sectionName={'parents'} translations={this.translations} handleOpenForm={this.handleOpenForm} /></DarkGreenP>)
     }
 
     handleChange(event, form) {
@@ -83,8 +65,30 @@ export default class CategoryApp extends Component {
                 element.value.push(value);
                 element.data = element.value;
                 this.form = setFormElement(element, this.form);
+                let category = {...this.state.category}
+                if (element.name === 'parents') {
+                    Object.keys(element.value).map(i => {
+                        const item = element.value[i];
+                        let ok = false;
+                        Object.keys(category['parents']).map(o => {
+                            let parent = category['parents'][o];
+                            if (parent.id === Number(item.value)) {
+                                ok = true;
+                            }
+                        })
+                        if (!ok) {
+                            let parent = {
+                                id: Number(item.value),
+                                name: item.label,
+                                path: "/genealogy/category/" + Number(item.value) + "/modify",
+                            };
+                            category['parents'].push(parent);
+                        }
+                     })
+                }
                 this.setState({
-                    form: this.form,
+                    form: {...this.form},
+                    category: {...category},
                 });
                 return;
             } else {
@@ -258,7 +262,9 @@ export default class CategoryApp extends Component {
                 <Main>
                     <MainContainer>
                     <H3>{this.translations['Category']}: { this.state.category.name } <OpenFormSection sectionName={'name'} translations={this.translations} handleOpenForm={this.handleOpenForm} /></H3>
-                        {this.renderParents(this.state.category.parents)}
+                        <RenderCategoryParents translations={this.translations}
+                                               parents={this.state.category.parents}
+                                               handleOpenForm={this.handleOpenForm} />
                     </MainContainer>
                     <IndividualList
                         translations={this.translations}
