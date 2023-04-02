@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
     'location' => Location::class,
     'migrant' => Migrant::class,
     'theme' => Theme::class])]
-#[ORM\UniqueConstraint(name: 'name', columns: ['name'])]
+#[ORM\UniqueConstraint(name: 'category_name', columns: ['name'])]
 class Category
 {
     /**

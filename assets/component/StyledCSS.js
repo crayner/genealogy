@@ -26,6 +26,7 @@ export const H3 = styled.h3`
   font-size: 1.25em;
   font-weight: bold;
   color: #003300;
+  margin: 10px 0 0;
 `
 export const FlexboxContainer = styled.div`
     display: flex;

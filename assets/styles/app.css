@@ -50,6 +50,7 @@ h3 {
     font-size: 1.25em;
     font-weight: bold;
     color: #003300;
+    margin: 10px 0 0;
 }
 h4 {
     font-size: 1.1em;
@@ -75,13 +76,10 @@ a:visited {
 .flexbox div {
     flex: 1;
 }
-
 .border {
     background-color: white;
     flex: 1;
 }
-
-
 div.form_element > select[multiple=multiple] {
     height: 150px;
 }
@@ -90,4 +88,10 @@ div.form_element > select[multiple=multiple] {
     padding: 0;
     margin: 0;
     color: #003300;
+}
+h3 + p {
+    margin-top: 8px;
+}
+p {
+    margin: 4px 0;
 }

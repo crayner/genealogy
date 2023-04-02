@@ -11,6 +11,7 @@ use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 
@@ -168,6 +169,24 @@ class CategoryManager
             $result['parents'][$q] = $parent->toArray();
             $result['parents'][$q]['path'] = $this->getRouter()->generate('genealogy_category_modify', ['category' => $parent->getId()]);
         }
+        $childrenCategories = $this->getCategoryRepository()->findAllByParent($this->getCategory());
+        foreach($childrenCategories as $child) {
+            $result['childrenCategories'][$q] = $child->toArray();
+            $result['childrenCategories'][$q]['path'] = $this->getRouter()->generate('genealogy_category_modify', ['category' => $child->getId()]);
+        }
+        $resolver = new OptionsResolver();
+        $resolver->setDefaults([
+            'parents' => [],
+            'individuals' => [],
+            'childrenCategories' => [],
+        ]);
+        $resolver->setRequired([
+            'id',
+            'name',
+        ]);
+
+        $result = $resolver->resolve($result);
+        dump($result);
         return $result;
     }
 

@@ -134,7 +134,7 @@ class SubFormController extends AbstractController
             $manager->retrieveCategoryByID($content['id']);
 
             $ok = false;
-            if (array_key_exists('location', $content)) {
+            if (array_key_exists('location', $content) && $content['location'] > 0) {
                 $location = $manager->getCategoryRepository()->findOneBy(['id' => $content['location']]);
                 if ($location instanceof Location) {
                     $ok = $manager->getCategory()->addParent($location);

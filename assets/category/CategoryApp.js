@@ -11,6 +11,7 @@ import OpenFormSection from "./OpenFormSection";
 import styled from "styled-components";
 import { Sidebar, Main, MainContainer, H3, Border, FlexboxContainer } from '../component/StyledCSS';
 import RenderCategoryParents from "./RenderCategoryParents";
+import RenderCategoryChildren from "./RenderCategoryChildren";
 
 export const DarkGreenP = styled.p`
     color: #003300;
@@ -58,7 +59,6 @@ export default class CategoryApp extends Component {
     }
 
     handleFormChange(event, element, value) {
-
         if (element.type === 'collection') {
             if (value.value !== '') {
                 if (typeof element.value !== 'object') element.value = [];
@@ -263,9 +263,13 @@ export default class CategoryApp extends Component {
                     <MainContainer>
                     <H3>{this.translations['Category']}: { this.state.category.name } <OpenFormSection sectionName={'name'} translations={this.translations} handleOpenForm={this.handleOpenForm} /></H3>
                         <RenderCategoryParents translations={this.translations}
-                                               parents={this.state.category.parents}
-                                               handleOpenForm={this.handleOpenForm} />
+                                               parents={(typeof this.state.category.parents === "undefined") ? [] : this.state.category.parents}
+                                               handleOpenForm={this.handleOpenForm}
+                        />
                     </MainContainer>
+                    <RenderCategoryChildren translations={this.translations}
+                                            children={this.state.category.childrenCategories}
+                    />
                     <IndividualList
                         translations={this.translations}
                         individuals={this.state.category.individuals}
@@ -292,5 +296,5 @@ export default class CategoryApp extends Component {
 CategoryApp.propTypes = {
     category: PropTypes.object.isRequired,
     translations: PropTypes.object.isRequired,
-    form: PropTypes.object.isRequired
+    form: PropTypes.object.isRequired,
 }

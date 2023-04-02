@@ -31,6 +31,7 @@
     {% set translations = translations|merge({noParentCategories: 'noParentCategories'|trans}) %}
     {% set translations = translations|merge({closeMessage: 'closeMessage'|trans}) %}
     {% set translations = translations|merge({'Data Save: Success!': 'Data Save: Success!'|trans}) %}
+    {% set translations = translations|merge({'subCategories': 'subCategories'|trans}) %}
     <script>
         window.CATEGORY_PROPS = [];
         window.CATEGORY_PROPS.translations = {{ translations|json_encode|raw }};

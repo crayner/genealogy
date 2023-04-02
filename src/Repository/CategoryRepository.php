@@ -78,4 +78,18 @@ class CategoryRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Category $parent
+     * @return array
+     */
+    public function findAllByParent(Category $parent): array
+    {
+        $query = $this->createQueryBuilder('c')
+            ->where(":parent MEMBER OF c.parents")
+            ->setParameter('parent', $parent)
+            ->orderBy('c.name', 'ASC')
+        ;
+        return $query->getQuery()->getResult();
+    }
 }

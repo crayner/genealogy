@@ -14,7 +14,7 @@ export default function RenderCategoryParents(props) {
     
     function renderParents()
     {
-        if (typeof parents === 'undefined') {
+        if (parents.length === 0) {
             return (<DarkGreenP>{translations.Categories}: {translations.noParentCategories} <OpenFormSection
                 sectionName={'parents'} translations={translations} handleOpenForm={handleOpenForm}/></DarkGreenP>)
         }
