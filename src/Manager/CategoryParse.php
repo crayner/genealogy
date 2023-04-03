@@ -1,10 +1,10 @@
 <?php
-
 namespace App\Manager;
 
 use App\Entity\Category;
 use App\Entity\Cemetery;
 use App\Entity\Individual;
+use App\Entity\Migrant;
 use App\Repository\CategoryRepository;
 use App\Repository\IndividualRepository;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -30,7 +30,7 @@ class CategoryParse
     /**
      * @var int
      */
-    static int $bulk = 203;
+    static int $bulk = 199;
 
     /**
      * @param EntityManagerInterface $entityManager
@@ -59,7 +59,7 @@ class CategoryParse
             if ($category !== null) {
                 $lines[$name]['line'] = $line;
                 $lines[$name]['category'] = $category;
-                if (count($lines) > 20) {
+                if (count($lines) > 19) {
                     try {
                         foreach ($lines as $line) {
                             foreach ($line['category']->getIndividuals() as $individual) {
@@ -69,6 +69,7 @@ class CategoryParse
                         }
                         $this->getEntityManager()->flush();
                     } catch (UniqueConstraintViolationException $e) {
+
                         dump($lines);
                         throw $e;
                     } catch (\ErrorException $e) {
@@ -107,17 +108,23 @@ class CategoryParse
         $individual = $this->getIndividualRepository()->findOneBySourceID($line[0]);
 
         $category = $this->getCategoryRepository()->findOneByName($name);
-        if (str_contains($name, 'Cemetery')) {
+        if (str_contains($name, 'Cemetery') && is_null($category)) {
             $category = $this->getEntityManager()->getRepository(Cemetery::class)->findOneByName($name);
+        }
+        if (str_contains($name, 'Migrants') && is_null($category)) {
+            $category = $this->getEntityManager()->getRepository(Migrant::class)->findOneByName($name);
         }
         if (is_null($category) && array_key_exists($name, $lines)) {
             $category = $lines[$name]['category'];
         }
         if (is_null($category)) {
-            $category = new Category();
             if (str_contains($name, 'Cemetery')) {
                 $category = new Cemetery();
             }
+            if (str_contains($name, 'Migrants')) {
+                $category = new Migrant();
+            }
+            $category = is_null($category) ? new Category() : $category;
             $category->setName($name)
                 ->setShowProfiles('Yes');
         }

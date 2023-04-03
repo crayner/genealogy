@@ -16,7 +16,6 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class GenealogyController extends AbstractController
 {
@@ -26,7 +25,7 @@ class GenealogyController extends AbstractController
      * @return Response
      */
     #[Route('/individual/parse', name: 'individual_parse')]
-    public function dump(DumpPeopleUsers $individual, DumpPeopleMarriage $marriage): Response
+    public function individualParse(DumpPeopleUsers $individual, DumpPeopleMarriage $marriage): Response
     {
         $offset = $individual->execute();
 

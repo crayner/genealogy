@@ -150,6 +150,9 @@ export default class CategoryApp extends Component {
 
     handleOpenForm(sectionName) {
         let sections = this.state.sections;
+        Object.keys(sections).map(name => {
+            sections[name] = false;
+        })
         sections[sectionName] = true;
         this.setState({
             form: this.state.form,
