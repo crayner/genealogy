@@ -7,6 +7,7 @@ const theme = {
     fg: 'darkgreen',
     orange: 'orange',
     white: 'white',
+    black: 'black',
 }
 export const Theme = ({ children }) => (
     <ThemeProvider theme={theme}>{children}</ThemeProvider>
@@ -21,6 +22,10 @@ export const Sidebar = styled.div`
 export const Border = styled.div`
     background-color: ${props => props.theme.white};
     flex: 1;
+`
+export const Column1 = styled.div`
+  background-color: ${props => props.theme.bg};
+  flex: 1;
 `
 export const Column2 = styled.div`
     background-color: ${props => props.theme.bg};
@@ -58,8 +63,12 @@ export const FlexboxContainer = styled.div`
   background-color: ${props => props.theme.bg};
 `
 export const FlexContainer = styled.div`
+  display: flex;
+  clear: both;
+  background-color: ${props => props.theme.bg};
+`
+export const Flexbox = styled.div`
     display: flex;
-    clear: both;
     background-color: ${props => props.theme.bg};
 `
 export const DarkGreenP = styled.p`
@@ -142,4 +151,15 @@ export const DarkGreenListP = styled.p`
     line-height: 17px;
     padding-left: 10px;
     margin: 1px 0;
+`
+export const DarkGreenA = styled.a`
+    color: ${props => props.theme.fg};
+    &:hover {
+        background-color: ${props => props.theme.white};
+        color: ${props => props.theme.black};
+    }
+    &:visited {
+        color: ${props => props.theme.fg};
+    }
+
 `
