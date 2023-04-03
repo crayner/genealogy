@@ -9,12 +9,16 @@ export default function OpenFormSection(props) {
     const {
         sectionName,
         translations,
-        handleOpenForm
+        handleOpenForm,
     } = props;
 
     let openName = "template.open." + sectionName
+
     return (
-        <FontAwesomeIcon icon={solid('pencil')} title={translations[openName]} onClick={(e) => handleOpenForm(sectionName)}/>
+        <FontAwesomeIcon icon={solid('pencil')}
+                         title={translations[openName]}
+                         onClick={(e) => handleOpenForm(sectionName)}
+        />
     );
 }
 

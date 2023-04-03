@@ -46,12 +46,6 @@ h2 {
     font-weight: bold;
     color: #003300;
 }
-h3 {
-    font-size: 1.25em;
-    font-weight: bold;
-    color: #003300;
-    margin: 10px 0 0;
-}
 h4 {
     font-size: 1.1em;
     font-weight: bold;
@@ -79,6 +73,14 @@ a:visited {
 .border {
     background-color: white;
     flex: 1;
+}
+.withBorder {
+    border: 1px solid darkgreen;
+    margin: 0 0 -1px -1px;
+}
+.withBorderFirst {
+    border: 1px solid darkgreen;
+    margin: -1px 0 -1px -1px;
 }
 div.form_element > select[multiple=multiple] {
     height: 150px;

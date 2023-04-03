@@ -9,6 +9,7 @@ use App\Form\ParentCategoryType;
 use App\Manager\CategoryManager;
 use App\Manager\FormManager;
 use App\Repository\CategoryRepository;
+use Doctrine\DBAL\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -86,20 +87,21 @@ class SubFormController extends AbstractController
      * @param Request $request
      * @param CategoryManager $manager
      * @return JsonResponse
+     * @throws Exception
      */
     #[Route('/genealogy/category/name/save', name: 'category_name_save', methods: ['POST'])]
     public function saveCategoryName(Request $request, CategoryManager $manager, FormManager $formManager): JsonResponse
     {
-        $content = [];
         if ($request->getContentTypeFormat() === 'json' && $request->getMethod('POST')) {
             $content = json_decode($request->getContent(), true);
             $manager->retrieveCategoryByID($content['id']);
 
-            if ($content['name'] !== $manager->getCategory()->getName()) {
-                $manager->getCategory()->setName($content['name']);
-                $manager->getEntityManager()->persist($manager->getCategory());
-                $manager->getEntityManager()->flush();
-            }
+            $manager->getCategory()->setName($content['name']);
+            $manager->getCategory()->setSortName($content['sortName']);
+            $manager->getCategory()->setAka($content['aka']);
+            $manager->getCategory()->setDisplayName($content['displayName']);
+            $manager->getEntityManager()->persist($manager->getCategory());
+            $manager->getEntityManager()->flush();
 
             $manager->writeCategoryDiscriminator($content['categoryType']);
         }

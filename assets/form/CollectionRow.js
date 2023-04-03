@@ -1,24 +1,13 @@
 'use strict';
 
-import React, {Fragment} from "react"
+import React from "react"
 import PropTypes from 'prop-types'
-import {FormElement, HelpText, FormElementLabel} from './InputRow'
-import {getRequiredAttribute, getChoices} from './ChoiceRow'
+import {getChoices} from './ChoiceRow'
 import Autocomplete from "./Autocomplete";
 import {getForm, } from "./ChoiceRow";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro';
-import styled from 'styled-components';
-
-const OrangeSpan = styled.span`
-    color: Orange;
-`
-export const DarkGreenListP = styled.p`
-    color: #003300;
-    line-height: 17px;
-    padding-left: 10px;
-    margin: 1px 0;
-`
+import {FormElement, DarkGreenListP, FormElementLabel, HelpText, OrangeSpan} from "../component/StyledCSS";
 
 
 export default function CollectionRow(props) {

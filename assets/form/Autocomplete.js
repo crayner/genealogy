@@ -2,39 +2,8 @@
 
 import React, { Component, Fragment } from "react";
 import PropTypes from 'prop-types';
-import {FormElementInput} from "./InputRow";
-import styled from 'styled-components';
+import {FormElementInput, NoSuggestions, Suggestion, SuggestionActive, SuggestionList} from "../component/StyledCSS";
 
-const NoSuggestions = styled.div`
-    color: #003300;
-    padding: 0.5rem;
-`
-const SuggestionList = styled.ul`
-    border: 1px solid #003300;
-    border-top-width: 0;
-    list-style: none;
-    margin-top: 0;
-    margin-left: 5px;
-    max-height: 150px;
-    overflow-y: auto;
-    padding-left: 0;
-    width: 100%;
-`
-const Suggestion = styled.li`
-    line-height: 17px;
-    &:hover {
-        background-color: #003300;
-        color: white;
-        cursor: pointer;
-        font-weight: 700;
-    }
-`
-const SuggestionActive = styled.li`
-    background-color: #003300;
-    color: white;
-    cursor: pointer;
-    font-weight: 700;
-`
 
 export default function Autocomplete(props) {
     const {

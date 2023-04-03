@@ -3,7 +3,7 @@
 import React, {Fragment} from 'react'
 import PropTypes from 'prop-types'
 import OpenFormSection from "./OpenFormSection";
-import {DarkGreenP} from "./CategoryApp";
+import {DarkGreenP} from "../component/StyledCSS";
 
 export default function RenderCategoryParents(props) {
     const {

@@ -160,6 +160,10 @@ class CategoryManager
         $result = [
             'id' => $this->getCategory()->getId(),
             'name' => $this->getCategory()->getName(),
+            'displayName' => $this->getCategory()->getDisplayName(),
+            'sortName' => $this->getCategory()->getSortName(),
+            'aka' => $this->getCategory()->getAka(),
+            'location' => $this->getCategory()->getLocation() instanceof Category ? $this->getCategory()->getLocation()->getDisplayName() : '',
         ];
         foreach ($this->getCategory()->getIndividuals() as $q => $individual) {
             $result['individuals'][] = $individual->toArray();
@@ -183,10 +187,13 @@ class CategoryManager
         $resolver->setRequired([
             'id',
             'name',
+            'sortName',
+            'aka',
+            'displayName',
+            'location',
         ]);
 
         $result = $resolver->resolve($result);
-        dump($result);
         return $result;
     }
 

@@ -2,28 +2,8 @@
 
 import React from "react"
 import PropTypes from 'prop-types'
-import styled from 'styled-components';
+import {FormElementInput, FormElementLabel, HelpText, FormElement} from "../component/StyledCSS";
 
-export const FormElement = styled.div`
-    flex: 1;
-    margin-right: 6px;
-    padding-bottom: 3px;
-    border-bottom: 1px solid #003300;
-`
-export const FormElementInput = styled.input`
-    height: 25px;
-    width: 100%;
-    border-radius: 10px;
-    border: 1px solid #003300;
-`
-export const FormElementLabel = styled.label`
-    font-weight: bold;
-    color: #003300;
-`
-export const HelpText = styled.div`
-    font-style: italic;
-    color: #003300;
-`
 export default function InputRow(props) {
     const {
         form,

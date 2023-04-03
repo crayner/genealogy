@@ -6,7 +6,7 @@ import InputRow from "./InputRow";
 import ChoiceRow from "./ChoiceRow";
 import SubmitForm from "./SubmitForm";
 import CollectionRow from "./CollectionRow";
-import {SidebarForm} from "../category/SidebarManager";
+import {SidebarForm} from "../component/StyledCSS";
 
 export default function FormRender(props) {
     const {

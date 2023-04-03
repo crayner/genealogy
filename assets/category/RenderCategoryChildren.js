@@ -2,8 +2,7 @@
 
 import React, {Fragment} from 'react'
 import PropTypes from 'prop-types'
-import {DarkGreenP} from "./CategoryApp";
-import {H3} from "../component/StyledCSS";
+import {DarkGreenP, H3} from "../component/StyledCSS";
 
 export default function RenderCategoryChildren(props) {
     const {

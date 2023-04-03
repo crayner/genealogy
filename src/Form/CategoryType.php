@@ -57,7 +57,26 @@ class CategoryType extends AbstractType
                     'help' => 'categoryTypeHelp',
                     'help_translation_parameters' => ['category' => basename(get_class($options['data'])) ?: 'Category'],
                 ]
-            );
+            )
+            ->add('aka', TextType::class,
+                [
+                    'label' => 'Alternate Names (AKA)',
+                    'help' => 'A list of alternate names for this category, separated by "|".'
+                ]
+            )
+            ->add('displayName', TextType::class,
+                [
+                    'label' => 'Display Name',
+                    'help' => 'The display name will default to the name of the category.'
+                ]
+            )
+            ->add('sortName', TextType::class,
+                [
+                    'label' => 'Sort Name',
+                    'help' => 'The sort name is used by the system to sort lists of which this category is a part. It defaults to the category name.'
+                ]
+            )
+        ;
         if ($options['data'] instanceof Location) {
             $builder
                 ->add('location', EntityType::class,
@@ -159,7 +178,7 @@ class CategoryType extends AbstractType
         $resolver->setAllowedTypes('remove', ['string', 'null']);
         $resolver->setAllowedTypes('fetch', ['array', 'null']);
         $template = $options['template'];
-        $template['name']['elements'] = ['name', 'categoryType'];
+        $template['name']['elements'] = ['name', 'categoryType', 'displayName', 'aka', 'sortName'];
         $template['name']['action'] = '/genealogy/category/name/save';
         $template['name']['name'] = 'name';
 

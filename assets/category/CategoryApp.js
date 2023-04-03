@@ -8,14 +8,10 @@ import { setFormElement, getFormElementById, followUrl, buildFormData } from "..
 import {fetchJson} from '../Component/fetchJson'
 import {initialiseSections} from "./SectionsManager";
 import OpenFormSection from "./OpenFormSection";
-import styled from "styled-components";
-import { Sidebar, Main, MainContainer, H3, Border, FlexboxContainer } from '../component/StyledCSS';
+import {Sidebar, Main, MainContainer, H3, Border, FlexboxContainer, Theme} from '../component/StyledCSS';
 import RenderCategoryParents from "./RenderCategoryParents";
 import RenderCategoryChildren from "./RenderCategoryChildren";
-
-export const DarkGreenP = styled.p`
-    color: #003300;
-`
+import RenderTable from "./RenderTable";
 
 export default class CategoryApp extends Component {
     constructor(props) {
@@ -257,38 +253,45 @@ export default class CategoryApp extends Component {
 
     render() {
         return (
-            <FlexboxContainer>
-                <Border />
-                <Main>
-                    <MainContainer>
-                    <H3>{this.translations['Category']}: { this.state.category.name } <OpenFormSection sectionName={'name'} translations={this.translations} handleOpenForm={this.handleOpenForm} /></H3>
-                        <RenderCategoryParents translations={this.translations}
-                                               parents={(typeof this.state.category.parents === "undefined") ? [] : this.state.category.parents}
-                                               handleOpenForm={this.handleOpenForm}
+            <Theme>
+                <FlexboxContainer>
+                    <Border />
+                    <Main>
+                        <MainContainer>
+                        <H3>{this.translations['Category']}: { this.state.category.name } <OpenFormSection sectionName={'name'} translations={this.translations} handleOpenForm={this.handleOpenForm} /></H3>
+                            <RenderCategoryParents translations={this.translations}
+                                                   parents={(typeof this.state.category.parents === "undefined") ? [] : this.state.category.parents}
+                                                   handleOpenForm={this.handleOpenForm}
+                            />
+                        </MainContainer>
+                        <RenderCategoryChildren translations={this.translations}
+                                                children={this.state.category.childrenCategories}
                         />
-                    </MainContainer>
-                    <RenderCategoryChildren translations={this.translations}
-                                            children={this.state.category.childrenCategories}
-                    />
-                    <IndividualList
-                        translations={this.translations}
-                        individuals={this.state.category.individuals}
-                        {...this.functions}
-                    />
-                </Main>
-                <Sidebar>
-                    <SidebarManager
-                        category={this.state.category}
-                        translations={this.translations}
-                        form={this.state.form}
-                        functions={this.functions}
-                        sections={this.state.sections}
-                        messages={this.state.messages}
-                        clearMessage={this.clearMessage}
-                    />
-                </Sidebar>
-                <Border />
-            </FlexboxContainer>
+                        <RenderTable translations={this.translations}
+                                     category={this.state.category}
+                                     handleOpenForm={this.handleOpenForm}
+                                     section={'name'}
+                        />
+                        <IndividualList
+                            translations={this.translations}
+                            individuals={this.state.category.individuals}
+                            {...this.functions}
+                        />
+                    </Main>
+                    <Sidebar className={'craig'}>
+                        <SidebarManager
+                            category={this.state.category}
+                            translations={this.translations}
+                            form={this.state.form}
+                            functions={this.functions}
+                            sections={this.state.sections}
+                            messages={this.state.messages}
+                            clearMessage={this.clearMessage}
+                        />
+                    </Sidebar>
+                    <Border />
+                </FlexboxContainer>
+            </Theme>
         );
     }
 }

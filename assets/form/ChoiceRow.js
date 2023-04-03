@@ -2,8 +2,8 @@
 
 import React from "react";
 import PropTypes from 'prop-types';
-import {FormElement, HelpText, FormElementLabel} from './InputRow';
 import Autocomplete from "./Autocomplete";
+import {FormElement, FormElementLabel, HelpText} from "../component/StyledCSS";
 
 export default function ChoiceRow(props) {
     const {
@@ -32,7 +32,7 @@ export default function ChoiceRow(props) {
     //onChange={(e) => handleChange(e, form)} type={form.type} id={form.id} name={form.full_name} required={getRequiredAttribute(form)} defaultValue={form.value}
 
     return (
-        <FormElement>
+        <FormElement className={'craig'}>
             <FormElementLabel htmlFor={form.id}>{form.label}</FormElementLabel>
             <br />
             <Autocomplete

@@ -20,6 +20,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
     'migrant' => Migrant::class,
     'theme' => Theme::class])]
 #[ORM\UniqueConstraint(name: 'category_name', columns: ['name'])]
+#[ORM\HasLifecycleCallbacks]
 class Category
 {
     /**
@@ -50,8 +51,20 @@ class Category
     /**
      * @var string
      */
+    #[ORM\Column(name: 'display_name', type: 'string', length: 255, unique: false, nullable: true, options: ['collate' => 'utf8mb4_unicode_ci'])]
+    var ?string $displayName = null;
+
+    /**
+     * @var string
+     */
+    #[ORM\Column(name: 'sort_name', type: 'string', length: 255, unique: false, nullable: true, options: ['collate' => 'utf8mb4_unicode_ci'])]
+    var ?string $sortName = null;
+
+    /**
+     * @var string
+     */
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['collate' => 'utf8mb4_unicode_ci'])]
-    var string $aka;
+    var ?string $aka = null;
 
     /**
      * @var Collection
@@ -197,6 +210,55 @@ class Category
     }
 
     /**
+     * @return string|null
+     */
+    public function getDisplayName(): ?string
+    {
+        return is_null($this->displayName) ? $this->getName() : $this->displayName;
+    }
+
+    /**
+     * @param string|null $displayName
+     * @return Category
+     */
+    public function setDisplayName(?string $displayName): Category
+    {
+        $this->displayName = $displayName;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSortName(): ?string
+    {
+        return is_null($this->sortName) ? $this->getName() : $this->sortName;
+    }
+
+    /**
+     * @param string|null $sortName
+     * @return Category
+     */
+    public function setSortName(?string $sortName): Category
+    {
+        $this->sortName = $sortName;
+        return $this;
+    }
+
+    /**
+     * @return Category
+     */
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function clearNames(): Category
+    {
+        if ($this->sortName === $this->name || empty($this->sortName)) $this->setSortName(null);
+        if ($this->displayName === $this->name || empty($this->displayName)) $this->setDisplayName(null);
+
+        return $this;
+    }
+
+    /**
      * @return Collection
      */
     public function getParents(): Collection
@@ -337,18 +399,18 @@ class Category
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getAka(): string
+    public function getAka(): ?string
     {
-        return $this->aka;
+        return $this->aka ?? null;
     }
 
     /**
-     * @param string $aka
-     * @return Category
+     * @param string|null $aka
+     * @return $this
      */
-    public function setAka(string $aka): Category
+    public function setAka(?string $aka): Category
     {
         $this->aka = $aka;
         return $this;

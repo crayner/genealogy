@@ -4,22 +4,10 @@ import React, {Fragment} from 'react'
 import PropTypes from 'prop-types'
 import FormRender from "../form/FormRender";
 import {extractFormSection} from "../form/FormManager";
-import styled from 'styled-components';
-import { FormElement } from "../form/InputRow";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro';
+import {SidebarForm, SuccessP, FormElement} from "../component/StyledCSS";
 
-export const SidebarForm = styled.div`
-    display: flex;
-    flex-direction: column;
-    border-bottom: 1px solid #003300;
-    padding: 5px 0 10px;
-`
-export const SuccessP = styled.p`
-    line-height: 17px;
-    max-height: 17px;
-    color: darkgreen;
-`
 
 export default function SidebarManager(props) {
     const {
@@ -72,7 +60,7 @@ export default function SidebarManager(props) {
         <Fragment>
             {renderMessages()}
             {renderSubForms()}
-            <SidebarForm>
+            <SidebarForm >
                 <FormElement><a href={`https://www.wikitree.com/wiki/Category:${category.name}`}  target="_blank">{category.name} {translations['onWikitree']}</a></FormElement>
             </SidebarForm>
         </Fragment>
