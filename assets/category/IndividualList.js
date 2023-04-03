@@ -2,6 +2,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
+import {Column1, DarkGreenA, DarkGreenBold, DarkGreenP, Flexbox, H3, MainContainer} from "../component/StyledCSS";
 
 export default function IndividualList(props) {
     const {
@@ -25,24 +26,24 @@ export default function IndividualList(props) {
                 details += ' - ' + person.deathDate;
             }
 
-            return (<p key={i}><strong><a href={person.path} target={'_blank'}>{person.name}</a></strong>{details}.</p>);
+            return (<DarkGreenP key={i}><DarkGreenBold><DarkGreenA href={person.path} target={'_blank'}>{person.name}</DarkGreenA></DarkGreenBold>{details}.</DarkGreenP>);
         })
 
         var lists = [];
         for (let i = 0; i < result.length; i += count) {
             const chuck = result.slice(i, i + count);
-            lists.push(<div key={i}>{chuck}</div>);
+            lists.push(<Column1 key={i}>{chuck}</Column1>);
         }
-        return (<div className={'flexbox'}>{lists}</div>);
+        return (<Flexbox>{lists}</Flexbox>);
     }
 
 
 
     return (
-        <div className={'main-container'}>
-            <h3>{translations.IndividualProfiles}</h3>
+        <MainContainer>
+            <H3>{translations.IndividualProfiles}</H3>
             {renderIndividuals()}
-        </div>
+        </MainContainer>
     );
 }
 
