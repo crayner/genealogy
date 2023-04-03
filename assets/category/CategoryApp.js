@@ -58,6 +58,19 @@ export default class CategoryApp extends Component {
         if (element.type === 'collection') {
             if (value.value !== '') {
                 if (typeof element.value !== 'object') element.value = [];
+                // Check for duplicate choice.
+                let ok = true;
+                Object.keys(element.value).map(i => {
+                    const item = element.value[i];
+                    if (Number(value.value) === Number(item.value) || value.value === item.value) ok = false;
+                })
+                if (!ok) {
+                    window.alert(this.translations.alreadyParentCategory)
+                    this.setState({
+                        form: {...this.form},
+                    });
+                    return;
+                }
                 element.value.push(value);
                 element.data = element.value;
                 this.form = setFormElement(element, this.form);
@@ -65,7 +78,7 @@ export default class CategoryApp extends Component {
                 if (element.name === 'parents') {
                     Object.keys(element.value).map(i => {
                         const item = element.value[i];
-                        let ok = false;
+                        ok = false;
                         Object.keys(category['parents']).map(o => {
                             let parent = category['parents'][o];
                             if (parent.id === Number(item.value)) {
@@ -73,12 +86,12 @@ export default class CategoryApp extends Component {
                             }
                         })
                         if (!ok) {
-                            let parent = {
+                            const parent = {
                                 id: Number(item.value),
                                 name: item.label,
                                 path: "/genealogy/category/" + Number(item.value) + "/modify",
                             };
-                            category['parents'].push(parent);
+                            category['parents'][parent.id] = parent;
                         }
                      })
                 }
@@ -178,6 +191,7 @@ export default class CategoryApp extends Component {
                     form: this.form,
                     messages: messages,
                     sections: sections,
+                    category: data.category,
                 });
             }).catch(error => {
             console.error('Error: ', error)

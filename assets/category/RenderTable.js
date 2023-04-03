@@ -5,6 +5,8 @@ import PropTypes from 'prop-types'
 import * as Style from "../component/StyledCSS";
 import OpenFormSection from "./OpenFormSection";
 import {DarkGreenBold, DarkGreenCentreP, DarkGreenP, Theme} from "../component/StyledCSS";
+import AddressRow from "./AddressRow";
+import LocationRow from "./LocationRow";
 const reactStringReplace = require('react-string-replace');
 
 export default function RenderTable(props) {
@@ -21,17 +23,6 @@ export default function RenderTable(props) {
         return (<Fragment><br />{translations.aka}: <DarkGreenBold>{result}</DarkGreenBold></Fragment>)
     }
 
-    function getLocation() {
-        console.log(category.location, typeof category.location);
-        if (typeof category.location === 'string' && category.location === '') return null;
-        return (<Style.FlexContainer>
-            <Style.Column2 />
-            <Style.Column2 className={'withBorder'}><DarkGreenP>{translations.location}:</DarkGreenP></Style.Column2>
-            <Style.Column6 className={'withBorder'}><DarkGreenP>{category.location}</DarkGreenP></Style.Column6>
-            <Style.Column2 />
-        </Style.FlexContainer>);
-    }
-
     return (
         <Style.Container>
             <Style.FlexContainer>
@@ -43,7 +34,8 @@ export default function RenderTable(props) {
                 /></span>{aka()}</DarkGreenCentreP></Style.Column6>
                 <Style.Column2 />
             </Style.FlexContainer>
-            {getLocation()}
+            <LocationRow translations={translations} category={category} handleOpenForm={handleOpenForm} />
+            <AddressRow translations={translations} category={category} handleOpenForm={handleOpenForm} />
         </Style.Container>
     );
 

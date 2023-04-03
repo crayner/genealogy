@@ -78,7 +78,7 @@ class SubFormController extends AbstractController
         return new JsonResponse(
             [
                 'form' => $formManager->extractForm($form),
-                'category' => $manager->getCategoryProps(),
+                'category' => $manager->getCategoryProps($form->createView()->vars['template']),
             ],
             200);
     }
@@ -110,7 +110,7 @@ class SubFormController extends AbstractController
         return new JsonResponse(
             [
                 'form' => $formManager->extractForm($form),
-                'category' => $manager->getCategoryProps(),
+                'category' => $manager->getCategoryProps($form->createView()->vars['template']),
                 'message' => [
                     'id' => Uuid::v4(),
                     'text' => 'Data Save: Success!',
@@ -136,13 +136,6 @@ class SubFormController extends AbstractController
             $manager->retrieveCategoryByID($content['id']);
 
             $ok = false;
-            if (array_key_exists('location', $content) && $content['location'] > 0) {
-                $location = $manager->getCategoryRepository()->findOneBy(['id' => $content['location']]);
-                if ($location instanceof Location) {
-                    $ok = $manager->getCategory()->addParent($location);
-                }
-            }
-
             if (is_array($content['parents'])) {
                 foreach ($content['parents'] as $parent) {
                     $item = $manager->getCategoryRepository()->findOneBy(['id' => $parent['value']]);
@@ -161,7 +154,7 @@ class SubFormController extends AbstractController
         return new JsonResponse(
             [
                 'form' => $formManager->extractForm($form),
-                'category' => $manager->getCategoryProps(),
+                'category' => $manager->getCategoryProps($form->createView()->vars['template']),
                 'message' => [
                     'id' => Uuid::v4(),
                     'text' => 'Data Save: Success!',
@@ -190,6 +183,44 @@ class SubFormController extends AbstractController
                 'choices' => $repository->findBySearch($content['search']),
             ],
             200);
-
     }
+    /**
+     * @param Request $request
+     * @param CategoryManager $manager
+     * @return JsonResponse
+     * @throws Exception
+     */
+    #[Route('/genealogy/category/address/save', name: 'category_address_save', methods: ['POST'])]
+    public function saveCategoryAddress(Request $request, CategoryManager $manager, FormManager $formManager): JsonResponse
+    {
+        if ($request->getContentTypeFormat() === 'json' && $request->getMethod('POST')) {
+            $content = json_decode($request->getContent(), true);
+            $manager->retrieveCategoryByID($content['id']);
+            $manager->getCategory()->setAddress($content['address']);
+            if (array_key_exists('location', $content) && $content['location'] > 0) {
+                $location = $manager->getCategoryRepository()->findOneBy(['id' => $content['location']]);
+                if ($location instanceof Location) {
+                    $manager->getCategory()->addParent($location);
+                }
+            }
+            $manager->getEntityManager()->persist($manager->getCategory());
+            $manager->getEntityManager()->flush();
+        }
+        $form = $this->createForm(CategoryType::class, $manager->getCategory(), ['method' => 'POST', 'manager' => $manager]);
+
+        return new JsonResponse(
+            [
+                'form' => $formManager->extractForm($form),
+                'category' => $manager->getCategoryProps($form->createView()->vars['template']),
+                'message' => [
+                    'id' => Uuid::v4(),
+                    'text' => 'Data Save: Success!',
+                    'timeOut' => '5000',
+                    'level' => 'success',
+                ],
+            ],
+            200);
+    }
+
+
 }

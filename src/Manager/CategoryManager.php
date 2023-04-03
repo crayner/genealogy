@@ -155,7 +155,7 @@ class CategoryManager
     /**
      * @return string
      */
-    public function getCategoryProps(): array
+    public function getCategoryProps(array $template): array
     {
         $result = [
             'id' => $this->getCategory()->getId(),
@@ -164,6 +164,8 @@ class CategoryManager
             'sortName' => $this->getCategory()->getSortName(),
             'aka' => $this->getCategory()->getAka(),
             'location' => $this->getCategory()->getLocation() instanceof Category ? $this->getCategory()->getLocation()->getDisplayName() : '',
+            'address' => $this->getCategory()->getAddress() ?? '',
+            'template' => $template,
         ];
         foreach ($this->getCategory()->getIndividuals() as $q => $individual) {
             $result['individuals'][] = $individual->toArray();
@@ -191,6 +193,8 @@ class CategoryManager
             'aka',
             'displayName',
             'location',
+            'address',
+            'template',
         ]);
 
         $result = $resolver->resolve($result);

@@ -326,12 +326,15 @@ Individual Profiles: 'Individual Profiles'
     'open':
         'name': 'Open Name Form'
         'parents': 'Open Parents Category Form'
+        'address': 'Open Address Form'
     'close':
         'name': 'Close Name Form'
         'parents': 'Close Parents Category Form'
+        'address': 'Close Address Form'
     'save':
         'name': 'Save Name Form'
         'parents': 'Save Parents Category Form'
+        'address': 'Save Address Form'
 'You must select a category type': 'You must select a category type'
 'onWikitree': 'on Wikitree'
 'Save Category': 'Save Category'
@@ -351,4 +354,7 @@ Individual Profiles: 'Individual Profiles'
 'Alternate Names (AKA)': 'Alternate Names (AKA)'
 'A list of alternate names for this category, separated by "|".': 'A list of alternate names for this category, separated by "|".'
 'location': 'Location'
+'Address': 'Address'
+'This item requires an address': 'This item requires an address.'
+'alreadyParentCategory': 'The selected category is already a parent category.'
 

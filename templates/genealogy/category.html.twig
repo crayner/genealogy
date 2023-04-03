@@ -35,11 +35,13 @@
     {% set translations = translations|merge({'name': 'name'|trans}) %}
     {% set translations = translations|merge({'aka': 'aka'|trans}) %}
     {% set translations = translations|merge({'location': 'location'|trans}) %}
+    {% set translations = translations|merge({'Address': 'Address'|trans}) %}
+    {% set translations = translations|merge({'alreadyParentCategory': 'alreadyParentCategory'|trans}) %}
     <script>
         window.CATEGORY_PROPS = [];
         window.CATEGORY_PROPS.translations = {{ translations|json_encode|raw }};
-        window.CATEGORY_PROPS.category = {{ manager.categoryProps|json_encode|raw }};
         window.CATEGORY_PROPS.form = {{ full_form|json_encode|raw }}
+        window.CATEGORY_PROPS.category = {{ manager.categoryProps(form.vars.template)|json_encode|raw }};
     </script>
 
     {{ encore_entry_script_tags('category') }}

@@ -5,8 +5,6 @@ use App\Entity\Category;
 use App\Entity\Location;
 use App\Form\DataTransformer\EntityCollectionTransformer;
 use App\Manager\CategoryManager;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -94,7 +92,14 @@ class CategoryType extends AbstractType
                         'label' => 'Location',
                         'help' => 'This item requires a location',
                     ]
-                );
+                )
+                ->add('address', TextType::class,
+                    [
+                        'label' => 'Address',
+                        'help' => 'This item requires an address',
+                    ]
+                )
+            ;
         } else {
             $builder
                 ->add('location', HiddenType::class,
@@ -170,6 +175,7 @@ class CategoryType extends AbstractType
         $resolver->setDefaults([
             'remove' => null,
             'fetch' => null,
+            'display' => true,
         ]);
 
         $resolver->setAllowedTypes('elements', 'array');
@@ -177,16 +183,23 @@ class CategoryType extends AbstractType
         $resolver->setAllowedTypes('name', 'string');
         $resolver->setAllowedTypes('remove', ['string', 'null']);
         $resolver->setAllowedTypes('fetch', ['array', 'null']);
+        $resolver->setAllowedTypes('display', 'boolean');
+
         $template = $options['template'];
         $template['name']['elements'] = ['name', 'categoryType', 'displayName', 'aka', 'sortName'];
         $template['name']['action'] = '/genealogy/category/name/save';
         $template['name']['name'] = 'name';
 
-        $template['parents']['elements'] = ['location', 'parents'];
+        $template['parents']['elements'] = ['parents'];
         $template['parents']['action'] = '/genealogy/category/parents/save';
         $template['parents']['remove'] = '/genealogy/category/parent/{category}/{parent}/remove';
         $template['parents']['fetch']['parents'] = '/genealogy/category/parents/fetch';
         $template['parents']['name'] = 'parents';
+
+        $template['address']['elements'] = ['address', 'location'];
+        $template['address']['action'] = '/genealogy/category/address/save';
+        $template['address']['name'] = 'address';
+        $template['address']['display'] = $form->getData() instanceof Location && get_class($form->getData()) !== Location::class;
 
         foreach ($template as $name => $x) {
             $template[$name] = $resolver->resolve($x);
