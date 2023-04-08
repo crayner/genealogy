@@ -118,15 +118,17 @@ class FormManager
             $vars['children'][] = $this->extractForm($child);
         }
 
-        if (is_object($vars['value'])){
+        if (is_object($vars['value'])) {
             $vars['data_id'] = null;
             $vars['data_toString'] = null;
-            if (method_exists($vars['value'], 'getId'))
+            $vars['data_toArray'] = null;
+            if (method_exists($vars['value'], 'getId')) {
                 $vars['data_id'] = $vars['value']->getId();
-            if (method_exists($vars['value'], 'getName'))
+            } elseif (method_exists($vars['value'], 'getName')) {
                 $vars['data_toString'] = $vars['value']->getName();
-            if (method_exists($vars['value'], '__toString'))
+            } elseif (method_exists($vars['value'], '__toString')) {
                 $vars['data_toString'] = $vars['value']->__toString();
+            }
         }
         if (isset($vars['prototype']) && $vars['prototype'] instanceof FormView)
         {
@@ -189,6 +191,9 @@ class FormManager
             if ($vars['expanded'])
                 $vars['children'] = [];
         }
+
+
+
         if (array_key_exists('errors', $vars) && $vars['errors']->count() > 0) {
             $errors = [];
             foreach($vars['errors'] as $error)
@@ -720,7 +725,7 @@ class FormManager
 
         foreach($vars['choices'] as $choice)
         {
-            if (is_object($choice->data))
+            if (is_object($choice->data) && !is_a($choice->data, \BackedEnum::class, true))
                 return $vars['choices'];
             $choice->label = $this->getTranslator()->trans($choice->label, [], $domain);
         }

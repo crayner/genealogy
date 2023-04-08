@@ -8,7 +8,7 @@ import { setFormElement, getFormElementById, followUrl, buildFormData } from "..
 import {fetchJson} from '../Component/fetchJson'
 import {initialiseSections} from "./SectionsManager";
 import OpenFormSection from "./OpenFormSection";
-import {Sidebar, Main, MainContainer, H3, Border, FlexboxContainer, Theme} from '../component/StyledCSS';
+import {Sidebar, Main, MainContainer, H3, H4, Border, FlexboxContainer, Theme} from '../component/StyledCSS';
 import RenderCategoryParents from "./RenderCategoryParents";
 import RenderCategoryChildren from "./RenderCategoryChildren";
 import RenderTable from "./RenderTable";
@@ -24,8 +24,7 @@ export default class CategoryApp extends Component {
             messages: [],
         };
         this.translations = props.translations;
-        this.form = props.form
-
+        this.form = props.form;
         this.handleChange = this.handleChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.handleOpenForm = this.handleOpenForm.bind(this);
@@ -34,6 +33,7 @@ export default class CategoryApp extends Component {
         this.removeParentCategory = this.removeParentCategory.bind(this);
         this.fetchChoices = this.fetchChoices.bind(this);
         this.clearMessage = this.clearMessage.bind(this);
+        this.removeExistingItem = this.removeExistingItem.bind(this);
 
         this.functions = {
             handleChange: this.handleChange,
@@ -44,11 +44,11 @@ export default class CategoryApp extends Component {
             removeParentCategory: this.removeParentCategory,
             fetchChoices: this.fetchChoices,
             clearMessage: this.clearMessage,
+            removeExistingItem: this.removeExistingItem,
         }
     }
 
     handleChange(event, form) {
-        console.log(event, form)
         const { value } = event.target;
         event.value = value;
         this.elementChange(event, form.id, form.type)
@@ -142,7 +142,6 @@ export default class CategoryApp extends Component {
             setFormElement(element, this.form)
             this.setState({
                 form: this.form,
-                template: this.template,
                 sections: this.state.sections
             })
         }
@@ -154,8 +153,32 @@ export default class CategoryApp extends Component {
             sections[name] = false;
         })
         sections[sectionName] = true;
+        let form = this.state.form;
+        if (sectionName === 'webpages') {
+            let webpages;
+            let prototype;
+            let index;
+            form.children.map((child,i) => {
+                if (child.id === 'category_webpages') {
+                    webpages = child;
+                    prototype = {...child.prototype}
+                    index = i;
+                }
+            });
+            prototype.full_name = prototype.full_name.replace('__name__', 'prototype');
+            prototype.name = prototype.name.replace('__name__', 'prototype');
+            prototype.id = prototype.id.replace('__name__', 'prototype');
+            prototype.children.map((child,i) => {
+                child = {...child};
+                child.full_name = child.full_name.replace('__name__', 'prototype');
+                child.id = child.id.replace('__name__', 'prototype');
+                prototype.children[i] = {...child}
+            })
+            webpages.children.push(prototype);
+            form[index] = {...prototype};
+        }
         this.setState({
-            form: this.state.form,
+            form: form,
             template: this.state.template,
             sections: sections,
         })
@@ -234,8 +257,32 @@ export default class CategoryApp extends Component {
         })
     }
 
+    removeExistingItem(section, item){
+        const template = this.form.template[section];
+        const value = this.form.value.id;
+
+        let remove = template['remove'];
+        remove = remove.replace('{category}', value);
+        remove = remove.replace('{item}', item);
+        fetchJson(
+            remove,
+            {method: 'POST', body: JSON.stringify(this.data)},false)
+            .then(data => {
+                this.form = data.form;
+                this.setState({
+                    form: data.form,
+                    category: data.category
+                })
+            }).catch(error => {
+            console.error('Error: ', error);
+            this.setState({
+                form: this.form,
+            })
+        })
+    }
+
     fetchChoices(suggestions, form, section, search) {
-        if (search.length < 3) return suggestions;
+        if (typeof this.form.template[section].fetch === 'boolean' || search.length < 3) return suggestions;
         if (typeof this.form.template[section].fetch[form.name] === 'string') {
             fetchJson(
                 this.form.template[section].fetch[form.name],
@@ -275,7 +322,8 @@ export default class CategoryApp extends Component {
                     <Border />
                     <Main>
                         <MainContainer>
-                        <H3>{this.translations['Category']}: { this.state.category.name } <OpenFormSection sectionName={'name'} translations={this.translations} handleOpenForm={this.handleOpenForm} /></H3>
+                            <H3>{this.translations['name']}: { this.state.category.displayName } </H3>
+                            <H4>{this.translations['Category']}: { this.state.category.name } <OpenFormSection sectionName={'name'} translations={this.translations} handleOpenForm={this.handleOpenForm} /></H4>
                             <RenderCategoryParents translations={this.translations}
                                                    parents={(typeof this.state.category.parents === "undefined") ? [] : this.state.category.parents}
                                                    handleOpenForm={this.handleOpenForm}
@@ -295,7 +343,7 @@ export default class CategoryApp extends Component {
                             {...this.functions}
                         />
                     </Main>
-                    <Sidebar className={'craig'}>
+                    <Sidebar>
                         <SidebarManager
                             category={this.state.category}
                             translations={this.translations}
@@ -303,7 +351,7 @@ export default class CategoryApp extends Component {
                             functions={this.functions}
                             sections={this.state.sections}
                             messages={this.state.messages}
-                            clearMessage={this.clearMessage}
+                            template={this.state.template}
                         />
                     </Sidebar>
                     <Border />

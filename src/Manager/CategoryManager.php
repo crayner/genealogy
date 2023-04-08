@@ -180,6 +180,10 @@ class CategoryManager
             $result['childrenCategories'][$q] = $child->toArray();
             $result['childrenCategories'][$q]['path'] = $this->getRouter()->generate('genealogy_category_modify', ['category' => $child->getId()]);
         }
+        foreach($this->getCategory()->getWebpages() as $page) {
+            $result['webpages'][] = $page->__toArray();
+        }
+
         $resolver = new OptionsResolver();
         $resolver->setDefaults([
             'parents' => [],
@@ -195,6 +199,7 @@ class CategoryManager
             'location',
             'address',
             'template',
+            'webpages',
         ]);
 
         $result = $resolver->resolve($result);

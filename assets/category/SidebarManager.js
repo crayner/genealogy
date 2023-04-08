@@ -17,7 +17,6 @@ export default function SidebarManager(props) {
         functions,
         sections,
         messages,
-        clearMessage,
     } = props;
 
     function splitFormToSections() {
@@ -39,6 +38,7 @@ export default function SidebarManager(props) {
                 identifier={i}
                 key={i}
                 sections={sections}
+                functions={functions}
                 {...functions}
             />)
         })
@@ -77,5 +77,4 @@ SidebarManager.propTypes = {
         PropTypes.array,
         PropTypes.object,
     ]).isRequired,
-    clearMessage: PropTypes.func.isRequired
 };

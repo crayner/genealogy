@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
@@ -18,6 +19,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
     'collection' => \App\Entity\Collection::class,
     'location' => Location::class,
     'migrant' => Migrant::class,
+    'structure' => Structure::class,
     'theme' => Theme::class])]
 #[ORM\UniqueConstraint(name: 'category_name', columns: ['name'])]
 #[ORM\HasLifecycleCallbacks]
@@ -119,10 +121,11 @@ class Category
     var ?DescriptionPage $descriptionPage;
 
     /**
-     * @var ArrayCollection|array
+     * @var Collection
      */
-    #[ORM\Column(name: 'webpages', type: 'json', options: ['collate' => 'utf8mb4_unicode_ci'])]
-    var ArrayCollection|array $webpages;
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: CategoryWebPage::class, cascade: ['persist'])]
+    #[ORM\OrderBy(['prompt' => 'ASC', 'name' => 'ASC'])]
+    var Collection $webpages;
 
     /**
      * @var string
@@ -284,7 +287,7 @@ class Category
     public function addParent(Category $category): bool
     {
         if ($this->getParents()->contains($category)) return false;
-        if ($this->isEqual($category)) return false;
+        if ($this->isEqualTo($category)) return false;
         $this->getParents()->add($category);
         return true;
     }
@@ -417,23 +420,44 @@ class Category
     }
 
     /**
-     * @param bool $array
-     * @return ArrayCollection|array
+     * @return Collection
      */
-    public function getWebpages(bool $array = true): ArrayCollection|array
+    public function getWebpages(): Collection
     {
-        if (!isset($this->webpages)) $this->webpages = new ArrayCollection();
-        if ($array) $this->webpages->toArray();
+        if ($this->webpages instanceof PersistentCollection && !$this->webpages->isInitialized()) $this->webpages->initialize();
+
         return $this->webpages;
     }
 
     /**
-     * @param ArrayCollection|array $webpages
+     * @param Collection $webpages
      * @return Category
      */
-    public function setWebpages(ArrayCollection|array $webpages): Category
+    public function setWebpages(Collection $webpages): Category
     {
-        $this->webpages = is_array($webpages) ? new ArrayCollection($webpages) : $webpages;
+        $this->webpages = $webpages;
+        return $this;
+    }
+
+    /**
+     * @param CategoryWebPage $page
+     * @return Category
+     */
+    public function addWebpage(CategoryWebPage $page): Category
+    {
+        if ($this->getWebpages()->containsKey($page->getName(true)) || $this->getWebpages()->contains($page)) return $this;
+        $page->setCategory($this);
+        $this->getWebpages()->add($page);
+        return $this;
+    }
+
+    /**
+     * @param CategoryWebPage $page
+     * @return Category
+     */
+    public function removeWebPage(CategoryWebPage $page): Category
+    {
+        if ($this->getWebpages()->contains($page)) $this->getWebpages()->removeElement($page);
         return $this;
     }
 
@@ -516,10 +540,42 @@ class Category
      * @param Category $category
      * @return bool
      */
-    public function isEqual(Category $category): bool
+    public function isEqualTo(Category $category): bool
     {
         if ($category->getId() === $this->getId()) return true;
         if ($category->getName() === $this->getName()) return true;
+        return false;
+    }
+
+    /**
+     * @param array $webpage
+     * @return array
+     */
+    static public function testWebpageDefinition(array $webpage): array
+    {
+        $resolver = new OptionsResolver();
+        $resolver->setRequired(
+            [
+                'prompt',
+                'url',
+                'name',
+            ]
+        );
+        $resolver->setDefaults(
+            [
+                'key' => null,
+                'test' => null,
+            ]
+        );
+        $resolver->setAllowedTypes('prompt', 'string');
+        return $resolver->resolve($webpage);
+    }
+
+    public function getExistingWebpage(mixed $value): CategoryWebPage|bool
+    {
+        foreach ($this->getWebpages() as $webpage) {
+            if ($value === $webpage->getName()) return $webpage;
+        }
         return false;
     }
 }

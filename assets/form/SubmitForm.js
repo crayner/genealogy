@@ -2,22 +2,10 @@
 
 import React from "react"
 import PropTypes from 'prop-types'
-import styled from 'styled-components';
+import * as Style from "../component/StyledCSS";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro';
 
-export const FormElement = styled.div`
-    flex: 1;
-`
-export const DarkGreenSpan = styled.span`
-    color: #003300;
-`
-export const DarkRedSpan = styled.span`
-    color: darkred;
-`
-const Rightp = styled.p` 
-    text-align: right;
-`
 export default function SubmitForm(props) {
     const {
         onClick,
@@ -29,12 +17,12 @@ export default function SubmitForm(props) {
     const closeFormTitle = 'template.close.' + section;
     const saveFormTitle = 'template.save.' + section;
     return (
-        <FormElement>
-            <Rightp>
-                <DarkGreenSpan><FontAwesomeIcon icon={solid('piggy-bank')} onClick={(e) => onClick(section)} title={translations[saveFormTitle]} /></DarkGreenSpan>&nbsp;&nbsp;
-                <DarkRedSpan><FontAwesomeIcon icon={solid('circle-xmark')} title={translations[closeFormTitle]} onClick={(e) => closeForm(section)} /></DarkRedSpan>
-            </Rightp>
-        </FormElement>
+        <Style.FormElement>
+            <Style.Rightp>
+                <Style.DarkGreenSpan><FontAwesomeIcon icon={solid('piggy-bank')} onClick={(e) => onClick(section)} title={translations[saveFormTitle]} /></Style.DarkGreenSpan>&nbsp;&nbsp;
+                <Style.DarkRedSpan><FontAwesomeIcon icon={solid('circle-xmark')} title={translations[closeFormTitle]} onClick={(e) => closeForm(section)} /></Style.DarkRedSpan>
+            </Style.Rightp>
+        </Style.FormElement>
     )
 }
 

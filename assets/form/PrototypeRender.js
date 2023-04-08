@@ -1,14 +1,16 @@
 'use strict';
 
-import React from "react"
+import React, {Fragment} from "react"
 import PropTypes from 'prop-types'
 import InputRow from "./InputRow";
 import ChoiceRow from "./ChoiceRow";
 import SubmitForm from "./SubmitForm";
 import CollectionRow from "./CollectionRow";
-import {SidebarForm} from "../component/StyledCSS";
+import {DarkGreenBold, DarkGreenListP, FormElement, OrangeSpan} from "../component/StyledCSS";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro';
 
-export default function FormRender(props) {
+export default function PrototypeRender(props) {
     const {
         form,
         translations,
@@ -16,14 +18,18 @@ export default function FormRender(props) {
         handleSave,
         handleClose,
         handleFormChange,
+        removeExistingItem,
         fetchChoices,
         identifier,
-        sections,
-        functions,
+        template,
     } = props;
 
     function displayChildrenForms(children) {
         return children.map((child, i) => {
+            child = {...child};
+            child.id = child.id.replace('__name__', 'prototype');
+            child.full_name = child.full_name.replace('__name__', 'prototype');
+            child.name = child.name.replace('__name__', 'prototype');
             switch (child.type) {
                 case 'text':
                     return <InputRow key={i} translations={translations} form={child} handleChange={handleChange} />
@@ -39,8 +45,6 @@ export default function FormRender(props) {
                                           translations={translations}
                                           form={child}
                                           section={identifier}
-                                          functions={functions}
-                                          template={form.template[identifier]}
                                           {...functions}
                     />
                     break;
@@ -53,28 +57,48 @@ export default function FormRender(props) {
         })
     }
 
-    if (sections[identifier]) {
-        return (
-            <SidebarForm id={'form_' + form.name + '_' + identifier}>
-                <form className={form.name} method={form.method} id={form.id}>
-                    {displayChildrenForms(form.children)}
-                </form>
-            </SidebarForm>
-        );
-    } else {
-        return null;
+    function displayExistingChildren(children) {
+        let result = [];
+        children.filter((item, i) => {
+            if (item.name !== 'prototype') {
+                let label;
+                let value;
+                let name;
+                item.children.map((child, i) => {
+                    if (template.prototype['label'] === child.name) {
+                        label = child.value;
+                    }
+                    if (template.prototype['value'] === child.name) {
+                        value = child.value;
+                    }
+                    if (child.name === 'name') {
+                        name = child.value;
+                    }
+                });
+                if (label.length === 0) label = name;
+                result.push(<DarkGreenListP key={i}>{label} <OrangeSpan><FontAwesomeIcon icon={solid('eraser')} onClick={(e) => removeExistingItem(identifier, value)} title={translations[removeExistingItem]} /></OrangeSpan></DarkGreenListP>);
+            }
+        })
+        return (<FormElement>{result}</FormElement>);
     }
+
+    return (
+        <Fragment>
+            {displayChildrenForms(form.prototype.children)}
+            {displayExistingChildren(form.children)}
+        </Fragment>
+    );
 }
 
-FormRender.propTypes = {
+PrototypeRender.propTypes = {
     translations: PropTypes.object.isRequired,
-    functions: PropTypes.object.isRequired,
+    template: PropTypes.object.isRequired,
     handleChange: PropTypes.func.isRequired,
     handleFormChange: PropTypes.func.isRequired,
+    removeExistingItem: PropTypes.func.isRequired,
     handleSave: PropTypes.func.isRequired,
     handleClose: PropTypes.func.isRequired,
     fetchChoices: PropTypes.func.isRequired,
     identifier: PropTypes.string.isRequired,
     form: PropTypes.object.isRequired,
-    sections: PropTypes.object.isRequired,
 }

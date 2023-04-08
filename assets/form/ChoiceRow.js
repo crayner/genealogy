@@ -32,7 +32,7 @@ export default function ChoiceRow(props) {
     //onChange={(e) => handleChange(e, form)} type={form.type} id={form.id} name={form.full_name} required={getRequiredAttribute(form)} defaultValue={form.value}
 
     return (
-        <FormElement className={'craig'}>
+        <FormElement>
             <FormElementLabel htmlFor={form.id}>{form.label}</FormElementLabel>
             <br />
             <Autocomplete

@@ -4,10 +4,11 @@ import React from "react"
 import PropTypes from 'prop-types'
 import {getChoices} from './ChoiceRow'
 import Autocomplete from "./Autocomplete";
-import {getForm, } from "./ChoiceRow";
+import {getForm} from "./ChoiceRow";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro';
 import {FormElement, DarkGreenListP, FormElementLabel, HelpText, OrangeSpan} from "../component/StyledCSS";
+import PrototypeRender from "./PrototypeRender";
 
 
 export default function CollectionRow(props) {
@@ -17,10 +18,16 @@ export default function CollectionRow(props) {
         handleFormChange,
         removeParentCategory,
         fetchChoices,
-        section
+        functions,
+        section,
+        template,
     } = props;
 
+    if (typeof form.prototype === 'object' && typeof form.prototype.children === 'object') {
+        return <PrototypeRender translations={translations} identifier={section} form={form} template={template} {...functions} />
+    }
     function getExistingValues(form){
+        console.log(form);
         if (typeof form.value === 'object' && form.value.length > 0) {
             return Object.keys(form.value).map(i => {
                 const item = form.value[i];
@@ -52,6 +59,8 @@ export default function CollectionRow(props) {
 
 CollectionRow.propTypes = {
     translations: PropTypes.object.isRequired,
+    template: PropTypes.object.isRequired,
+    functions: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
     handleFormChange: PropTypes.func.isRequired,
     removeParentCategory: PropTypes.func.isRequired,

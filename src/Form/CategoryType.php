@@ -123,6 +123,13 @@ class CategoryType extends AbstractType
                     ],
                 ]
             )
+            ->add('webpages', CollectionType::class,
+                [
+                    'label' => 'Web Pages',
+                    'entry_type' => CategoryWebPageType::class,
+                    'allow_add' => true,
+                ]
+            )
             ->add('doit', SubmitType::class,
                 [
                     'label' => $options['doit'],
@@ -142,6 +149,8 @@ class CategoryType extends AbstractType
     {
         $resolver->setDefaults(
             [
+                'data_class' => Category::class,
+                'translation_domain' => 'messages',
                 'doit' => 'Save Category',
                 'template' => [],
             ]
@@ -174,15 +183,16 @@ class CategoryType extends AbstractType
         ]);
         $resolver->setDefaults([
             'remove' => null,
-            'fetch' => null,
+            'fetch' => false,
             'display' => true,
+            'prototype' => [],
         ]);
 
         $resolver->setAllowedTypes('elements', 'array');
         $resolver->setAllowedTypes('action', 'string');
         $resolver->setAllowedTypes('name', 'string');
         $resolver->setAllowedTypes('remove', ['string', 'null']);
-        $resolver->setAllowedTypes('fetch', ['array', 'null']);
+        $resolver->setAllowedTypes('fetch', ['array', 'boolean']);
         $resolver->setAllowedTypes('display', 'boolean');
 
         $template = $options['template'];
@@ -200,6 +210,12 @@ class CategoryType extends AbstractType
         $template['address']['action'] = '/genealogy/category/address/save';
         $template['address']['name'] = 'address';
         $template['address']['display'] = $form->getData() instanceof Location && get_class($form->getData()) !== Location::class;
+
+        $template['webpages']['elements'] = ['webpages'];
+        $template['webpages']['action'] = '/genealogy/category/webpages/save';
+        $template['webpages']['name'] = 'webpages';
+        $template['webpages']['prototype'] = ['value' => 'id', 'label' => 'prompt'];
+        $template['webpages']['remove'] = '/genealogy/category/webpage/{category}/{item}/remove';
 
         foreach ($template as $name => $x) {
             $template[$name] = $resolver->resolve($x);

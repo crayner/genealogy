@@ -32,8 +32,12 @@ export const Column2 = styled.div`
     flex: 2;
 `
 export const Column6 = styled.div`
+  background-color: ${props => props.theme.bg};
+  flex: 6;
+`
+export const Column8 = styled.div`
     background-color: ${props => props.theme.bg};
-    flex: 6;
+    flex: 8;
 `
 export const Main = styled.div`
     flex:6;
@@ -52,6 +56,12 @@ export const Container = styled.div`
 `
 export const H3 = styled.h3`
   font-size: 1.25em;
+  font-weight: bold;
+  color: ${props => props.theme.fg};
+  margin: 10px 0 0;
+`
+export const H4 = styled.h4`
+  font-size: 1.1em;
   font-weight: bold;
   color: ${props => props.theme.fg};
   margin: 10px 0 0;
@@ -161,5 +171,13 @@ export const DarkGreenA = styled.a`
     &:visited {
         color: ${props => props.theme.fg};
     }
-
+`
+export const DarkGreenSpan = styled.span`
+    color: ${props => props.theme.fg};
+`
+export const DarkRedSpan = styled.span`
+    color: darkred;
+`
+export const Rightp = styled.p` 
+    text-align: right;
 `

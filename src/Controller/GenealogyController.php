@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\CategoryWebPage;
+use App\Entity\Enum\CemeteryWebPageEnum;
 use App\Entity\Individual;
 use App\Form\CategoryType;
 use App\Manager\CategoryManager;
@@ -135,6 +137,7 @@ class GenealogyController extends AbstractController
     {
         if (!$manager->getCategory() instanceof Category) $manager->setCategory($category);
         $form = $this->createForm(CategoryType::class, $manager->getCategory(), ['method' => 'POST', 'manager' => $manager]);
+
         return $this->render('genealogy/category.html.twig', [
             'manager' => $manager,
             'full_form' => $formManager->extractForm($form),

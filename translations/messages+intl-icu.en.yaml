@@ -327,14 +327,17 @@ Individual Profiles: 'Individual Profiles'
         'name': 'Open Name Form'
         'parents': 'Open Parents Category Form'
         'address': 'Open Address Form'
+        'webpages': 'Open Web Page Form'
     'close':
         'name': 'Close Name Form'
         'parents': 'Close Parents Category Form'
         'address': 'Close Address Form'
+        'webpages': 'Close Web Page Form'
     'save':
         'name': 'Save Name Form'
         'parents': 'Save Parents Category Form'
         'address': 'Save Address Form'
+        'webpages': 'Save Web Page Form'
 'You must select a category type': 'You must select a category type'
 'onWikitree': 'on Wikitree'
 'Save Category': 'Save Category'
@@ -357,4 +360,21 @@ Individual Profiles: 'Individual Profiles'
 'Address': 'Address'
 'This item requires an address': 'This item requires an address.'
 'alreadyParentCategory': 'The selected category is already a parent category.'
-
+'webpages': 'Web Pages'
+Web Page Name: Web Page Name
+Defined Web Pages: Defined Web Pages
+Web Page Text / Prompt: Web Page Text / Prompt
+Web Address (URL): Web Address (URL)
+Unique Identifier: Unique Identifier
+Web Pages: Web Pages
+webpage:
+    cemetery:
+        fag: Find a Grave
+        billiongraves: Billion Graves
+        aci: Australian Cemetery Index
+        cwgc: Commonwealth War Graves Commission
+    category:
+        notused: Not Used
+        wikipedia: Wikipedia
+__name__label__: __name__label__
+'removeExistingItem': 'Remove this item.'

@@ -2,6 +2,8 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\CategoryWebPage;
+use App\Entity\Enum\CemeteryWebPageEnum;
 use App\Entity\Location;
 use App\Form\CategoryType;
 use App\Form\LocationType;
@@ -222,5 +224,83 @@ class SubFormController extends AbstractController
             200);
     }
 
+    /**
+     * @param Request $request
+     * @param CategoryManager $manager
+     * @param FormManager $formManager
+     * @return JsonResponse
+     */
+    #[Route('/genealogy/category/webpages/save', name: 'category_webpages_save', methods: ['POST'])]
+    public function saveWebPages(Request $request, CategoryManager $manager, FormManager $formManager): JsonResponse
+    {
+        if ($request->getContentTypeFormat() === 'json' && $request->getMethod('POST')) {
+            $content = json_decode($request->getContent(), true);
+            $manager->retrieveCategoryByID($content['id']);
+            foreach ($content['webpages'] as $webpageData) {
+                $webpage = $manager->getCategory()->getExistingWebpage($webpageData['name']);
+                if ($webpage === false) $webpage = $manager->getCategory()->getExistingWebpage($webpageData['definedType']);
+                if ($webpage === false) $webpage = new CategoryWebPage();
+                if ($webpageData['definedType'] === []) $webpageData['definedType'] = 'NotUsed';
+                $webpage->setCategory($manager->getCategory())
+                    ->setName($webpageData['name'])
+                    ->setKey($webpageData['key'])
+                    ->setUrl($webpageData['url'])
+                    ->setPrompt($webpageData['prompt'])
+                    ->setDefinedType(CemeteryWebPageEnum::from($webpageData['definedType']))
+                ;
+                $manager->getCategory()->addWebpage($webpage);
+                $manager->getEntityManager()->persist($webpage);
+            }
+            $manager->getEntityManager()->persist($manager->getCategory());
+            $manager->getEntityManager()->flush();
+        }
+        $form = $this->createForm(CategoryType::class, $manager->getCategory(), ['method' => 'POST', 'manager' => $manager]);
 
+        return new JsonResponse(
+            [
+                'form' => $formManager->extractForm($form),
+                'category' => $manager->getCategoryProps($form->createView()->vars['template']),
+                'message' => [
+                    'id' => Uuid::v4(),
+                    'text' => 'Data Save: Success!',
+                    'timeOut' => '5000',
+                    'level' => 'success',
+                ],
+            ],
+            200);
+    }
+
+    /**
+     * @param FormManager $formManager
+     * @param CategoryManager $manager
+     * @param CategoryWebPage $item
+     * @param Category $category
+     * @param Request $request
+     * @return JsonResponse
+     */
+    #[Route('/genealogy/category/webpage/{category}/{item}/remove', name: 'category_webpage_remove', methods: ['POST'])]
+    public function removeWebpage(FormManager $formManager, CategoryManager $manager, CategoryWebPage $item, Category $category, Request $request): JsonResponse
+    {
+        if ($request->getContentTypeFormat() === 'json' && $request->getMethod('POST')) {
+            $category->removeWebPage($item);
+            $manager->getEntityManager()->remove($item);
+            $manager->getEntityManager()->persist($category);
+            $manager->getEntityManager()->flush();
+            $manager->setCategory($category);
+        }
+        $form = $this->createForm(CategoryType::class, $manager->getCategory(), ['method' => 'POST', 'manager' => $manager]);
+        return new JsonResponse(
+            [
+                'form' => $formManager->extractForm($form),
+                'category' => $manager->getCategoryProps($form->createView()->vars['template']),
+                'message' => [
+                    'id' => Uuid::v4(),
+                    'text' => 'Data Save: Success!',
+                    'timeOut' => '5000',
+                    'level' => 'success',
+                ],
+            ],
+            200);
+
+    }
 }

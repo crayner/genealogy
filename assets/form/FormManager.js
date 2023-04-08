@@ -49,8 +49,22 @@ export function buildFormData(data, form) {
             data[child.name] = buildFormData({}, child);
         })
         return data;
+    } else if (form.children.length > 0 && form.allow_add === true) {
+        form.children.map((child, i) => {
+            data[i] = [];
+            child.children.map((subForm, o) => {
+                if (typeof subForm.value === 'object' && typeof subForm.value.id !== 'undefined') {
+                    data[i][subForm.name] = subForm.value.id;
+                } else {
+                    data[i][subForm.name] = subForm.value;
+                }
+            });
+        });
+        return Object.keys(data).map(i => {
+            return {...data[i]};
+        });
     } else {
-        if (typeof form.value === 'object' && form.value !== null) {
+        if (typeof form.value === 'object' && form.value !== null && form.value.length > 1) {
             let result = form.value.map(value => {
                 return value;
             })
@@ -61,9 +75,9 @@ export function buildFormData(data, form) {
 }
 
 export function extractFormSection(form, section) {
-    var result = {...form};
+    let result = {...form};
     result.children = [];
-    var elements = form.template[section].elements;
+    let  elements = form.template[section].elements;
     result.children = form.children.filter((child, i) => {
         if (child.name === 'id') {
             return child;

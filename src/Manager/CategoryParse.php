@@ -30,7 +30,7 @@ class CategoryParse
     /**
      * @var int
      */
-    static int $bulk = 199;
+    static int $bulk = 20;
 
     /**
      * @param EntityManagerInterface $entityManager
@@ -69,8 +69,6 @@ class CategoryParse
                         }
                         $this->getEntityManager()->flush();
                     } catch (UniqueConstraintViolationException $e) {
-
-                        dump($lines);
                         throw $e;
                     } catch (\ErrorException $e) {
                         return $offset;
@@ -88,7 +86,6 @@ class CategoryParse
             }
             $this->getEntityManager()->flush();
         } catch (UniqueConstraintViolationException $e) {
-            dump($lines);
             throw $e;
         } catch (\ErrorException $e) {
             return $offset;

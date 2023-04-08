@@ -37,6 +37,8 @@
     {% set translations = translations|merge({'location': 'location'|trans}) %}
     {% set translations = translations|merge({'Address': 'Address'|trans}) %}
     {% set translations = translations|merge({'alreadyParentCategory': 'alreadyParentCategory'|trans}) %}
+    {% set translations = translations|merge({'webpages': 'webpages'|trans}) %}
+    {% set translations = translations|merge({'removeExistingItem': 'removeExistingItem'|trans}) %}
     <script>
         window.CATEGORY_PROPS = [];
         window.CATEGORY_PROPS.translations = {{ translations|json_encode|raw }};
