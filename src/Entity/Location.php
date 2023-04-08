@@ -10,7 +10,7 @@ class Location extends Category
     /**
      * @var string|null
      */
-    #[ORM\Column(type: 'string', length: 32, nullable: true)]
+    #[ORM\Column(type: 'string', length: 48, nullable: true)]
     var ?string $coordinates;
 
     /**

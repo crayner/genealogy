@@ -198,7 +198,9 @@ class SubFormController extends AbstractController
         if ($request->getContentTypeFormat() === 'json' && $request->getMethod('POST')) {
             $content = json_decode($request->getContent(), true);
             $manager->retrieveCategoryByID($content['id']);
-            $manager->getCategory()->setAddress($content['address']);
+            $manager->getCategory()
+                ->setAddress($content['address'])
+                ->setCoordinates($content['coordinates']);
             if (array_key_exists('location', $content) && $content['location'] > 0) {
                 $location = $manager->getCategoryRepository()->findOneBy(['id' => $content['location']]);
                 if ($location instanceof Location) {

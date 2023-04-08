@@ -22,7 +22,7 @@ class Structure extends Location
     /**
      * @var string
      */
-    #[ORM\Column(name: 'structure_type', type: 'enum', length: 32, nullable: false, options: ['default' => 'unknown'])]
+    #[ORM\Column(name: 'structure_type', type: 'string', length: 32, nullable: false, options: ['default' => 'unknown'])]
     var string $structureType = 'unknown';
 
     static public array $structureTypeList = [

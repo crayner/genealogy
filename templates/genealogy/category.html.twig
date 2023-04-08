@@ -39,6 +39,10 @@
     {% set translations = translations|merge({'alreadyParentCategory': 'alreadyParentCategory'|trans}) %}
     {% set translations = translations|merge({'webpages': 'webpages'|trans}) %}
     {% set translations = translations|merge({'removeExistingItem': 'removeExistingItem'|trans}) %}
+    {% set translations = translations|merge({'map': 'map'|trans}) %}
+    {% set translations = translations|merge({'google': 'google'|trans}) %}
+    {% set translations = translations|merge({'openstreetmaps': 'openstreetmaps'|trans}) %}
+    {% set translations = translations|merge({'alternatename': 'alternatename'|trans}) %}
     <script>
         window.CATEGORY_PROPS = [];
         window.CATEGORY_PROPS.translations = {{ translations|json_encode|raw }};

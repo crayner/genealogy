@@ -99,6 +99,12 @@ class CategoryType extends AbstractType
                         'help' => 'This item requires an address',
                     ]
                 )
+                ->add('coordinates', TextType::class,
+                    [
+                        'label' => 'Coordinates',
+                        'help' => 'GPS Longitude and Latitude separated by a comma.'
+                    ]
+                )
             ;
         } else {
             $builder
@@ -206,7 +212,7 @@ class CategoryType extends AbstractType
         $template['parents']['fetch']['parents'] = '/genealogy/category/parents/fetch';
         $template['parents']['name'] = 'parents';
 
-        $template['address']['elements'] = ['address', 'location'];
+        $template['address']['elements'] = ['address', 'location', 'coordinates'];
         $template['address']['action'] = '/genealogy/category/address/save';
         $template['address']['name'] = 'address';
         $template['address']['display'] = $form->getData() instanceof Location && get_class($form->getData()) !== Location::class;

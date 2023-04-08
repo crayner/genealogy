@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class Cemetery extends Location
 {
+    CONST ZOOM_LEVEL = 17;
+
     /**
      * @var Location|null
      */
@@ -18,18 +20,6 @@ class Cemetery extends Location
      */
     #[ORM\Column(type: 'string', nullable: true)]
     var ?string $address;
-
-    /**
-     * @var string|null
-     */
-    #[ORM\Column(name: 'find_a_grave', type: 'string', length: 32, nullable: true)]
-    var ?string $findAGrave;
-
-    /**
-     * @var string|null
-     */
-    #[ORM\Column(name: 'billion_graves', type: 'string', length: 32, nullable: true)]
-    var ?string $billionGraves;
 
     /**
      * @return Location|null
@@ -77,42 +67,6 @@ class Cemetery extends Location
     }
 
     /**
-     * @return string|null
-     */
-    public function getFindAGrave(): ?string
-    {
-        return $this->findAGrave;
-    }
-
-    /**
-     * @param string|null $findAGrave
-     * @return Cemetery
-     */
-    public function setFindAGrave(?string $findAGrave): Cemetery
-    {
-        $this->findAGrave = $findAGrave;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getBillionGraves(): ?string
-    {
-        return $this->billionGraves;
-    }
-
-    /**
-     * @param string|null $billionGraves
-     * @return Cemetery
-     */
-    public function setBillionGraves(?string $billionGraves): Cemetery
-    {
-        $this->billionGraves = $billionGraves;
-        return $this;
-    }
-
-    /**
      * @return Cemetery
      */
     #[ORM\PrePersist]
@@ -122,5 +76,13 @@ class Cemetery extends Location
         if (is_null($this->getLocation())) return $this;
         $this->addParent($this->getLocation());
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getZoomLevel(): int
+    {
+        return Cemetery::ZOOM_LEVEL;
     }
 }

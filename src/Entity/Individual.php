@@ -126,7 +126,7 @@ class Individual
     /**
      * @var string|null
      */
-    #[ORM\Column(type: 'enum', length: 16, nullable: true)]
+    #[ORM\Column(type: 'string', length: 16, nullable: true)]
     private ?string $gender;
 
     /**

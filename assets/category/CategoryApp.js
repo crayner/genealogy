@@ -12,6 +12,7 @@ import {Sidebar, Main, MainContainer, H3, H4, Border, FlexboxContainer, Theme} f
 import RenderCategoryParents from "./RenderCategoryParents";
 import RenderCategoryChildren from "./RenderCategoryChildren";
 import RenderTable from "./RenderTable";
+import AlternateNames from "./AlternateNames";
 
 export default class CategoryApp extends Component {
     constructor(props) {
@@ -323,6 +324,7 @@ export default class CategoryApp extends Component {
                     <Main>
                         <MainContainer>
                             <H3>{this.translations['name']}: { this.state.category.displayName } </H3>
+                            <AlternateNames translations={this.translations} category={this.state.category} />
                             <H4>{this.translations['Category']}: { this.state.category.name } <OpenFormSection sectionName={'name'} translations={this.translations} handleOpenForm={this.handleOpenForm} /></H4>
                             <RenderCategoryParents translations={this.translations}
                                                    parents={(typeof this.state.category.parents === "undefined") ? [] : this.state.category.parents}

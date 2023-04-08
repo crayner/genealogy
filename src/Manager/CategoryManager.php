@@ -162,10 +162,11 @@ class CategoryManager
             'name' => $this->getCategory()->getName(),
             'displayName' => $this->getCategory()->getDisplayName(),
             'sortName' => $this->getCategory()->getSortName(),
-            'aka' => $this->getCategory()->getAka(),
+            'aka' => $this->getCategory()->getAka() ?: false,
             'location' => $this->getCategory()->getLocation() instanceof Category ? $this->getCategory()->getLocation()->getDisplayName() : '',
             'address' => $this->getCategory()->getAddress() ?? '',
             'template' => $template,
+            'coordinates' => [],
         ];
         foreach ($this->getCategory()->getIndividuals() as $q => $individual) {
             $result['individuals'][] = $individual->toArray();
@@ -183,6 +184,20 @@ class CategoryManager
         foreach($this->getCategory()->getWebpages() as $page) {
             $result['webpages'][] = $page->__toArray();
         }
+        $coord = $this->getCategory()->getCoordinates();
+        if (is_string($coord)) $coord = explode(',', $coord);
+        if (count($coord) >= 2) {
+            $coord['longitude'] = trim($coord[1]);
+            $coord['latitude'] = trim($coord[0]);
+            unset($coord[0],$coord[1]);
+        }
+        if (count($coord) === 3) {
+            $coord['zoom'] = trim($coord[2]);
+            unset($coord[2]);
+        } else {
+            $coord['zoom'] = $this->getCategory()->getZoomLevel();
+        }
+        $result['coordinates'] = is_array($coord) ? $coord : false;
 
         $resolver = new OptionsResolver();
         $resolver->setDefaults([
@@ -200,6 +215,7 @@ class CategoryManager
             'address',
             'template',
             'webpages',
+            'coordinates',
         ]);
 
         $result = $resolver->resolve($result);

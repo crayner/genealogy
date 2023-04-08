@@ -47,7 +47,7 @@ class Marriage
     /**
      * @var string|null
      */
-    #[ORM\Column(name: 'marriage_date_status', type: 'enum', length: 32, nullable: true)]
+    #[ORM\Column(name: 'marriage_date_status', type: 'string', length: 32, nullable: true)]
     private ?string $marriageDateStatus;
 
     /**
@@ -72,7 +72,7 @@ class Marriage
     #[ORM\Column(type: 'string', nullable: true, length: 191)]
     private ?string $location;
 
-    #[ORM\Column(name: 'location_status', type: 'enum', length: 32, nullable: true)]
+    #[ORM\Column(name: 'location_status', type: 'string', length: 32, nullable: true)]
     private ?string $locationStatus;
 
     /**

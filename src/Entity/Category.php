@@ -94,7 +94,7 @@ class Category
     /**
      * @var string
      */
-    #[ORM\Column(name: 'show_profiles', type: 'enum', length: 16, nullable: false, options: ['default' => 'Yes', 'collate' => 'utf8mb4_unicode_ci'])]
+    #[ORM\Column(name: 'show_profiles', type: 'string', length: 16, nullable: false, options: ['default' => 'Yes', 'collate' => 'utf8mb4_unicode_ci'])]
     var string $showProfiles;
 
     /**
