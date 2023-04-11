@@ -28,7 +28,7 @@ export default function RenderTable(props) {
         <Style.Container>
             <Style.FlexContainer>
                 <Style.Column2 />
-                <Style.Column2 className={'centre withBorderFirst'}><Style.DarkGreenCentreP><Style.DarkGreenBold>{translations.map}:</Style.DarkGreenBold></Style.DarkGreenCentreP></Style.Column2>
+                <Style.Column2 className={'centre withBorderFirst'}><Style.DarkGreenCentreP><Style.DarkGreenBold>{translations.name}:</Style.DarkGreenBold></Style.DarkGreenCentreP></Style.Column2>
                 <Style.Column6 className={'withBorderFirst'}><Style.DarkGreenCentreP className={'centre'}><Style.DarkGreenBold>{category.displayName}</Style.DarkGreenBold> <span style={{float: 'right', paddingRight: '0.5rem'}}><OpenFormSection sectionName={section}
                                                                                                                                                                       translations={translations}
                                                                                                                                                                       handleOpenForm={handleOpenForm}

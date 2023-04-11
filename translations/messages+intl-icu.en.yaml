@@ -379,7 +379,7 @@ webpage:
 __name__label__: __name__label__
 'removeExistingItem': 'Remove this item.'
 'Coordinates': 'Coordinates'
-'GPS Longitude and Latitude separated by a comma.': 'GPS Longitude and Latitude separated by a comma.'
+'GPS Longitude and Latitude separated by a comma.': 'GPS: Latitude, Longitude and (optional) zoom separated by a comma.'
 'map': 'Map'
 'google': 'Google'
 'openstreetmaps': 'OpenStreetMaps'

@@ -24,8 +24,10 @@ export default class CategoryApp extends Component {
             sections: initialiseSections(props.form.template),
             messages: [],
         };
+
         this.translations = props.translations;
         this.form = props.form;
+        this.search = props.search;
         this.handleChange = this.handleChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.handleOpenForm = this.handleOpenForm.bind(this);
@@ -323,9 +325,7 @@ export default class CategoryApp extends Component {
                     <Border />
                     <Main>
                         <MainContainer>
-                            <H3>{this.translations['name']}: { this.state.category.displayName } </H3>
-                            <AlternateNames translations={this.translations} category={this.state.category} />
-                            <H4>{this.translations['Category']}: { this.state.category.name } <OpenFormSection sectionName={'name'} translations={this.translations} handleOpenForm={this.handleOpenForm} /></H4>
+                            <H3>{this.translations['Category']}: { this.state.category.name } <OpenFormSection sectionName={'name'} translations={this.translations} handleOpenForm={this.handleOpenForm} /></H3>
                             <RenderCategoryParents translations={this.translations}
                                                    parents={(typeof this.state.category.parents === "undefined") ? [] : this.state.category.parents}
                                                    handleOpenForm={this.handleOpenForm}
@@ -367,4 +367,5 @@ CategoryApp.propTypes = {
     category: PropTypes.object.isRequired,
     translations: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
+    search: PropTypes.object.isRequired,
 }

@@ -7,11 +7,13 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
 class Location extends Category
 {
+    CONST ZOOM_LEVEL = 12;
+
     /**
      * @var string|null
      */
     #[ORM\Column(type: 'string', length: 48, nullable: true)]
-    var ?string $coordinates;
+    var ?string $coordinates = null;
 
     /**
      * @var \DateTimeImmutable|null
@@ -78,4 +80,13 @@ class Location extends Category
         $this->endDate = $endDate;
         return $this;
     }
+
+    /**
+     * @return int
+     */
+    public function getZoomLevel(): int
+    {
+        return Location::ZOOM_LEVEL;
+    }
+
 }
