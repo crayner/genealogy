@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Entity\CategoryWebPage;
 use App\Entity\Enum\CemeteryWebPageEnum;
 use App\Entity\Individual;
+use App\Form\CategorySearchType;
 use App\Form\CategoryType;
 use App\Manager\CategoryManager;
 use App\Manager\CategoryParse;

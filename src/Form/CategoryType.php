@@ -141,6 +141,22 @@ class CategoryType extends AbstractType
                     'label' => $options['doit'],
                 ]
             )
+            ->add('search', CollectionType::class,
+                [
+                    'label' => false,
+                    'help' => 'Search for a category.',
+                    'required' => false,
+                    'entry_type' => EntityType::class,
+                    'mapped' => false,
+                    'entry_options' => [
+                        'class' => Category::class,
+                        'choice_value' => 'id',
+                        'choice_label' => 'name',
+                        'choices' => [],
+                        'multiple' => false,
+                    ],
+                ]
+            )
         ;
         $builder->get('parents')
             ->addModelTransformer($this->transformer);
@@ -222,6 +238,11 @@ class CategoryType extends AbstractType
         $template['webpages']['name'] = 'webpages';
         $template['webpages']['prototype'] = ['value' => 'id', 'label' => 'prompt'];
         $template['webpages']['remove'] = '/genealogy/category/webpage/{category}/{item}/remove';
+
+        $template['search']['action'] = '/genealogy/category/{category}/modify';
+        $template['search']['name'] = 'search';
+        $template['search']['fetch']['search'] = '/genealogy/category/parents/fetch';
+        $template['search']['elements'] = ['search'];
 
         foreach ($template as $name => $x) {
             $template[$name] = $resolver->resolve($x);

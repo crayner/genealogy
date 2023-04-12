@@ -7,7 +7,7 @@ import {extractFormSection} from "../form/FormManager";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro';
 import {SidebarForm, SuccessP, FormElement} from "../component/StyledCSS";
-
+import CollectionRow from "../form/CollectionRow";
 
 export default function SidebarManager(props) {
     const {
@@ -17,6 +17,7 @@ export default function SidebarManager(props) {
         functions,
         sections,
         messages,
+        search,
     } = props;
 
     function splitFormToSections() {
@@ -56,11 +57,26 @@ export default function SidebarManager(props) {
         });
     }
 
+    function renderSearch() {
+        return (<SidebarForm>
+                <CollectionRow translations={translations}
+                               template={form.template}
+                               functions={functions}
+                               form={search}
+                               handleFormChange={functions.handleFormChange}
+                               removeParentCategory={functions.removeParentCategory}
+                               fetchChoices={functions.fetchChoices}
+                               section={'search'}
+                               />
+        </SidebarForm>)
+    }
+
     return (
         <Fragment>
+            {renderSearch()}
             {renderMessages()}
             {renderSubForms()}
-            <SidebarForm >
+            <SidebarForm>
                 <FormElement><a href={`https://www.wikitree.com/wiki/Category:${category.name}`}  target="_blank">{category.name} {translations['onWikitree']}</a></FormElement>
             </SidebarForm>
         </Fragment>
@@ -72,6 +88,7 @@ SidebarManager.propTypes = {
     functions: PropTypes.object.isRequired,
     translations: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
+    search: PropTypes.object.isRequired,
     sections: PropTypes.object.isRequired,
     messages: PropTypes.oneOfType([
         PropTypes.array,

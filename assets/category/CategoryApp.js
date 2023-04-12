@@ -1,5 +1,5 @@
 'use strict';
-import React, {Component, Fragment} from "react"
+import React, {Component} from "react"
 import PropTypes from 'prop-types'
 import IndividualList from "./IndividualList";
 import SidebarManager from "./SidebarManager";
@@ -12,22 +12,22 @@ import {Sidebar, Main, MainContainer, H3, H4, Border, FlexboxContainer, Theme} f
 import RenderCategoryParents from "./RenderCategoryParents";
 import RenderCategoryChildren from "./RenderCategoryChildren";
 import RenderTable from "./RenderTable";
-import AlternateNames from "./AlternateNames";
 
 export default class CategoryApp extends Component {
     constructor(props) {
         super(props);
+
+        this.form = props.form;
 
         this.state  = {
             category: props.category,
             form: props.form,
             sections: initialiseSections(props.form.template),
             messages: [],
+            search: this.extractSearchElement(),
         };
 
         this.translations = props.translations;
-        this.form = props.form;
-        this.search = props.search;
         this.handleChange = this.handleChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.handleOpenForm = this.handleOpenForm.bind(this);
@@ -57,8 +57,16 @@ export default class CategoryApp extends Component {
         this.elementChange(event, form.id, form.type)
     }
 
+    extractSearchElement() {
+        let search;
+        this.form.children.map((child, i) => {
+            if (child.name === 'search') search = child;
+        })
+        return search;
+    }
+
     handleFormChange(event, element, value) {
-        if (element.type === 'collection') {
+        if (element.type === 'collection' && element.name === 'parents') {
             if (value.value !== '') {
                 if (typeof element.value !== 'object') element.value = [];
                 // Check for duplicate choice.
@@ -111,6 +119,29 @@ export default class CategoryApp extends Component {
                 return;
             }
         }
+        if (element.type === 'collection' && element.name === 'search') {
+            if (element.value === null) {
+                element.value = event.target.value;
+            } else {
+                element.value += event.target.value;
+            }
+            if (typeof element.value === 'string') {
+                element.value = {value: element.value, label: ''}
+            }
+            if (element.state.userInput !== element.value.value) {
+                element.value.value = element.state.userInput;
+            }
+            if (element.value.value === value.label && value.label !== '') {
+                let url = this.form.template.search.action.replace('{category}', value.value);
+                window.open(url);
+            }
+            this.form = setFormElement(element, this.form);
+            this.setState({
+                form: this.form,
+                search: {...element},
+            });
+        }
+
 
         if (element.type === 'choice') {
             element.value = value.value;
@@ -294,7 +325,6 @@ export default class CategoryApp extends Component {
                     form.choices = data.choices
                     form.state.filteredSuggestions = data.choices
                     this.form = setFormElement(form, this.form);
-
                     this.setState({
                         form: this.form,
                     })
@@ -350,6 +380,7 @@ export default class CategoryApp extends Component {
                             category={this.state.category}
                             translations={this.translations}
                             form={this.state.form}
+                            search={this.state.search}
                             functions={this.functions}
                             sections={this.state.sections}
                             messages={this.state.messages}
@@ -367,5 +398,4 @@ CategoryApp.propTypes = {
     category: PropTypes.object.isRequired,
     translations: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
-    search: PropTypes.object.isRequired,
 }

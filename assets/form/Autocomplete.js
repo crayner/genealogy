@@ -4,7 +4,6 @@ import React, { Component, Fragment } from "react";
 import PropTypes from 'prop-types';
 import {FormElementInput, NoSuggestions, Suggestion, SuggestionActive, SuggestionList} from "../component/StyledCSS";
 
-
 export default function Autocomplete(props) {
     const {
         form,
