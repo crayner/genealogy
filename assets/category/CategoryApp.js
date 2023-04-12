@@ -133,7 +133,7 @@ export default class CategoryApp extends Component {
             }
             if (element.value.value === value.label && value.label !== '') {
                 let url = this.form.template.search.action.replace('{category}', value.value);
-                window.open(url);
+                window.open(url,  '_self');
             }
             this.form = setFormElement(element, this.form);
             this.setState({
@@ -182,11 +182,13 @@ export default class CategoryApp extends Component {
     }
 
     handleOpenForm(sectionName) {
+        console.log(sectionName);
         let sections = this.state.sections;
+        let section = sections[sectionName];
         Object.keys(sections).map(name => {
             sections[name] = false;
         })
-        sections[sectionName] = true;
+        sections[sectionName] = true ^ section;
         let form = this.state.form;
         if (sectionName === 'webpages') {
             let webpages;

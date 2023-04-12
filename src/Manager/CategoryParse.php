@@ -30,7 +30,7 @@ class CategoryParse
     /**
      * @var int
      */
-    static int $bulk = 20;
+    static int $bulk = 5;
 
     /**
      * @param EntityManagerInterface $entityManager

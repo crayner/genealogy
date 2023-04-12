@@ -54,10 +54,19 @@ enum CemeteryWebPageEnum: string
             CemeteryWebPageEnum::Wikipedia => [
                 'name' => 'Wikipedia',
                 'key' => 0,
-                'test' => "/([\d+]{1,6})/",
-                'url' => 'https://austcemindex.com/cemetery?cemid={cemetery}',
-                'prompt' => '{cemetery}'
+                'test' => "/Q([\d+]{1,6})/",
+                'url' => 'https://www.wikidata.org/wiki/Special:GoToLinkedPage?site=enwiki&itemid={wikidataid}',
+                'prompt' => '{wikidataid}'
             ],
         };
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNotUsed(): bool
+    {
+        if (CemeteryWebPageEnum::NotUsed === $this) return true;
+        return false;
     }
 }

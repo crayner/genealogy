@@ -2,6 +2,7 @@
 namespace App\Entity;
 
 use App\Entity\Enum\CemeteryWebPageEnum;
+use App\Entity\Enum\LocationWebPageEnum;
 use App\Repository\CategoryWebPagesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -195,7 +196,7 @@ class CategoryWebPage
     #[ORM\PrePersist]
     public function buildWebpage(): CategoryWebPage
     {
-        if ($this->getDefinedType() !== null && $this->getDefinedType() !== CemeteryWebPageEnum::NotUsed) {
+        if ($this->getDefinedType() !== null && !$this->getDefinedType()->isNotUsed()) {
             $definition = $this->getDefinedType()->getDefinition();
             $this->setName($definition['name'])
                 ->setUrl(str_replace($definition['prompt'], $this->getKey(), $definition['url']));
@@ -207,12 +208,13 @@ class CategoryWebPage
     }
 
     /**
-     * @return CemeteryWebPageEnum[]
+     * @return array
      */
-    public function getDefinedWebpages()
+    public function getDefinedWebpages(): array
     {
        return match (basename(get_class($this->getCategory()))) {
-            'Cemetery' => CemeteryWebPageEnum::cases(),
+           'Cemetery' => CemeteryWebPageEnum::cases(),
+           'Location' => LocationWebPageEnum::cases(),
         };
     }
 

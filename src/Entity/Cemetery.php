@@ -10,6 +10,8 @@ class Cemetery extends Location
 {
     CONST ZOOM_LEVEL = 17;
 
+    CONST GOOGLE_MAP_IMAGE = 'satellite';
+
     /**
      * @var Location|null
      */
@@ -85,4 +87,14 @@ class Cemetery extends Location
     {
         return Cemetery::ZOOM_LEVEL;
     }
+
+    /**
+     * @return string
+     */
+    public function getGoogleMapType(): string
+    {
+        return Cemetery::GOOGLE_MAP_IMAGE;
+    }
+
+
 }

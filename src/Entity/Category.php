@@ -578,4 +578,9 @@ class Category
         }
         return false;
     }
+
+    public function getGoogleMapType(): string
+    {
+        return 'normal';
+    }
 }

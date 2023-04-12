@@ -1,8 +1,10 @@
 <?php
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\CategoryWebPage;
 use App\Entity\Enum\CemeteryWebPageEnum;
+use App\Entity\Enum\LocationWebPageEnum;
 use App\Form\DataTransformer\ChoiceToValueTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
@@ -22,21 +24,9 @@ class CategoryWebPageType extends AbstractType
                     'required' => false,
                 ]
             )
-            ->add('definedType', EnumType::class,
-                [
-                    'label' => 'Defined Web Pages',
-                    'class' => CemeteryWebPageEnum::class,
-                    'required' => false,
-                    'choice_label' => fn ($choice) => match ($choice) {
-                        CemeteryWebPageEnum::NotUsed => 'webpage.category.notused',
-                        CemeteryWebPageEnum::ACI => 'webpage.cemetery.aci',
-                        CemeteryWebPageEnum::CWGC => 'webpage.cemetery.cwgc',
-                        CemeteryWebPageEnum::FaG => 'webpage.cemetery.fag',
-                        CemeteryWebPageEnum::Wikipedia => 'webpage.category.wikipedia',
-                        CemeteryWebPageEnum::BillionGraves => 'webpage.cemetery.billiongraves',
-                    },
-                ]
-            )
+        ;
+        $this->getDefinedType($builder, $options['category_class']);
+        $builder
             ->add('prompt', TextType::class,
                 [
                     'label' => 'Web Page Text / Prompt',
@@ -82,5 +72,50 @@ class CategoryWebPageType extends AbstractType
                 'data_class' => CategoryWebPage::class,
             ]
         );
+        $resolver->setRequired('category_class');
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param Category $category
+     * @return void
+     */
+    public function getDefinedType(FormBuilderInterface $builder, string $categoryClass): void
+    {
+        switch (basename($categoryClass)) {
+            case 'Cemetery':
+                $builder->add('definedType', EnumType::class,
+                    [
+                        'label' => 'Defined Web Pages',
+                        'class' => CemeteryWebPageEnum::class,
+                        'required' => false,
+                        'choice_label' => fn ($choice) => match ($choice) {
+                            CemeteryWebPageEnum::NotUsed => 'webpage.category.notused',
+                            CemeteryWebPageEnum::ACI => 'webpage.cemetery.aci',
+                            CemeteryWebPageEnum::CWGC => 'webpage.cemetery.cwgc',
+                            CemeteryWebPageEnum::FaG => 'webpage.cemetery.fag',
+                            CemeteryWebPageEnum::Wikipedia => 'webpage.category.wikipedia',
+                            CemeteryWebPageEnum::BillionGraves => 'webpage.cemetery.billiongraves',
+                        },
+                    ]
+                );
+                break;
+            case 'Location':
+                $builder->add('definedType', EnumType::class,
+                    [
+                        'label' => 'Defined Web Pages',
+                        'class' => LocationWebPageEnum::class,
+                        'required' => false,
+                        'choice_label' => fn ($choice) => match ($choice) {
+                            LocationWebPageEnum::NotUsed => 'webpage.category.notused',
+                            LocationWebPageEnum::Wikipedia => 'webpage.category.wikipedia',
+                        },
+                    ]
+                );
+                break;
+            default:
+                dd($categoryClass);
+        }
+
     }
 }

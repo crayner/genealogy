@@ -7,7 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
 class Location extends Category
 {
-    CONST ZOOM_LEVEL = 12;
+    CONST ZOOM_LEVEL = 15;
+
+    CONST GOOGLE_MAP_IMAGE = 'normal';
 
     /**
      * @var string|null
@@ -89,4 +91,28 @@ class Location extends Category
         return Location::ZOOM_LEVEL;
     }
 
+    /**
+     * @return null
+     */
+    public function getAddress()
+    {
+        return null;
+    }
+
+    /**
+     * @param string $address
+     * @return Location
+     */
+    public function setAddress(string $address): Location
+    {
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGoogleMapType(): string
+    {
+        return Location::GOOGLE_MAP_IMAGE;
+    }
 }

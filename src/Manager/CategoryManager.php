@@ -181,23 +181,30 @@ class CategoryManager
             $result['childrenCategories'][$q] = $child->toArray();
             $result['childrenCategories'][$q]['path'] = $this->getRouter()->generate('genealogy_category_modify', ['category' => $child->getId()]);
         }
+        $result['webpages'] = [] ;
         foreach($this->getCategory()->getWebpages() as $page) {
             $result['webpages'][] = $page->__toArray();
         }
         $coord = $this->getCategory()->getCoordinates();
-        if (is_string($coord)) $coord = explode(',', $coord);
-        if (count($coord) >= 2) {
-            $coord['longitude'] = trim($coord[1]);
-            $coord['latitude'] = trim($coord[0]);
-            unset($coord[0],$coord[1]);
-        }
-        if (count($coord) === 3) {
-            $coord['zoom'] = trim($coord[2]);
-            unset($coord[2]);
-        } else {
-            $coord['zoom'] = $this->getCategory()->getZoomLevel();
+        if (is_string($coord)) {
+            $coord = explode(',', $coord);
+            if (count($coord) >= 2) {
+                $coord['longitude'] = trim($coord[1]);
+                $coord['latitude'] = trim($coord[0]);
+                unset($coord[0], $coord[1]);
+            }
+            if (count($coord) === 3) {
+                $coord['zoom'] = trim($coord[2]);
+                unset($coord[2]);
+            } else {
+                $coord['zoom'] = $this->getCategory()->getZoomLevel();
+            }
         }
         $result['coordinates'] = is_array($coord) ? $coord : false;
+        if ($result['coordinates'] === false && $this->getCategory() instanceof Location) {
+            $result['coordinates'] = [];
+        }
+        $result['google_map_type'] = $this->getCategory()->getGoogleMapType();
 
         $resolver = new OptionsResolver();
         $resolver->setDefaults([
@@ -216,6 +223,7 @@ class CategoryManager
             'template',
             'webpages',
             'coordinates',
+            'google_map_type'
         ]);
 
         $result = $resolver->resolve($result);

@@ -75,7 +75,7 @@ class CategoryType extends AbstractType
                 ]
             )
         ;
-        if ($options['data'] instanceof Location) {
+        if (is_subclass_of($options['data'], Location::class)) {
             $builder
                 ->add('location', EntityType::class,
                     [
@@ -104,8 +104,16 @@ class CategoryType extends AbstractType
                         'label' => 'Coordinates',
                         'help' => 'GPS Longitude and Latitude separated by a comma.'
                     ]
-                )
-            ;
+                );
+        } else if ($options['data'] instanceof Location) {
+            $builder
+                ->add('coordinates', TextType::class,
+                    [
+                        'label' => 'Coordinates',
+                        'help' => 'GPS Longitude and Latitude separated by a comma.'
+                    ]
+                );
+
         } else {
             $builder
                 ->add('location', HiddenType::class,
@@ -134,6 +142,9 @@ class CategoryType extends AbstractType
                     'label' => 'Web Pages',
                     'entry_type' => CategoryWebPageType::class,
                     'allow_add' => true,
+                    'entry_options' => [
+                        'category_class' => get_class($options['data']) ?? Category::class,
+                    ],
                 ]
             )
             ->add('doit', SubmitType::class,

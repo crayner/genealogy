@@ -19,7 +19,7 @@ export default function RenderTable(props) {
     } = props;
 
     function aka(){
-        if (category.aka === null || category.aka.length <= 0) return null;
+        if (category.aka === false ||category.aka === null || category.aka.length <= 0) return null;
         const result = reactStringReplace(category['aka'], '|', <br />);
         return (<Fragment><br />{translations.aka}: <Style.DarkGreenBold>{result}</Style.DarkGreenBold></Fragment>)
     }
