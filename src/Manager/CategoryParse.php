@@ -64,7 +64,7 @@ class CategoryParse
             if ($category !== null) {
                 $lines[$name]['line'] = $line;
                 $lines[$name]['category'] = $category;
-                if (count($lines) > 19) {
+                if (count($lines) > 6) {
                     try {
                         foreach ($lines as $line) {
                             foreach ($line['category']->getIndividuals() as $individual) {
@@ -87,6 +87,7 @@ class CategoryParse
             foreach ($lines as $line) {
                 foreach ($line['category']->getIndividuals() as $individual) {
                     $this->getEntityManager()->persist($individual);
+                    $this->setIndividual($individual);
                 }
                 $this->getEntityManager()->persist($line['category']);
             }

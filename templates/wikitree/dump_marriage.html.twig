@@ -15,7 +15,7 @@
 {% block body %}
     <h1 style="text-align: center">{{ title|trans }}</h1>
     <p>File line #: {{ offset }}</p>
-    <p>Individual: {{ manager.individual.id }}</p>
+    <p>Individual (Source ID): {{ manager.individual.sourceId }}</p>
 {% endblock body %}
 
 {% block javascripts %}
