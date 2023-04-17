@@ -8,12 +8,15 @@ use App\Entity\Location;
 use App\Entity\Migrant;
 use App\Entity\Theme;
 use App\Repository\CategoryRepository;
+use ContainerD2G9WVm\get_ServiceLocator_CtWRYQmService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Validator\Constraints\Valid;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CategoryManager
 {
@@ -45,16 +48,22 @@ class CategoryManager
     var RouterInterface $router;
 
     /**
+     * @var ValidatorInterface
+     */
+    var ValidatorInterface $validator;
+
+    /**
      * @param EntityManagerInterface $entityManager
      * @param RequestStack $stack
      * @param SerializerAwareInterface $serialiser
      */
-    public function __construct(EntityManagerInterface $entityManager, RequestStack $stack, RouterInterface $router)
+    public function __construct(EntityManagerInterface $entityManager, RequestStack $stack, RouterInterface $router, ValidatorInterface $validator)
     {
         $this->entityManager = $entityManager;
         $this->categoryRepository = $this->entityManager->getRepository(Category::class);
         $this->session = $stack->getSession();
         $this->router = $router;
+        $this->validator = $validator;
     }
 
     /**
@@ -157,6 +166,13 @@ class CategoryManager
      */
     public function getCategoryProps(array $template): array
     {
+        if (is_null($this->getCategory())) {
+            return [
+                'id' => null,
+                'name' => '',
+            ];
+        }
+
         $result = [
             'id' => $this->getCategory()->getId(),
             'name' => $this->getCategory()->getName(),
@@ -164,9 +180,10 @@ class CategoryManager
             'sortName' => $this->getCategory()->getSortName(),
             'aka' => $this->getCategory()->getAka() ?: false,
             'location' => $this->getCategory()->getLocation() instanceof Category ? $this->getCategory()->getLocation()->getDisplayName() : '',
-            'address' => $this->getCategory()->getAddress() ?? '',
+            'address' => method_exists($this->getCategory(), 'getAddress') && $this->getCategory()->getAddress() ? $this->getCategory()->getAddress() : '',
             'template' => $template,
             'coordinates' => [],
+            'errors' => []
         ];
         foreach ($this->getCategory()->getIndividuals() as $q => $individual) {
             $result['individuals'][] = $individual->toArray();
@@ -177,7 +194,7 @@ class CategoryManager
             $result['parents'][$q]['path'] = $this->getRouter()->generate('genealogy_category_modify', ['category' => $parent->getId()]);
         }
         $childrenCategories = $this->getCategoryRepository()->findAllByParent($this->getCategory());
-        foreach($childrenCategories as $child) {
+        foreach($childrenCategories as $q => $child) {
             $result['childrenCategories'][$q] = $child->toArray();
             $result['childrenCategories'][$q]['path'] = $this->getRouter()->generate('genealogy_category_modify', ['category' => $child->getId()]);
         }
@@ -206,6 +223,9 @@ class CategoryManager
         }
         $result['google_map_type'] = $this->getCategory()->getGoogleMapType();
 
+        foreach ($this->getValidator()->validate($this->getCategory()) as $error) {
+            $result['errors'][] = $error->getMessage();
+        }
         $resolver = new OptionsResolver();
         $resolver->setDefaults([
             'parents' => [],
@@ -223,11 +243,11 @@ class CategoryManager
             'template',
             'webpages',
             'coordinates',
-            'google_map_type'
+            'google_map_type',
+            'errors',
         ]);
 
-        $result = $resolver->resolve($result);
-        return $result;
+        return $resolver->resolve($result);
     }
 
     /**
@@ -296,5 +316,13 @@ class CategoryManager
             'category', 'cemetery', 'collection', 'location', 'migrant', 'theme' => true,
             default => false,
         };
+    }
+
+    /**
+     * @return ValidatorInterface
+     */
+    public function getValidator(): ValidatorInterface
+    {
+        return $this->validator;
     }
 }

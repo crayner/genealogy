@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'category_web_pages', options: ['collate' => 'utf8mb4_unicode_ci'])]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\UniqueConstraint(name: 'category_web_page', columns: ['category', 'name'])]
-#[ORM\UniqueConstraint(name: 'category_defined_type', columns: ['category', 'defined_type'])]
+#[ORM\UniqueConstraint(name: 'category_web_page_name', columns: ['category', 'name'])]
 #[ORM\Index(columns: ['category'], name: 'category_in_web_pages')]
 class CategoryWebPage
 {
@@ -140,7 +140,7 @@ class CategoryWebPage
     {
         $this->prompt = empty($this->prompt) ? null : $this->prompt;
         if (empty($this->prompt) && !empty($this->key)) return $this->name  . ' - (' . $this->key .')';
-        return empty($this->prompt) && empty($this->key) ? $this->name : null;
+        return empty($this->prompt) && empty($this->key) ? $this->name : $this->prompt;
     }
 
     /**
@@ -150,6 +150,7 @@ class CategoryWebPage
     public function setPrompt(string $prompt): CategoryWebPage
     {
         $this->prompt = $prompt;
+        dump($this);
         return $this;
     }
 
@@ -223,7 +224,7 @@ class CategoryWebPage
      */
     public function __toArray(): array
     {
-        return [
+        $result = [
             'id' => $this->getId(),
             'category' => $this->getCategory()->getId(),
             'name' => $this->getName(),
@@ -232,5 +233,6 @@ class CategoryWebPage
             'key' => $this->getKey(),
             'definedType' => $this->getDefinedType(),
         ];
+        return $result;
     }
 }

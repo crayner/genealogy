@@ -6,8 +6,10 @@ const theme = {
     bg: '#f0fff0',
     fg: 'darkgreen',
     orange: 'orange',
-    white: 'white',
+    white: '#FFF',
     black: 'black',
+    error: 'darkred'
+
 }
 export const Theme = ({ children }) => (
     <ThemeProvider theme={theme}>{children}</ThemeProvider>
@@ -20,7 +22,7 @@ export const Sidebar = styled.div`
 };
 `
 export const Border = styled.div`
-    background-color: ${props => props.theme.white};
+    background-color: ${props => props.theme.bg};
     flex: 1;
 `
 export const Column1 = styled.div`
@@ -164,9 +166,10 @@ export const DarkGreenListP = styled.p`
 `
 export const DarkGreenA = styled.a`
     color: ${props => props.theme.fg};
+    font-size: 1em;
     &:hover {
-        background-color: ${props => props.theme.white};
-        color: ${props => props.theme.black};
+        color: ${props => props.theme.white}!important;
+        background-color: ${props => props.theme.fg};
     }
     &:visited {
         color: ${props => props.theme.fg};
@@ -181,3 +184,17 @@ export const DarkRedSpan = styled.span`
 export const Rightp = styled.p` 
     text-align: right;
 `
+export const ErrorList = styled.ul`
+    list-style: none;
+    margin-top: 0;
+    margin-left: 5px;
+    max-height: 150px;
+    overflow-y: auto;
+    padding-left: 0;
+    width: 100%;
+`
+export const Error = styled.li`
+    line-height: 17px;
+    color: ${props => props.theme.error};;
+`
+

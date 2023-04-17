@@ -1,6 +1,5 @@
 'use strict';
 import React from "react"
-import FormValidation from "./FormValidation";
 
 let elementList;
 

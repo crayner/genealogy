@@ -1,7 +1,7 @@
 <?php
 namespace App\Entity\Enum;
 
-enum LocationWebPageEnum: string
+enum CategoryWebPageEnum: string
 {
     case NotUsed = 'NotUsed';
 
@@ -13,14 +13,14 @@ enum LocationWebPageEnum: string
     public function getDefinition(): array
     {
         return match ($this) {
-            LocationWebPageEnum::Wikipedia => [
+            CategoryWebPageEnum::Wikipedia => [
                 'name' => 'Wikipedia',
                 'key' => 0,
                 'test' => "/^Q([\d+]{1,6})$/",
                 'url' => 'https://www.wikidata.org/wiki/Special:GoToLinkedPage?site=enwiki&itemid={wikidataid}',
                 'prompt' => '{wikidataid}'
             ],
-            LocationWebPageEnum::NotUsed => [
+            CategoryWebPageEnum::NotUsed => [
                 'name' => 'Not Used',
                 'key' => null,
                 'test' => false,
@@ -36,7 +36,7 @@ enum LocationWebPageEnum: string
      */
     public function isNotUsed(): bool
     {
-        if (LocationWebPageEnum::NotUsed === $this) return true;
+        if (CategoryWebPageEnum::NotUsed === $this) return true;
         return false;
     }
 }

@@ -3,6 +3,7 @@ namespace App\Entity;
 
 use App\Repository\LocationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
 class Location extends Category
@@ -15,18 +16,21 @@ class Location extends Category
      * @var string|null
      */
     #[ORM\Column(type: 'string', length: 48, nullable: true)]
+    #[Assert\NotBlank(message: 'The map coordinates are required for location categories.')]
     var ?string $coordinates = null;
 
     /**
      * @var \DateTimeImmutable|null
      */
     #[ORM\Column(name: 'start_date', type: 'datetime_immutable', nullable: true)]
+    #[Assert\DateTime]
     var ?\DateTimeImmutable $startDate;
 
     /**
      * @var \DateTimeImmutable|null
      */
     #[ORM\Column(name: 'end_date', type: 'datetime_immutable', nullable: true)]
+    #[Assert\DateTime]
     var ?\DateTimeImmutable $endDate;
 
     /**

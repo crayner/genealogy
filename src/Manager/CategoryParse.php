@@ -30,7 +30,12 @@ class CategoryParse
     /**
      * @var int
      */
-    static int $bulk = 5;
+    static int $bulk = 7;
+
+    /**
+     * @var Individual
+     */
+    var Individual $individual;
 
     /**
      * @param EntityManagerInterface $entityManager
@@ -64,6 +69,7 @@ class CategoryParse
                         foreach ($lines as $line) {
                             foreach ($line['category']->getIndividuals() as $individual) {
                                 $this->getEntityManager()->persist($individual);
+                                $this->setIndividual($individual);
                             }
                             $this->getEntityManager()->persist($line['category']);
                         }
@@ -154,4 +160,23 @@ class CategoryParse
     {
         return $this->categoryRepository;
     }
+
+    /**
+     * @return Individual
+     */
+    public function getIndividual(): Individual
+    {
+        return $this->individual;
+    }
+
+    /**
+     * @param Individual $individual
+     * @return CategoryParse
+     */
+    public function setIndividual(Individual $individual): CategoryParse
+    {
+        $this->individual = $individual;
+        return $this;
+    }
+
 }

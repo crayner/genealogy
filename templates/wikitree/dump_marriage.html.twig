@@ -14,7 +14,8 @@
 {% endblock stylesheets %}
 {% block body %}
     <h1 style="text-align: center">{{ title|trans }}</h1>
-    <p>{{ offset }}</p>
+    <p>File line #: {{ offset }}</p>
+    <p>Individual: {{ manager.individual.id }}</p>
 {% endblock body %}
 
 {% block javascripts %}

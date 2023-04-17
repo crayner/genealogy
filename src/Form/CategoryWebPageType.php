@@ -3,6 +3,7 @@ namespace App\Form;
 
 use App\Entity\Category;
 use App\Entity\CategoryWebPage;
+use App\Entity\Enum\CategoryWebPageEnum;
 use App\Entity\Enum\CemeteryWebPageEnum;
 use App\Entity\Enum\LocationWebPageEnum;
 use App\Form\DataTransformer\ChoiceToValueTransformer;
@@ -11,22 +12,28 @@ use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CategoryWebPageType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $this->getDefinedType($builder, $options['category_class']);
         $builder
+            ->add('key', TextType::class,
+                [
+                    'label' => 'Unique Identifier',
+                    'required' => false,
+                ]
+            )
             ->add('name', TextType::class,
                 [
                     'label' => 'Web Page Name',
                     'required' => false,
                 ]
             )
-        ;
-        $this->getDefinedType($builder, $options['category_class']);
-        $builder
             ->add('prompt', TextType::class,
                 [
                     'label' => 'Web Page Text / Prompt',
@@ -36,12 +43,6 @@ class CategoryWebPageType extends AbstractType
             ->add('url', TextType::class,
                 [
                     'label' => 'Web Address (URL)',
-                    'required' => false,
-                ]
-            )
-            ->add('key', TextType::class,
-                [
-                    'label' => 'Unique Identifier',
                     'required' => false,
                 ]
             )
@@ -113,9 +114,35 @@ class CategoryWebPageType extends AbstractType
                     ]
                 );
                 break;
+            case 'Category':
+                $builder->add('definedType', EnumType::class,
+                    [
+                        'label' => 'Defined Web Pages',
+                        'class' => CategoryWebPageEnum::class,
+                        'required' => false,
+                        'choice_label' => fn ($choice) => match ($choice) {
+                            CategoryWebPageEnum::NotUsed => 'webpage.category.notused',
+                            CategoryWebPageEnum::Wikipedia => 'webpage.category.wikipedia',
+                        },
+                    ]
+                );
+                break;
             default:
                 dd($categoryClass);
         }
-
     }
+
+    /**
+     * @param FormView $view
+     * @param FormInterface $form
+     * @param array $options
+     * @return void
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $template = [];
+        
+        $view->vars['template'] = $template;
+    }
+
 }

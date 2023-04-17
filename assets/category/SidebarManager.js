@@ -6,8 +6,9 @@ import FormRender from "../form/FormRender";
 import {extractFormSection} from "../form/FormManager";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro';
-import {SidebarForm, SuccessP, FormElement} from "../component/StyledCSS";
+import {SidebarForm, SuccessP, FormElement, DarkGreenA} from "../component/StyledCSS";
 import CollectionRow from "../form/CollectionRow";
+import CategoryErrors from "./CategoryErrors";
 
 export default function SidebarManager(props) {
     const {
@@ -74,10 +75,11 @@ export default function SidebarManager(props) {
     return (
         <Fragment>
             {renderSearch()}
+            <CategoryErrors translations={translations} category={category} />
             {renderMessages()}
             {renderSubForms()}
             <SidebarForm>
-                <FormElement><a href={`https://www.wikitree.com/wiki/Category:${category.name}`}  target="_blank">{category.name} {translations['onWikitree']}</a></FormElement>
+                <FormElement><DarkGreenA href={`https://www.wikitree.com/wiki/Category:${category.name}`}  target="_blank">{category.name} {translations['onWikitree']}</DarkGreenA></FormElement>
             </SidebarForm>
         </Fragment>
     );

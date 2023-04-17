@@ -9,7 +9,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}{{ 'Genealogy World Tree Project'|trans }}{% endblock %}</title>
         {% block stylesheets %}
-            <link href="{{ asset('multiselect-master/styles/multiselect.css') }}?version={{ random(1, 25) }}" rel="stylesheet" type="text/css"/>
         {% endblock %}
     </head>
     <body>
@@ -41,6 +40,7 @@
         {% endblock content %}
     {% endblock body %}
     {% block javascripts %}
+        <link href="{{ asset('multiselect-master/styles/multiselect.css') }}?version={{ random(1, 25) }}" rel="stylesheet" />
         {{ encore_entry_link_tags('app') }}
         {{ encore_entry_script_tags('app') }}
         <script src="{{ asset('multiselect-master/multiselect.min.js') }}"></script>

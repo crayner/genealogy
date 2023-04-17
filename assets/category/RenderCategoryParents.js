@@ -3,7 +3,7 @@
 import React, {Fragment} from 'react'
 import PropTypes from 'prop-types'
 import OpenFormSection from "./OpenFormSection";
-import {DarkGreenP} from "../component/StyledCSS";
+import {DarkGreenA, DarkGreenP} from "../component/StyledCSS";
 
 export default function RenderCategoryParents(props) {
     const {
@@ -23,9 +23,9 @@ export default function RenderCategoryParents(props) {
             i = Number(i);
             const parent = parents[i];
             if (parents.length - 1 === i) {
-                return (<Fragment key={i}><a href={parent.path}>{parent.name}</a></Fragment>)
+                return (<DarkGreenA key={i} href={parent.path}>{parent.name}</DarkGreenA>)
             }
-            return (<Fragment key={i}><a href={parent.path}>{parent.name}</a> | </Fragment>)
+            return (<Fragment key={i}><DarkGreenA href={parent.path}>{parent.name}</DarkGreenA> | </Fragment>)
         })
         return (<DarkGreenP>{translations.Categories}: {result} <OpenFormSection sectionName={'parents'}
                                                                                  translations={translations}

@@ -186,6 +186,7 @@ class CategoryType extends AbstractType
                 'translation_domain' => 'messages',
                 'doit' => 'Save Category',
                 'template' => [],
+                'validation_groups' => false,
             ]
         );
         $resolver->setRequired(['manager']);

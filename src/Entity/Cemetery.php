@@ -1,8 +1,10 @@
 <?php
 namespace App\Entity;
 
+use App\Form\Validation\LocationConstraint;
 use App\Repository\CemeteryRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CemeteryRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -15,12 +17,15 @@ class Cemetery extends Location
     /**
      * @var Location|null
      */
+    #[LocationConstraint]
+    #[Assert\Valid]
     var ?Location $location;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: 'The category address is required.')]
     var ?string $address;
 
     /**

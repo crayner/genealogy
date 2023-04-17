@@ -182,7 +182,6 @@ export default class CategoryApp extends Component {
     }
 
     handleOpenForm(sectionName) {
-        console.log(sectionName);
         let sections = this.state.sections;
         let section = sections[sectionName];
         Object.keys(sections).map(name => {

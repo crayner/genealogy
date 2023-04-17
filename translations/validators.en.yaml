@@ -1,1 +1,6 @@
 'The value should not be empty!': 'The value should not be empty!'
+'The category address is required.': 'The category address is required.'
+'The category location is required.': 'The category location is required.'
+'The coordinates are required for location categories.': 'The coordinates are required for location categories.'
+'The key ({{ key }}) for {{ definedType }} is not valid.': 'The key ({{ key }}) for {{ definedType }} is not valid.'
+'The name, prompt and url are required for a self defined ({{ string }}) web page.': 'The name, prompt and url are required for a self defined ({{ string }}) web page.'

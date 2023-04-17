@@ -3,9 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Category;
-use App\Entity\CategoryWebPage;
-use App\Entity\Enum\CemeteryWebPageEnum;
 use App\Entity\Individual;
+use App\Form\CategoryAddType;
 use App\Form\CategorySearchType;
 use App\Form\CategoryType;
 use App\Manager\CategoryManager;
@@ -17,6 +16,7 @@ use App\Manager\IndividualManager;
 use App\Manager\ManagerParse;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -136,6 +136,10 @@ class GenealogyController extends AbstractController
     #[Route('/genealogy/category/{category}/modify', name: 'genealogy_category_modify')]
     public function categoryModify(?Category $category, CategoryManager $manager, FormManager $formManager): Response
     {
+        if (!$category instanceof Category) {
+            return $this->redirectToRoute('genealogy_category_add');
+        }
+
         if (!$manager->getCategory() instanceof Category) $manager->setCategory($category);
         $form = $this->createForm(CategoryType::class, $manager->getCategory(), ['method' => 'POST', 'manager' => $manager]);
 
@@ -144,5 +148,24 @@ class GenealogyController extends AbstractController
             'full_form' => $formManager->extractForm($form),
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/genealogy/category/add', name: 'genealogy_category_add')]
+    public function categoryAdd(CategoryManager $manager, Request $request, FormManager $formManager): Response
+    {
+        $form = $this->createForm(CategoryAddType::class);
+
+        if ($request->getMethod('POST')) {
+            $form->handleRequest($request);
+            dump($form->getData());
+        }
+
+        return $this->render('genealogy/category_add.html.twig',
+            [
+                'manager' => $manager,
+                'full_form' => $formManager->extractForm($form),
+                'form' => $form->createView(),
+            ]
+        );
     }
 }

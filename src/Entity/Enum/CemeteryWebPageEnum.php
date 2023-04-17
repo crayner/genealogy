@@ -26,35 +26,35 @@ enum CemeteryWebPageEnum: string
             CemeteryWebPageEnum::FaG => [
                 'name' => 'Find a Grave',
                 'key' => 0,
-                'test' => "/([\d+]{1,9})/",
+                'test' => "/^([\d+]{1,9})$/",
                 'url' => 'https://www.findagrave.com/cemetery/{cemetery}',
                 'prompt' => '{cemetery}'
             ],
             CemeteryWebPageEnum::BillionGraves => [
                 'name' => 'Billion Graves',
                 'key' => 0,
-                'test' => "/([\d+]{1,8})/",
+                'test' => "/^([\d+]{1,8})$/",
                 'url' => 'https://billiongraves.com/cemetery/Cemetery/{cemetery}',
                 'prompt' => '{cemetery}'
             ],
             CemeteryWebPageEnum::ACI => [
                 'name' => 'Australian Cemetery Index',
                 'key' => 0,
-                'test' => "/([\d+]{1,6})/",
+                'test' => "/^([\d+]{1,6})$/",
                 'url' => 'https://austcemindex.com/cemetery?cemid={cemetery}',
                 'prompt' => '{cemetery}'
             ],
             CemeteryWebPageEnum::CWGC => [
                 'name' => 'Commonwealth War Graves Commission',
                 'key' => 0,
-                'test' => "/([\d+]{1,8})/",
+                'test' => "/^([\d+]{1,8})$/",
                 'url' => 'https://www.cwgc.org/visit-us/find-cemeteries-memorials/cemetery-details/{cemetery}',
                 'prompt' => '{cemetery}'
             ],
             CemeteryWebPageEnum::Wikipedia => [
                 'name' => 'Wikipedia',
                 'key' => 0,
-                'test' => "/Q([\d+]{1,6})/",
+                'test' => "/^Q([\d+]{1,8})$/",
                 'url' => 'https://www.wikidata.org/wiki/Special:GoToLinkedPage?site=enwiki&itemid={wikidataid}',
                 'prompt' => '{wikidataid}'
             ],

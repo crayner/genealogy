@@ -5,12 +5,12 @@
 {% block stylesheets %}
     {{ parent() }}
 {% endblock stylesheets %}
-    {% block header %}
-        <div id="category-header"></div>
-    {% endblock header %}
-    {% block content %}
-        <div id="category-content"></div>
-    {% endblock content %}
+{% block header %}
+    <div id="category-header"></div>
+{% endblock header %}
+{% block content %}
+    <div id="category-content"></div>
+{% endblock content %}
 {% block sidebar %}
 {% endblock sidebar %}
 {% block javascripts %}
@@ -43,11 +43,13 @@
     {% set translations = translations|merge({'google': 'google'|trans}) %}
     {% set translations = translations|merge({'openstreetmaps': 'openstreetmaps'|trans}) %}
     {% set translations = translations|merge({'alternatename': 'alternatename'|trans}) %}
+    {% set translations = translations|merge({'Category Requirements': 'Category Requirements'|trans}) %}
     <script>
         window.CATEGORY_PROPS = [];
         window.CATEGORY_PROPS.translations = {{ translations|json_encode|raw }};
         window.CATEGORY_PROPS.form = {{ full_form|json_encode|raw }}
         window.CATEGORY_PROPS.category = {{ manager.categoryProps(form.vars.template)|json_encode|raw }};
+        window.CATEGORY_PROPS.addition = false;
     </script>
 
     {{ encore_entry_script_tags('category') }}

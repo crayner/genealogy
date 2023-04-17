@@ -1,5 +1,4 @@
 body {
-    background-color: white;
 }
 .body {
     align-content: center;
@@ -54,13 +53,6 @@ h4 {
 .centre, .center {
     text-align: center;
 }
-a {
-    font-size: 1.0em;
-    color: #003300;
-}
-a:visited {
-    color: #003300;
-}
 .flexbox-container {
     display: flex;
 }
@@ -71,7 +63,7 @@ a:visited {
     flex: 1;
 }
 .border {
-    background-color: white;
+    background-color: #f0fff0;
     flex: 1;
 }
 .withBorder {

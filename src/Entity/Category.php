@@ -1,6 +1,7 @@
 <?php
 namespace App\Entity;
 
+use App\Form\Validation\WebPagesConstraint;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -8,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ORM\Table(name: 'category', options: ['collate' => 'utf8mb4_unicode_ci'])]
@@ -48,6 +50,7 @@ class Category
      * @var string
      */
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: false, options: ['collate' => 'utf8mb4_unicode_ci'])]
+    #[Assert\NotBlank(message: 'The category name should not be blank.')]
     var string $name;
 
     /**
@@ -125,12 +128,8 @@ class Category
      */
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: CategoryWebPage::class, cascade: ['persist'])]
     #[ORM\OrderBy(['prompt' => 'ASC', 'name' => 'ASC'])]
+    #[WebPagesConstraint]
     var Collection $webpages;
-
-    /**
-     * @var string
-     */
-    var string $categoryType;
 
     /**
      * @var array|string[]
