@@ -4,8 +4,8 @@ import PropTypes from 'prop-types'
 import SidebarManager from "./SidebarManager";
 import {Sidebar, Main, MainContainer, H3, Border, FlexboxContainer, Theme} from '../component/StyledCSS';
 import {buildFormData, followUrl, getFormElementById, setFormElement} from "../form/FormManager";
-import {fetchJson} from "../component/fetchJson";
 import SetFormElementValue from "../form/SetFormElementValue";
+import {fetchJson} from "../component/fetchJson";
 
 export default class CategoryAddApp extends Component {
     constructor(props) {
@@ -25,12 +25,12 @@ export default class CategoryAddApp extends Component {
         this.category = {};
         this.translations = props.translations;
 
-        this.handleFormChange = this.handleFormChange.bind(this);
-        this.removeParentCategory = this.removeParentCategory.bind(this);
-        this.fetchChoices = this.fetchChoices.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSave = this.handleSave.bind(this);
-        this.handleClose = this.handleClose.bind(this);
+        this.handleFormChange = this.handleAddFormChange.bind(this);
+        this.removeParentCategory = this.removeAddParentCategory.bind(this);
+        this.fetchChoices = this.fetchAddChoices.bind(this);
+        this.handleChange = this.handleAddChange.bind(this);
+        this.handleSave = this.handleAddSave.bind(this);
+        this.handleClose = this.handleAddClose.bind(this);
 
         this.functions = {
             handleFormChange: this.handleFormChange,
@@ -40,7 +40,6 @@ export default class CategoryAddApp extends Component {
             handleSave: this.handleSave,
             handleClose: this.handleClose,
         };
-        console.log(this);
     }
 
     extractSearchElement() {
@@ -51,7 +50,7 @@ export default class CategoryAddApp extends Component {
         return search;
     }
 
-    handleSave(section) {
+    handleAddSave(section) {
         this.data = buildFormData({}, this.form);
         fetchJson(
             this.form.template[section].action,
@@ -84,7 +83,7 @@ export default class CategoryAddApp extends Component {
         })
     }
 
-    fetchChoices(suggestions, form, section, search) {
+    fetchAddChoices(suggestions, form, section, search) {
         if (typeof this.form.template[section].fetch === 'boolean' || search.length < 3) return suggestions;
         if (typeof this.form.template[section].fetch[form.name] === 'string') {
             fetchJson(
@@ -107,17 +106,17 @@ export default class CategoryAddApp extends Component {
         return suggestions;
     }
 
-    handleClose(sectionName) {
+    handleAddClose(sectionName) {
 
     }
 
-    handleChange(event, form) {
+    handleAddChange(event, form) {
         const { value } = event.target;
         event.value = value;
         this.elementChange(event, form.id, form.type)
     }
 
-    elementChange(event, id, type) {
+    elementAddChange(event, id, type) {
         if (id !== 'ignore_me') {
             let element = getFormElementById(this.form, id, true);
             element = SetFormElementValue(event, element, type);
@@ -133,7 +132,7 @@ export default class CategoryAddApp extends Component {
         }
     }
 
-    handleFormChange(event, element, value) {
+    handleAddFormChange(event, element, value) {
         if (element.type === 'collection' && element.name === 'parents') {
             if (value.value !== '') {
                 if (typeof element.value !== 'object') element.value = [];
@@ -233,7 +232,7 @@ export default class CategoryAddApp extends Component {
         this.elementChange(event, element.id, element.type === 'collection' ? 'choice' : element.type)
     }
 
-    removeParentCategory(section, parent){
+    removeAddParentCategory(section, parent){
         return;
     }
 

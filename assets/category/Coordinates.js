@@ -4,7 +4,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import * as Style from "../component/StyledCSS";
 import OpenFormSection from "./OpenFormSection";
-import {DarkGreenA} from "../component/StyledCSS";
 
 export default function Coordinates(props) {
     const {
@@ -22,7 +21,7 @@ export default function Coordinates(props) {
         link = link.replace('{long}', category.coordinates.longitude);
         link = link.replace('{zoom}', category.coordinates.zoom);
         if (category.google_map_type === 'satellite') link += '/data=!3m1!1e3';
-        return (<DarkGreenA href={link} target={'_blank'}>{translations.google}</DarkGreenA>);
+        return (<Style.DarkGreenA href={link} target={'_blank'}>{translations.google}</Style.DarkGreenA>);
     }
 
     function getOpenStreetMapLink() {
@@ -31,7 +30,7 @@ export default function Coordinates(props) {
         link = link.replace('{lat}', category.coordinates.latitude);
         link = link.replace('{long}', category.coordinates.longitude);
         link = link.replace('{zoom}', category.coordinates.zoom);
-        return <DarkGreenA href={link} target={'_blank'}>{translations.openstreetmaps}</DarkGreenA>;
+        return <Style.DarkGreenA href={link} target={'_blank'}>{translations.openstreetmaps}</Style.DarkGreenA>;
     }
 
     return (

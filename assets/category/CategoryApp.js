@@ -5,19 +5,20 @@ import IndividualList from "./IndividualList";
 import SidebarManager from "./SidebarManager";
 import SetFormElementValue from "../form/SetFormElementValue";
 import { setFormElement, getFormElementById, followUrl, buildFormData } from "../form/FormManager";
-import {fetchJson} from '../Component/fetchJson'
 import {initialiseSections} from "./SectionsManager";
 import OpenFormSection from "./OpenFormSection";
 import {Sidebar, Main, MainContainer, H3, H4, Border, FlexboxContainer, Theme} from '../component/StyledCSS';
 import RenderCategoryParents from "./RenderCategoryParents";
 import RenderCategoryChildren from "./RenderCategoryChildren";
 import RenderTable from "./RenderTable";
+import {fetchJson} from "../component/fetchJson";
 
 export default class CategoryApp extends Component {
     constructor(props) {
         super(props);
 
         this.form = props.form;
+        this.translations = props.translations;
 
         this.state  = {
             category: props.category,
@@ -27,7 +28,6 @@ export default class CategoryApp extends Component {
             search: this.extractSearchElement(),
         };
 
-        this.translations = props.translations;
         this.handleChange = this.handleChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.handleOpenForm = this.handleOpenForm.bind(this);
@@ -373,6 +373,7 @@ export default class CategoryApp extends Component {
                         <IndividualList
                             translations={this.translations}
                             individuals={this.state.category.individuals}
+                            id={this.state.category.id}
                             {...this.functions}
                         />
                     </Main>

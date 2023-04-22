@@ -185,9 +185,18 @@ class CategoryManager
             'coordinates' => [],
             'errors' => []
         ];
-        foreach ($this->getCategory()->getIndividuals() as $q => $individual) {
-            $result['individuals'][] = $individual->toArray();
-            $result['individuals'][$q]['path'] = $this->getRouter()->generate('genealogy_record_modify', ['individual' => $individual->getUserID()]);
+
+        if ($this->getCategory()->getIndividuals()->count() < 1000) {
+
+            foreach ($this->getCategory()->getIndividuals() as $q => $individual) {
+                $result['individuals'][$q] = $individual->__toArray();
+                $result['individuals'][$q]['path'] = $this->getRouter()->generate('genealogy_record_modify', ['individual' => $individual->getUserID()]);
+                $result['individuals'][0]['fetch'] = false;
+            }
+        } else {
+            $result['individuals'][0] = [];
+            $result['individuals'][0]['path'] = $this->getRouter()->generate('genealogy_record_modify', ['individual' => '{individual}']);
+            $result['individuals'][0]['fetch'] = true;
         }
         foreach ($this->getCategory()->getParents() as $q => $parent) {
             $result['parents'][$q] = $parent->toArray();
@@ -202,7 +211,7 @@ class CategoryManager
         foreach($this->getCategory()->getWebpages() as $page) {
             $result['webpages'][] = $page->__toArray();
         }
-        $coord = $this->getCategory()->getCoordinates();
+        $coord = method_exists($this->getCategory(), 'getCoordinates') ? $this->getCategory()->getCoordinates() : null;
         if (is_string($coord)) {
             $coord = explode(',', $coord);
             if (count($coord) >= 2) {
@@ -248,6 +257,15 @@ class CategoryManager
         ]);
 
         return $resolver->resolve($result);
+    }
+
+    /**
+     * @param array $template
+     * @return string
+     */
+    public function getJsonCategoryProps(array $template): string
+    {
+        return json_encode($this->getCategoryProps($template), 0, 1024);
     }
 
     /**

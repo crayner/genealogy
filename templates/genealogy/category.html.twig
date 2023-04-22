@@ -44,11 +44,15 @@
     {% set translations = translations|merge({'openstreetmaps': 'openstreetmaps'|trans}) %}
     {% set translations = translations|merge({'alternatename': 'alternatename'|trans}) %}
     {% set translations = translations|merge({'Category Requirements': 'Category Requirements'|trans}) %}
+    {% set translations = translations|merge({'Loading': 'Loading'|trans}) %}
+    {% set translations = translations|merge({'cont': 'cont'|trans}) %}
+    {% set translations = translations|merge({'Previous': 'Previous'|trans}) %}
+    {% set translations = translations|merge({'Next': 'Next'|trans}) %}
     <script>
         window.CATEGORY_PROPS = [];
         window.CATEGORY_PROPS.translations = {{ translations|json_encode|raw }};
         window.CATEGORY_PROPS.form = {{ full_form|json_encode|raw }}
-        window.CATEGORY_PROPS.category = {{ manager.categoryProps(form.vars.template)|json_encode|raw }};
+        window.CATEGORY_PROPS.category = {{ manager.jsonCategoryProps(form.vars.template)|raw }};
         window.CATEGORY_PROPS.addition = false;
     </script>
 

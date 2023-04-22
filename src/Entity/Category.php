@@ -188,6 +188,9 @@ class Category
     {
         if (is_null($individual)) return $this;
         if ($this->getIndividuals()->contains($individual)) return $this;
+
+        if (!$individual->isValid()) return $this;
+
         $this->getIndividuals()->add($individual);
         $individual->addCategory($this);
         return $this;
@@ -581,5 +584,10 @@ class Category
     public function getGoogleMapType(): string
     {
         return 'normal';
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName();
     }
 }

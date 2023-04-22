@@ -93,20 +93,33 @@ class GenealogyController extends AbstractController
 
     /**
      * @param CategoryParse $manager
+     * @param string $letter
      * @return Response
      * @throws UniqueConstraintViolationException
      */
-    #[Route('/category/parse', name: 'category_parse')]
-    public function categoryParse(CategoryParse $manager): Response
+    #[Route('/category/{offset}/{letter}/parse', name: 'category_parse')]
+    public function categoryParse(CategoryParse $manager, string $letter, int $offset): Response
     {
-        $offset = $manager->execute();
+        $offset = $manager->execute($offset, $letter);
 
         if ($offset > 0) {
             return $this->render('wikitree/dump_marriage.html.twig', [
                 'offset' => $offset,
                 'manager' => $manager,
                 'title' => 'Parsing Categories from Wikitree Dump',
-                'route' => 'category_parse'
+                'route' => 'category_parse',
+                'letter' => $letter,
+            ]);
+        }
+
+        if ($offset === 0 && $letter < 'Z') {
+            $letter = chr(ord($letter) + 1);
+            return $this->render('wikitree/dump_marriage.html.twig', [
+                'offset' => $offset,
+                'manager' => $manager,
+                'title' => 'Parsing Categories from Wikitree Dump',
+                'route' => 'category_parse',
+                'letter' => $letter,
             ]);
         }
 
@@ -127,27 +140,6 @@ class GenealogyController extends AbstractController
             $manager->retrieveIndividual($_GET['individual']);
         }
         return $this->render('genealogy/individual.html.twig', ['manager' => $manager]);
-    }
-
-    /**
-     * @param CategoryManager $manager
-     * @return Response
-     */
-    #[Route('/genealogy/category/{category}/modify', name: 'genealogy_category_modify')]
-    public function categoryModify(?Category $category, CategoryManager $manager, FormManager $formManager): Response
-    {
-        if (!$category instanceof Category) {
-            return $this->redirectToRoute('genealogy_category_add');
-        }
-
-        if (!$manager->getCategory() instanceof Category) $manager->setCategory($category);
-        $form = $this->createForm(CategoryType::class, $manager->getCategory(), ['method' => 'POST', 'manager' => $manager]);
-
-        return $this->render('genealogy/category.html.twig', [
-            'manager' => $manager,
-            'full_form' => $formManager->extractForm($form),
-            'form' => $form->createView(),
-        ]);
     }
 
     #[Route('/genealogy/category/add', name: 'genealogy_category_add')]

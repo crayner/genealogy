@@ -260,7 +260,7 @@ class Individual
     /**
      * @var Collection
      */
-    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'individuals')]
+    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'individuals', cascade: ['persist'])]
     #[ORM\JoinTable(name: 'individual_category')]
     #[ORM\JoinColumn(name: 'category', referencedColumnName: 'id')]
     #[ORM\InverseJoinColumn(name: 'individual', referencedColumnName: 'id')]
@@ -302,7 +302,7 @@ class Individual
      */
     public function getSourceID(): int
     {
-        return $this->source_ID;
+        return $this->source_ID ?? 0;
     }
 
     /**
@@ -1157,7 +1157,7 @@ class Individual
     /**
      * @return array
      */
-    public function toArray(): array
+    public function __toArray(): array
     {
         return [
             'id' => $this->getId(),
@@ -1166,6 +1166,7 @@ class Individual
             'birthLocation' => $this->getBirthLocation(),
             'deathDate' => $this->getNameManager()->getShortEventDate($this, 'death'),
             'deathLocation' => $this->getDeathLocation(),
+            'anchorKey' => strtoupper(mb_substr($this->getLastNameAtBirth(), 0, 1)),
         ];
     }
 
@@ -1188,5 +1189,12 @@ class Individual
     protected function getNameManager(): IndividualNameManager
     {
         return $this->nameManager = $this->nameManager ?? new IndividualNameManager();
+    }
+
+    public function isValid(): bool
+    {
+        if (isset($this->id)) return true;
+        if (isset($this->first_Name) && isset($this->last_Name_At_Birth)) return true;
+        return false;
     }
 }

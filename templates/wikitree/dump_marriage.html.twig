@@ -7,15 +7,15 @@
     <script>
         window.onload = function(){
             setTimeout(function(){
-                window.location.href = "{{ path(route, {'offset': offset}) }}";
-            }, 200);
+                window.location.href = "{{ path(route, {'offset': offset, 'letter': letter}) }}";
+            },50);
         }
     </script>
 {% endblock stylesheets %}
 {% block body %}
     <h1 style="text-align: center">{{ title|trans }}</h1>
     <p>File line #: {{ offset }}</p>
-    <p>Individual (Source ID): {{ manager.individual.sourceId }}</p>
+    <p>Category: {{ manager.category.name }}. Count: {{ manager.category.individuals|length }}</p>
 {% endblock body %}
 
 {% block javascripts %}
