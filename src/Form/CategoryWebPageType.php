@@ -115,6 +115,7 @@ class CategoryWebPageType extends AbstractType
                 );
                 break;
             case 'Category':
+            case 'Collection':
                 $builder->add('definedType', EnumType::class,
                     [
                         'label' => 'Defined Web Pages',
@@ -140,9 +141,9 @@ class CategoryWebPageType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $template = [];
+        $rules = [];
         
-        $view->vars['template'] = $template;
+        $view->vars['rules'] = $rules;
     }
 
 }

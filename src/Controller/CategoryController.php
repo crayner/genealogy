@@ -2,11 +2,13 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Form\CategoryAddType;
 use App\Form\CategoryType;
 use App\Manager\CategoryManager;
 use App\Manager\FormManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Router;
@@ -54,6 +56,41 @@ class CategoryController extends AbstractController
             'full_form' => $formManager->extractForm($form),
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @param CategoryManager $manager
+     * @param Request $request
+     * @param FormManager $formManager
+     * @return Response
+     */
+    #[Route('/genealogy/category/add', name: 'genealogy_category_add')]
+    public function categoryAdd(CategoryManager $manager, Request $request, FormManager $formManager): Response
+    {
+        $form = $this->createForm(CategoryAddType::class);
+
+        if ($request->getMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isSubmitted()) {
+                $value = $request->request->all();
+                $type = '\App\Entity\\' . $value['category']['categoryType'];
+                $name = $value['category']['name'];
+                $category = new $type();
+                $category->setName($name)
+                    ->setShowProfiles(true);
+                $manager->getEntityManager()->persist($category);
+                $manager->getEntityManager()->flush();
+                return $this->redirectToRoute('genealogy_category_modify', ['category' => $category->getId()]);
+            }
+        }
+
+        return $this->render('genealogy/category_add.html.twig',
+            [
+                'manager' => $manager,
+                'full_form' => $formManager->extractForm($form),
+                'form' => $form->createView(),
+            ]
+        );
     }
 
 }

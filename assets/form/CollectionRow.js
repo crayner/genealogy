@@ -26,11 +26,13 @@ export default function CollectionRow(props) {
     if (typeof form.prototype === 'object' && typeof form.prototype.children === 'object') {
         return <PrototypeRender translations={translations} identifier={section} form={form} template={template} {...functions} />
     }
-    function getExistingValues(form){
+    function getExistingValues(form) {
         if (typeof form.value === 'object' && form.value !== null && form.value.length > 0) {
             return Object.keys(form.value).map(i => {
                 const item = form.value[i];
-                return (<DarkGreenListP key={item.value}>{item.label} <OrangeSpan><FontAwesomeIcon icon={solid('eraser')} onClick={(e) => removeParentCategory(section, item.value)} title={translations[removeParentCategory]} /></OrangeSpan></DarkGreenListP>);
+                return (<DarkGreenListP key={item.value}>{item.label} <OrangeSpan>
+                    <FontAwesomeIcon icon={solid('eraser')} title={translations[removeParentCategory]} onClick={(e) => removeParentCategory(section, item.value)} />
+                </OrangeSpan></DarkGreenListP>);
             })
         }
         return [];

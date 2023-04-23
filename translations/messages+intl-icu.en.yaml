@@ -363,6 +363,7 @@ Individual Profiles: 'Individual Profiles'
 'Address': 'Address'
 'This item requires an address': 'This item requires an address.'
 'alreadyParentCategory': 'The selected category is already a parent category.'
+'removeParentCategory': 'Remove this parent category.'
 'webpages': 'Web Pages'
 Web Page Name: Web Page Name
 Defined Web Pages: Defined Web Pages

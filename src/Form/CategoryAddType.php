@@ -74,6 +74,7 @@ class CategoryAddType extends AbstractType
         $resolver->setDefaults([
             'doit' => 'Add Category',
             'template' => [],
+            'action' => '/genealogy/category/add'
         ]);
     }
 

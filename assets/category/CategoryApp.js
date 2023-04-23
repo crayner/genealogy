@@ -17,9 +17,8 @@ export default class CategoryApp extends Component {
     constructor(props) {
         super(props);
 
-        this.form = props.form;
         this.translations = props.translations;
-
+        this.form = props.form
         this.state  = {
             category: props.category,
             form: props.form,

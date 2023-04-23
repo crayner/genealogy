@@ -2,7 +2,7 @@
 
 import React, {Fragment} from 'react'
 import PropTypes from 'prop-types'
-import {DarkGreenP, H3} from "../component/StyledCSS";
+import {DarkGreenA, DarkGreenP, H3} from "../component/StyledCSS";
 
 export default function RenderCategoryChildren(props) {
     const {
@@ -20,9 +20,9 @@ export default function RenderCategoryChildren(props) {
             i = Number(i);
             const child = children[i];
             if (children.length - 1 === i) {
-                return (<Fragment key={i}><a href={child.path}>{child.name}</a></Fragment>)
+                return (<Fragment key={i}><DarkGreenA href={child.path}>{child.name}</DarkGreenA></Fragment>)
             }
-            return (<Fragment key={i}><a href={child.path}>{child.name}</a> | </Fragment>)
+            return (<Fragment key={i}><DarkGreenA href={child.path}>{child.name}</DarkGreenA> | </Fragment>)
         })
 
         return (<Fragment>

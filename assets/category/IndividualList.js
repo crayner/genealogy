@@ -42,7 +42,7 @@ export default class IndividualList extends Component {
     }
     extractListDetails() {
         let result = {};
-        if (this.individuals[0].fetch) {
+        if (this.individuals.length > 0 && this.individuals[0].fetch) {
             let route = '/genealogy/category/{category}/members';
             route = route.replace('{category}', this.id);
             fetchJson(
@@ -62,7 +62,7 @@ export default class IndividualList extends Component {
                  console.error('Error: ', error)
                 })
         }
-        if (this.individuals[0].fetch) {
+        if (this.individuals > 0 && this.individuals[0].fetch) {
             result['count'] = this.translations['Loading'];
         } else {
             result['count'] = this.individuals.length;
@@ -75,13 +75,16 @@ export default class IndividualList extends Component {
 
     renderIndividuals()
     {
-        if (this.individuals[0].fetch) return null;
+        if (this.individuals.length > 0 && this.individuals[0].fetch) return null;
 
         this.letter = '';
 
         let members = this.individuals;
         if (this.state.count > this.state.limit) {
             members = this.individuals.slice(this.state.start, this.state.start + this.state.limit);
+        }
+        if (this.state.start > 0 && this.state.count < this.state.limit) {
+            members = this.individuals.slice(this.state.start, this.state.count -1);
         }
         const pageCount = members.length;
 

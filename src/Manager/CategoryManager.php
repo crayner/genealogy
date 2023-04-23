@@ -182,6 +182,7 @@ class CategoryManager
             'location' => $this->getCategory()->getLocation() instanceof Category ? $this->getCategory()->getLocation()->getDisplayName() : '',
             'address' => method_exists($this->getCategory(), 'getAddress') && $this->getCategory()->getAddress() ? $this->getCategory()->getAddress() : '',
             'template' => $template,
+            'rules' => $this->getRules(),
             'coordinates' => [],
             'errors' => []
         ];
@@ -250,6 +251,7 @@ class CategoryManager
             'location',
             'address',
             'template',
+            'rules',
             'webpages',
             'coordinates',
             'google_map_type',
@@ -342,5 +344,35 @@ class CategoryManager
     public function getValidator(): ValidatorInterface
     {
         return $this->validator;
+    }
+
+    private function getRules(): array
+    {
+        $result = [];
+        $result[] = [
+            'name' => '^category_webpages_([0-9]{1,2}|__name__)_definedType$',
+        ];
+        $result[] = [
+            'name' => '^category_webpages_([0-9]{1,2}|__name__)_key$',
+            'disabled' => [
+                'name' => '^category_webpages_([0-9]{1,2}|__name__)_definedType$',
+                'value' => '(!(^NotUsed$|^$))'
+            ]
+        ];
+        $result[] = [
+            'name' => '^category_webpages_([0-9]{1,2}|__name__)_name$',
+            'disabled' => [
+                'name' => '^category_webpages_([0-9]{1,2}|__name__)_definedType$',
+                'value' => '(^NotUsed$|^$)'
+            ]
+        ];
+        $result[] = [
+            'name' => '^category_webpages_([0-9]{1,2}|__name__)_url$',
+            'disabled' => [
+                'name' => '^category_webpages_([0-9]{1,2}|__name__)_definedType$',
+                'value' => '(^NotUsed$|^$)'
+            ]
+        ];
+        return $result;
     }
 }
