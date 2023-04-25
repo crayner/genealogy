@@ -8,6 +8,7 @@ import FullName from "./FullName";
 import ParentDetails from "./ParentDetails";
 import SiblingDetails from "./SiblingDetails";
 import SpouseDetails from "./SpouseDetails";
+import ChildrenDetails from "./ChildrenDetails";
 
 export default function IndividualDetails(props) {
     const {
@@ -27,6 +28,7 @@ export default function IndividualDetails(props) {
                             <ParentDetails translations={translations} details={individual.parents} handleOpenForm={handleOpenForm} />
                             <SiblingDetails translations={translations} details={individual.siblings} handleOpenForm={handleOpenForm} />
                             <SpouseDetails translations={translations} details={individual.spouses} handleOpenForm={handleOpenForm} />
+                            <ChildrenDetails translations={translations} details={individual.children} handleOpenForm={handleOpenForm} />
                         </MainContainer>
                     </Main>
                     <Sidebar>{[]}</Sidebar>

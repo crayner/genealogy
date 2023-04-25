@@ -59,6 +59,7 @@ class IndividualNameManager extends GenealogySecurityManager
         if ($access && $individual->getLastNameOther() !== null) {
             $name .= ' aka ' . $individual->getLastNameOther();
         }
+        if ($access) $name .= ' ' . $individual->getSuffix();
 
         if ($options['dates']) {
             if ($access && $individual->getBirthDate() instanceof \DateTimeImmutable) {
@@ -68,11 +69,12 @@ class IndividualNameManager extends GenealogySecurityManager
             }
             if ($access && $individual->getDeathDate() instanceof \DateTimeImmutable) {
                 $name .= ' - ' . $individual->getDeathDate()->format('Y') . ')';
-            } elseif ($access && !$individual->getDeathDate() instanceof \DateTimeImmutable) {
+            } elseif ($access && !$individual->getDeathDate() instanceof \DateTimeImmutable && !$individual->isLiving()) {
                 $name .= ' - ? )';
+            } elseif ($access && !$individual->getDeathDate() instanceof \DateTimeImmutable && $individual->isLiving()) {
+                $name .= ' - )';
             }
         }
-        if ($access) $name .= ' ' . $individual->getSuffix();
         return trim($name);
     }
 

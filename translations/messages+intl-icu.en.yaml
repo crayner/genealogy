@@ -296,10 +296,11 @@ sibling:
 children:
     list: >-
         { gender, select,
-            Female {Mother of {list}}
-            Male {Father of {list}}
-            other {Parent of {list}}
+            Female {Mother of }
+            Male {Father of }
+            other {Parent of }
         }
+and: and
 last_modified: 'Last Modified {date}.'
 created_on: 'Created {date}.'
 Genealogy Modify Record: 'Genealogy Modify Record'

@@ -37,6 +37,8 @@
             location: 'marriage.details.location'|trans(details.spouses[index].details)}]) %}
     {% endfor %}
     {% set translations = translations|merge({'spouses': spouses}) %}
+    {% set translations = translations|merge({'children_list': 'children.list'|trans({gender: details.gender})}) %}
+    {% set translations = translations|merge({'and': 'and'|trans }) %}
     <script>
         window.INDIVIDUAL_PROPS = [];
         window.INDIVIDUAL_PROPS.translations = {{ translations|json_encode|raw }};

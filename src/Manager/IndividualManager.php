@@ -143,9 +143,9 @@ class IndividualManager extends GenealogySecurityManager
 
         // Do sort the new iterator.
         $iterator->uasort(function (Individual $a, Individual $b) {
-            return ($a->getBirthDateFirstNameString() > $b->getBirthDateFirstNameString()) ? -1 : 1;
+            return ($a->getBirthDateFirstNameString() > $b->getBirthDateFirstNameString()) ? 1 : -1;
         });
-        $this->children = new ArrayCollection(iterator_to_array($iterator));
+        $this->children = new ArrayCollection(array_values(iterator_to_array($iterator)));
         return $this->children;
     }
 
@@ -339,13 +339,21 @@ class IndividualManager extends GenealogySecurityManager
             ],
             'siblings' => [],
             'spouses' => [],
+            'gender' => $this->getIndividual()->getGenderValue(),
         ];
+        $result['siblings'] = [];
         foreach ($this->getSiblings() as $q=>$sibling) {
             $result['siblings'][$q] = $sibling->getId();
         }
+        $result['spouses'] = [];
         foreach ($this->getMarriages() as $q=>$marriage) {
             $result['spouses'][$q]['id'] = $marriage->getId();
             $result['spouses'][$q]['details'] = $this->getMarriageDetails($marriage);
+        }
+        $result['children'] = [];
+        foreach ($this->getChildren() as $q=>$child) {
+            $result['children'][$q]['id'] = $child->getId();
+            $result['children'][$q]['name'] = $this->getFullName($child, ['words' => false]);
         }
         return $result;
     }
