@@ -2,7 +2,7 @@
 {% if manager.siblings|length > 0 %}
     {% set list = '' %}
     {% for sibling in manager.siblings %}
-        {% set list = list ~ "<a href=\"" ~ path('genealogy_record_modify', {individual: sibling.userID}) ~ "\">" ~ manager.genealogyFullName(sibling) ~ "</a>, " %}
+        {% set list = list ~ "<a href=\"" ~ path('genealogy_individual_modify', {individual: sibling.userID}) ~ "\">" ~ manager.genealogyFullName(sibling) ~ "</a>, " %}
     {% endfor %}
     <p>{{ 'sibling.list'|trans({list: list, gender: manager.individual.gender})|trim(', ')|raw }}</p>
 {% endif %}

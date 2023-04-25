@@ -197,4 +197,16 @@ export const Error = styled.li`
     line-height: 17px;
     color: ${props => props.theme.error};;
 `
+export const FontWeightNormal = styled.span`
+    font-weight: normal;
+`
+export const DarkGreenOL = styled.ol`
+    list-style: none;
+    color: ${props => props.theme.fg};
+    margin-block-start: 5px;
+    margin-block-end: 3px;
+    padding-inline-start: 3px;
+`
+export const DarkGreenLI = styled.li`
+`
 

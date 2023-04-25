@@ -2,12 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Individual;
-use App\Form\CategorySearchType;
-use App\Manager\CategoryParse;
 use App\Manager\DumpPeopleMarriage;
-use App\Manager\DumpPeopleUsers;
-use App\Manager\IndividualManager;
 use App\Manager\ManagerParse;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,26 +11,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class GenealogyController extends AbstractController
 {
-    /**
-     * @param DumpPeopleUsers $individual
-     * @param DumpPeopleMarriage $marriage
-     * @return Response
-     */
-    #[Route('/individual/parse', name: 'individual_parse')]
-    public function individualParse(DumpPeopleUsers $individual, DumpPeopleMarriage $marriage): Response
-    {
-        $offset = $individual->execute();
-
-        if (is_array($offset)) dd($offset);
-        if ($offset > 0) {
-            return $this->render('wikitree/dump_individual.html.twig', ['offset' => $offset, 'manager' => $individual]);
-        }
-
-        // $marriage->execute();
-
-        return $this->redirectToRoute('wikitree_biography');
-    }
-
     /**
      * @param DumpPeopleMarriage $marriage
      * @return Response
@@ -83,56 +58,5 @@ class GenealogyController extends AbstractController
         // $manager->execute();
 
         return $this->redirectToRoute('wikitree_biography');
-    }
-
-    /**
-     * @param CategoryParse $manager
-     * @param string $letter
-     * @return Response
-     * @throws UniqueConstraintViolationException
-     */
-    #[Route('/category/{offset}/{letter}/parse', name: 'category_parse')]
-    public function categoryParse(CategoryParse $manager, string $letter, int $offset): Response
-    {
-        $offset = $manager->execute($offset, $letter);
-
-        if ($offset > 0) {
-            return $this->render('wikitree/dump_marriage.html.twig', [
-                'offset' => $offset,
-                'manager' => $manager,
-                'title' => 'Parsing Categories from Wikitree Dump',
-                'route' => 'category_parse',
-                'letter' => $letter,
-            ]);
-        }
-
-        if ($offset === 0 && $letter < 'Z') {
-            $letter = chr(ord($letter) + 1);
-            return $this->render('wikitree/dump_marriage.html.twig', [
-                'offset' => $offset,
-                'manager' => $manager,
-                'title' => 'Parsing Categories from Wikitree Dump',
-                'route' => 'category_parse',
-                'letter' => $letter,
-            ]);
-        }
-
-        return $this->redirectToRoute('wikitree_biography');
-    }
-
-    /**
-     * @param IndividualManager $manager
-     * @param Individual|null $individual
-     * @return Response
-     */
-    #[Route('/genealogy/record/{individual}/modify', name: 'genealogy_record_modify')]
-    public function modifyRecord(IndividualManager $manager, ?Individual $individual = null): Response
-    {
-        if ($individual instanceof Individual) {
-            $manager->setIndividual($individual);
-        } else {
-            $manager->retrieveIndividual($_GET['individual']);
-        }
-        return $this->render('genealogy/individual.html.twig', ['manager' => $manager]);
     }
 }

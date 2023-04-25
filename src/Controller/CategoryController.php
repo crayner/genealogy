@@ -5,13 +5,14 @@ use App\Entity\Category;
 use App\Form\CategoryAddType;
 use App\Form\CategoryType;
 use App\Manager\CategoryManager;
+use App\Manager\CategoryParse;
 use App\Manager\FormManager;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
 
 class CategoryController extends AbstractController
@@ -27,7 +28,7 @@ class CategoryController extends AbstractController
         $members = [];
         foreach ($category->getIndividuals() as $q => $individual) {
             $members[$q] = $individual->__toArray();
-            $members[$q]['path'] = $router->generate('genealogy_record_modify', ['individual' => $individual->getUserID()]);
+            $members[$q]['path'] = $router->generate('genealogy_individual_modify', ['individual' => $individual->getUserID()]);
             $members[0]['fetch'] = false;
         }
         return new JsonResponse(
@@ -91,6 +92,41 @@ class CategoryController extends AbstractController
                 'form' => $form->createView(),
             ]
         );
+    }
+
+    /**
+     * @param CategoryParse $manager
+     * @param string $letter
+     * @return Response
+     * @throws UniqueConstraintViolationException
+     */
+    #[Route('/category/{offset}/{letter}/parse', name: 'category_parse')]
+    public function categoryParse(CategoryParse $manager, string $letter, int $offset): Response
+    {
+        $offset = $manager->execute($offset, $letter);
+
+        if ($offset > 0) {
+            return $this->render('wikitree/dump_marriage.html.twig', [
+                'offset' => $offset,
+                'manager' => $manager,
+                'title' => 'Parsing Categories from Wikitree Dump',
+                'route' => 'category_parse',
+                'letter' => $letter,
+            ]);
+        }
+
+        if ($offset === 0 && $letter < 'Z') {
+            $letter = chr(ord($letter) + 1);
+            return $this->render('wikitree/dump_marriage.html.twig', [
+                'offset' => $offset,
+                'manager' => $manager,
+                'title' => 'Parsing Categories from Wikitree Dump',
+                'route' => 'category_parse',
+                'letter' => $letter,
+            ]);
+        }
+
+        return $this->redirectToRoute('wikitree_biography');
     }
 
 }

@@ -72,12 +72,13 @@ class IndividualManager extends GenealogySecurityManager
     }
 
     /**
-     * @param string $individualID
+     * @param int|string $individualID
      * @return $this
+     * @throws \Exception
      */
-    public function retrieveIndividual(string $individualID): IndividualManager
+    public function retrieveIndividual(int|string $individualID): IndividualManager
     {
-        $this->individual = $this->getRepository()->findOneByUserID($individualID);
+        $this->individual = $this->getRepository()->find($individualID);
         if ($this->getIndividual() === null) return $this;
         if (!is_null($this->individual->getFather())) $this->individual->getFather()->getFirstName();
         if (!is_null($this->individual->getMother())) $this->individual->getMother()->getFirstName();
@@ -117,11 +118,11 @@ class IndividualManager extends GenealogySecurityManager
      * @param Individual|null $individual
      * @return string
      */
-    public function getGenealogyFullName(?Individual $individual = null): string
+    public function getFullName(?Individual $individual = null, array $options = []): string
     {
         $individual = is_null($individual) ? $this->getIndividual() : $individual;
 
-        return $this->getNameManager()->getFullNameWithDates($individual);
+        return $this->getNameManager()->getFullName($individual, $options);
     }
 
     /**
@@ -154,14 +155,15 @@ class IndividualManager extends GenealogySecurityManager
      */
     public function getSiblings(): Collection
     {
+        $this->siblings = new ArrayCollection();
         // check if father
-        if (is_null($this->getIndividual()->getFather())) {
-            $this->siblings = new ArrayCollection();
-        } else {
-            $this->siblings = new ArrayCollection($this->getRepository()->findBy(['father' => $this->getIndividual()->getFather()]));
+        if ($this->getIndividual()->getFather() instanceof Individual) {
+            foreach ($this->getRepository()->findBy(['father' => $this->getIndividual()->getFather()]) as $child) {
+                if (!$this->siblings->contains($child)) $this->siblings->add($child);
+            }
         }
         // check if mother
-        if (!is_null($this->getIndividual()->getMother())) {
+        if ($this->getIndividual()->getMother() instanceof Individual) {
             foreach ($this->getRepository()->findBy(['mother' => $this->getIndividual()->getMother()]) as $child) {
                 if (!$this->siblings->contains($child)) $this->siblings->add($child);
             }
@@ -170,14 +172,14 @@ class IndividualManager extends GenealogySecurityManager
         // Collect an array iterator.
         $iterator = $this->siblings->getIterator();
 
-        // Do sort the new iterator.
+        // Do the sort.
         $iterator->uasort(function (Individual $a, Individual $b) {
-            return ($a->getBirthDateFirstNameString() > $b->getBirthDateFirstNameString()) ? -1 : 1;
+            return ($a->getBirthDateFirstNameString() < $b->getBirthDateFirstNameString()) ? -1 : 1;
         });
         $this->siblings = new ArrayCollection(iterator_to_array($iterator));
         if ($this->siblings->contains($this->getIndividual())) $this->siblings->removeElement($this->getIndividual());
 
-        return $this->siblings;
+        return $this->siblings = new ArrayCollection(array_values($this->siblings->toArray()));;
     }
 
     /**
@@ -194,7 +196,7 @@ class IndividualManager extends GenealogySecurityManager
             $result['date'] = $this->getIndividual()->parseEventDate($this->getIndividual()->getBirthDate());
             if (preg_match('#^([0-9]{1,2}) ([a-zA-Z]{3}) ([0-9]{4})$#',$result['date'], $matches)) {
                 $result['date'] = $this->getIndividual()->getBirthDate()->format('l, jS F Y');
-                $result['status'] = 'on_the';
+                $result['status'] = 'on';
             }
             $result['location'] = $this->getIndividual()->getBirthLocation();
         } else {
@@ -219,10 +221,14 @@ class IndividualManager extends GenealogySecurityManager
             $result['date'] = $this->getIndividual()->parseEventDate($this->getIndividual()->getDeathDate());
             if (preg_match('#^([0-9]{1,2}) ([a-zA-Z]{3}) ([0-9]{4})$#',$result['date'], $matches)) {
                 $result['date'] = $this->getIndividual()->getDeathDate()->format('l, jS F Y');
-                $result['status'] = 'on_the';
+                $result['status'] = 'on';
             }
+
             $result['location'] = $this->getIndividual()->getDeathLocation();
-            if (!empty($result['location'])) $result['location_status'] = 'ok';
+
+            if (!empty($result['location'])) {
+                $result['location_status'] = 'ok';
+            }
 
         } else {
             $result['date'] = $this->getIndividual()->parseEventDate($this->getIndividual()->getDeathDate(), true);
@@ -277,25 +283,25 @@ class IndividualManager extends GenealogySecurityManager
     }
 
     /**
-     * @param Marriage $spouse
+     * @param Marriage $marriage
      * @return array
      */
-    public function getMarriageDetails(Marriage $spouse): array
+    public function getMarriageDetails(Marriage $marriage): array
     {
         $result = [];
-        $result['date_status'] = $spouse->getMarriageDateStatus();
-        $result['date'] = $this->getIndividual()->parseEventDate($spouse->getMarriageDate());
+        $result['date_status'] = $marriage->getMarriageDateStatus();
+        $result['date'] = $this->getIndividual()->parseEventDate($marriage->getMarriageDate());
         if (strlen($result['date']) > 8) {
-            $result['date'] = $spouse->getMarriageDate()->format('l, jS F Y');
+            $result['date'] = $marriage->getMarriageDate()->format('l, jS F Y');
             $result['date_status'] = ($result['date_status'] === 'certain' || $result['date_status'] === null) ? 'on' : $result['date_status'];
         } elseif (empty($result['date'])) {
             $result['date_status'] = 'empty';
         }
-        $result['name'] = $this->getIndividual() === $spouse->getHusband() ? $this->getGenealogyFullName($spouse->getWife()) : $this->getGenealogyFullName($spouse->getHusband());
-        $result['location'] = $spouse->getLocation();
-        $result['location_status'] = $spouse->getLocationStatus();
-        $result['gender'] = $this->getIndividual()->getGender();
-        $result['spouse_id'] = $this->getIndividual() === $spouse->getHusband() ? $spouse->getWife()->getUserID() : $spouse->getHusband()->getUserID();
+        $result['name'] = $this->getFullName($marriage->getSpouse($this->getIndividual()), ['dates' => true, 'words' => false]);
+        $result['location'] = $marriage->getLocation();
+        $result['location_status'] = $marriage->getLocationStatus();
+        $result['gender'] = $this->getIndividual()->getGenderValue();
+        $result['spouse_id'] = $marriage->getSpouse($this->getIndividual())->getId();
         if ($result['date_status'] === null) {
             //do stuff
         }
@@ -317,5 +323,30 @@ class IndividualManager extends GenealogySecurityManager
     public function getNameManager(): IndividualNameManager
     {
         return $this->nameManager = $this->nameManager ?? new IndividualNameManager();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getIndividualDetails(): array
+    {
+        $result = [
+            'full_name' => $this->getNameManager()->getFullNameDetails($this->getIndividual(), ['dates' => true]),
+            'birth_details' => $this->getBirthDetails(),
+            'parents' => [
+                'father' => $this->getIndividual()->getFather() ? $this->getIndividual()->getFather()->getId() : 0,
+                'mother' => $this->getIndividual()->getMother() ? $this->getIndividual()->getMother()->getId() : 0,
+            ],
+            'siblings' => [],
+            'spouses' => [],
+        ];
+        foreach ($this->getSiblings() as $q=>$sibling) {
+            $result['siblings'][$q] = $sibling->getId();
+        }
+        foreach ($this->getMarriages() as $q=>$marriage) {
+            $result['spouses'][$q]['id'] = $marriage->getId();
+            $result['spouses'][$q]['details'] = $this->getMarriageDetails($marriage);
+        }
+        return $result;
     }
 }

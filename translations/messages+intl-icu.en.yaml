@@ -17,10 +17,18 @@ birth:
         mother: Unknown Mother
     details: >-
         { status, select,
-            in {Born in <strong>{date}</strong> in <strong>{location}</strong>.}
+            in {Born in {date} in {location}.}
             decade_only {Born in {date}s.}
-            on_the {Born on the <strong>{date}</strong> in <strong>{location}</strong>}
-            other {Born without status in <strong>{date}</strong> in <strong>{location}</strong>}
+            on_the {Born on the {date} in {location}.}
+            on {Born on {date} in {location}.}
+            other {Born without status in {date}> in {location}.}
+        }
+    parents: >-
+        { gender, select,
+            Male {Son of |{father}| and |{mother}|.}
+            Female {Daughter of |{father}| and |{mother}|.}
+            Unknown {Child of |{father}| and |{mother}|.}
+            other {Child of |{father}| and |{mother}|.}
         }
 Data: Data
 Nothing done yet.: Nothing done yet.
@@ -58,22 +66,22 @@ marriage:
             {gender, select,
                 Female {
                     { date_status, select,
-                        on {Wife of <strong><a href="{link}">{name}</a></strong> - married on {date}}
-                        certain {Wife of <strong><a href="{link}">{name}</a></strong> - married in {date}}
-                        empty {Wife of <strong><a href="{link}">{name}</a></strong> }
-                        other {Wife of <strong><a href="{link}">{name}</a></strong> - married in {date}status?}}}
+                        on {Wife of |{name}| - married on |{date}|}
+                        certain {Wife of |{name}| - married in |{date}|}
+                        empty {Wife of |{name}|}
+                        other {Wife of |{name}| - married in |{date}| date status?}}}
                 Male {
                     { date_status, select,
-                        on {Husband of <strong><a href="{link}">{name}</a></strong> - married on {date}}
-                        certain {Husband of <strong><a href="{link}">{name}</a></strong> - married in {date}}
-                        empty {Husband of <strong><a href="{link}">{name}</a></strong> }
-                        other {Husband of <strong><a href="{link}">{name}</a></strong> - married in {date}}}}
+                        on {Husband of |{name}| - married on |{date}|}
+                        certain {Husband of |{name}| - married in |{date}|}
+                        empty {Husband of |{name}|}
+                        other {Husband of |{name}| - married in |{date}| date status?}}}
                 other {
                     { date_status, select,
-                        on {Spouse of <strong><a href="{link}">{name}</a></strong> - married on {date}}
-                        certain {Spouse of <strong><a href="{link}">{name}</a></strong> - married in {date}}
-                        empty {Spouse of <strong><a href="{link}">{name}</a></strong> }
-                        other {Spouse of <strong><a href="{link}">{name}</a></strong> - married in {date} [status?]}}}}
+                        on {Spouse of |{name}| - married on |{date}|}
+                        certain {Spouse of |{name}| - married in |{date}|}
+                        empty {Spouse of |{name}|}
+                        other {Spouse of |{name}| - married in |{date}| [date status?]}}}}
         location: >-
             { location_status, select,
                 certain { in {location}.}
@@ -247,10 +255,10 @@ Daily Quota Remaining: >-
         other { You have # categories to change before you reach your daily limit.}
     }
 sibling sentence: >-
-    { sex, select,
-        female {{name} is the sister of:}
-        male {{name} is the brother of:}
-        other {{name} has the following siblings:}
+    { gender, select,
+        Female {{name} is the sister of: }
+        Male {{name} is the brother of: }
+        other {{name} has the following siblings: }
     }
 WikiTree Medal Update: WikiTree Medal Update
 Use the Wikitree ID of the profile for which you are updating the medal category and sticker.: Use the Wikitree ID of the profile for which you are updating the medal category and sticker.
@@ -396,3 +404,26 @@ __name__label__: __name__label__
 'cont': 'cont'
 'Previous': 'Previous'
 'Next': 'Next'
+'Genealogy Modify Individual': 'Genealogy Modify Individual'
+full_name: >-
+    { current, select,
+        same {{prefix}{first_name} {middle_name}{nick_names} {last_name_at_birth}{suffix} ({birth_year} - {death_year})}
+        changed {{ aka, select, 
+            empty {{prefix}{first_name} {middle_name}{nick_names} {last_name_current}{suffix} |{formerly}| {last_name_at_birth} ({birth_year} - {death_year})}
+            used {{prefix}{first_name} {middle_name}{nick_names} {last_name_current}{suffix} |{formerly}| {last_name_at_birth} |{used}| {last_name_other} ({birth_year} - {death_year})}
+            other { 'aka' not set correctly for translation. }
+        }}
+        other { 'Current' not set correctly for translation. }
+    }
+short_name: >-
+    { current, select,
+        same {{first_name} {last_name_at_birth}}
+        changed {{ aka, select, 
+            empty {{first_name} ({last_name_at_birth}) {last_name_current}}
+            used {{first_name} ({last_name_at_birth}) {last_name_current}}
+            other { 'aka' not set correctly for translation. }
+        }}
+        other { 'Current' not set correctly for translation. }
+    }
+
+'formerly': 'formerly'

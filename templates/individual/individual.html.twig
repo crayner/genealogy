@@ -1,0 +1,49 @@
+{% trans_default_domain 'messages' %}
+
+{% extends "base.html.twig" %}
+{% block title %}{{  'Genealogy Modify Individual'|trans }}{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock stylesheets %}
+{% block header %}
+    <div id="individual-header"></div>
+{% endblock header %}
+{% block content %}
+    <div id="individual-content"></div>
+{% endblock content %}
+{% block sidebar %}
+{% endblock sidebar %}
+{% block javascripts %}
+    {% set translations = {} %}
+    {% set details = manager.getIndividualDetails() %}
+    {% set translations = translations|merge({'birth.unknown.father': 'birth.unknown.father'|trans}) %}
+    {% set translations = translations|merge({'birth.unknown.mother': 'birth.unknown.mother'|trans}) %}
+    {% set translations = translations|merge({'birth.details': 'birth.details'|trans({status: manager.birthDetails['status']})}) %}
+    {% set translations = translations|merge({'full_name': 'full_name'|trans(manager.nameManager.fullNameDetails(manager.individual, {'dates': true}))}) %}
+    {% set translations = translations|merge({'formerly': 'formerly'|trans}) %}
+    {% set translations = translations|merge({'aka': 'aka'|trans}) %}
+    {% set translations = translations|merge({'father_name': 'short_name'|trans(manager.nameManager.fullNameDetails(manager.individual.father, {'dates': false}))|default('birth.unknown.father'|trans)}) %}
+    {% set translations = translations|merge({'mother_name': 'short_name'|trans(manager.nameManager.fullNameDetails(manager.individual.mother, {'dates': false}))|default('birth.unknown.mother'|trans)}) %}
+    {% set translations = translations|merge({'birth_parents': 'birth.parents'|trans({gender: manager.individual.genderValue})}) %}
+    {% set translations = translations|merge({'sibling_sentence': 'sibling sentence'|trans({gender: manager.individual.genderValue, name: 'short_name'|trans(manager.nameManager.fullNameDetails(manager.individual, {'dates': true}))})}) %}
+    {% set siblings = [] %}
+    {% for index, sibling in manager.getSiblings %}
+        {% set siblings = siblings|merge(['short_name'|trans(manager.nameManager.fullNameDetails(sibling, {'dates': false}))]) %}
+    {% endfor %}
+    {% set translations = translations|merge({'siblings': siblings}) %}
+    {% set spouses = [] %}
+    {% for index, spouse in manager.getMarriages %}
+        {% set spouses = spouses|merge([{name: 'marriage.details.date'|trans({gender: details.spouses[index].details.gender, date_status: details.spouses[index].details.date_status})|trim,
+            location: 'marriage.details.location'|trans(details.spouses[index].details)}]) %}
+    {% endfor %}
+    {% set translations = translations|merge({'spouses': spouses}) %}
+    <script>
+        window.INDIVIDUAL_PROPS = [];
+        window.INDIVIDUAL_PROPS.translations = {{ translations|json_encode|raw }};
+        window.INDIVIDUAL_PROPS.form = {{ full_form|json_encode|raw }};
+        window.INDIVIDUAL_PROPS.individual = {{ manager.individualDetails(form.vars.template)|json_encode|raw }};
+        window.INDIVIDUAL_PROPS.addition = false;
+    </script>
+    {{ encore_entry_script_tags('individual') }}
+    {{ parent() }}
+{% endblock %}

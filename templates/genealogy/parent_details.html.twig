@@ -2,10 +2,10 @@
 {% if details.father is same as('birth.unknown.father') %}
     {% set details = details|merge({father: 'birth.unknown.father'|trans}) %}
 {% else %}
-    {% set details = details|merge({father: "<a href=\"" ~ path('genealogy_record_modify', {individual: details.f_id}) ~  "\">" ~ details.father ~ "</a>"}) %}
+    {% set details = details|merge({father: "<a href=\"" ~ path('genealogy_individual_modify', {individual: details.f_id}) ~  "\">" ~ details.father ~ "</a>"}) %}
 {% endif %}
 {% if details.mother is same as('birth.unknown.mother') %}
     {% set details = details|merge({mother: 'birth.unknown.mother'|trans}) %}
 {% else %}
-    {% set details = details|merge({mother: "<a href=\"" ~ path('genealogy_record_modify', {individual: details.m_id}) ~  "\">" ~ details.mother ~ "</a>"}) %}
+    {% set details = details|merge({mother: "<a href=\"" ~ path('genealogy_individual_modify', {individual: details.m_id}) ~  "\">" ~ details.mother ~ "</a>"}) %}
 {% endif %}{{ 'parent.details'|trans(details)|raw }}

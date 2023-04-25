@@ -234,4 +234,13 @@ class Marriage
         return self::$locationStatusList;
     }
 
+    /**
+     * @param Individual $individual
+     * @return Individual
+     */
+    public function getSpouse(Individual $individual): Individual
+    {
+        if ($this->getHusband() === $individual) return $this->getWife();
+        return $this->getHusband();
+    }
 }

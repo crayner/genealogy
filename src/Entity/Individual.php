@@ -1,11 +1,13 @@
 <?php
 namespace App\Entity;
 
+use App\Entity\Enum\GenderEnum;
 use App\Manager\IndividualNameManager;
 use App\Repository\IndividualRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 
@@ -124,20 +126,10 @@ class Individual
     private ?string $suffix;
 
     /**
-     * @var string|null
+     * @var GenderEnum|null
      */
-    #[ORM\Column(type: 'string', length: 16, nullable: true)]
-    private ?string $gender;
-
-    /**
-     * @var array|string[]
-     */
-    static public array $genderList =
-        [
-            'Unknown',
-            'Male',
-            'Female',
-        ];
+    #[ORM\Column(type: 'string', length: 16, nullable: true, options: ['default' => NULL], enumType: GenderEnum::class)]
+    private ?GenderEnum $gender;
 
     /**
      * @var \DateTimeImmutable|null
@@ -465,7 +457,7 @@ class Individual
      */
     public function getPrefix(): ?string
     {
-        return $this->prefix;
+        return $this->prefix = !empty($this->prefix) ? $this->prefix : null;
     }
 
     /**
@@ -474,7 +466,7 @@ class Individual
      */
     public function setPrefix(?string $prefix): Individual
     {
-        $this->prefix = $prefix === '' ? null : $prefix;
+        $this->prefix = !empty($prefix) ? $prefix : null;
         return $this;
     }
 
@@ -537,7 +529,7 @@ class Individual
      */
     public function getNickNames(): ?string
     {
-        return $this->nick_Names;
+        return $this->nick_Names = !empty($this->nick_Names) ? $this->nick_Names : null;
     }
 
     /**
@@ -591,7 +583,7 @@ class Individual
      */
     public function getLastNameOther(): ?string
     {
-        return $this->last_Name_Other;
+        return $this->last_Name_Other = !empty($last_Name_Other) ? $last_Name_Other : null;;
     }
 
     /**
@@ -600,7 +592,7 @@ class Individual
      */
     public function setLastNameOther(?string $last_Name_Other): Individual
     {
-        $this->last_Name_Other = $last_Name_Other === '' ? null : $last_Name_Other;
+        $this->last_Name_Other = !empty($last_Name_Other) ? $last_Name_Other : null;
         return $this;
     }
 
@@ -623,30 +615,40 @@ class Individual
     }
 
     /**
-     * @return string|null
+     * @return GenderEnum|null
      */
-    public function getGender(): ?string
+    public function getGender(): ?GenderEnum
     {
         return $this->gender;
     }
 
     /**
-     * @param string|null $gender
+     * @return string|null
+     */
+    public function getGenderValue(): ?string
+    {
+        if ($this->getGender() instanceof GenderEnum) {
+            return $this->getGender()->value;
+        }
+        return null;
+    }
+
+    /**
+     * @param GenderEnum|null $gender
      * @return Individual
      */
-    public function setGender(?string $gender): Individual
+    public function setGender(?GenderEnum $gender): Individual
     {
-        $this->gender = in_array($gender, static::getGenderList(true)) ? $gender : null;
+        $this->gender = $gender;
         return $this;
     }
 
     /**
-     * @param bool $withNull
-     * @return array|string[]
+     * @return array
      */
-    static public function getGenderList(bool $withNull = false): array
+    public static function getGenderList(): array
     {
-        return $withNull ? array_merge([null], static::$genderList) : static::$genderList;
+        return GenderEnum::cases();
     }
 
     /**
@@ -1072,7 +1074,7 @@ class Individual
      */
     public function getBirthDateFirstNameString(): string
     {
-        $result = $this->getBirthDate() === null ? '' : $this->getBirthDate()->format('Ymd');
+        $result = empty($this->getBirthDate()) ? '' : $this->getBirthDate()->format('Ymd');
         $result .= $this->getFirstName();
         return $result;
     }
@@ -1110,7 +1112,6 @@ class Individual
      */
     public function getMarriages(): ArrayCollection
     {
-
         return $this->marriages = $this->marriages ?? new ArrayCollection();
     }
 

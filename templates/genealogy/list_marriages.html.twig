@@ -2,7 +2,7 @@
 {% if manager.marriages|length > 0 %}
     {% for spouse in manager.marriages %}
         {% set details = manager.marriageDetails(spouse) %}
-        {% set details = details|merge({link: absolute_url(path('genealogy_record_modify', {individual: details.spouse_id}))}) %}
+        {% set details = details|merge({link: absolute_url(path('genealogy_individual_modify', {individual: details.spouse_id}))}) %}
         <p>{{ 'marriage.details.date'|trans(details)|raw }}{{ 'marriage.details.location'|trans(details) }}</p>
     {% endfor %}
 {% endif %}
