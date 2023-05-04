@@ -18,7 +18,9 @@
     {% set details = manager.getIndividualDetails() %}
     {% set translations = translations|merge({'birth.unknown.father': 'birth.unknown.father'|trans}) %}
     {% set translations = translations|merge({'birth.unknown.mother': 'birth.unknown.mother'|trans}) %}
-    {% set translations = translations|merge({'birth.details': 'birth.details'|trans({status: manager.birthDetails['status']})}) %}
+    {% set translations = translations|merge({'birth_details': 'birth.details'|trans({status: details.birth_details.status})}) %}
+    {% set translations = translations|merge({'death_details_date': 'death.details.date'|trans({status: details.death_details.status})}) %}
+    {% set translations = translations|merge({'death_details_location': 'death.details.location'|trans({location_status: details.death_details.location_status})}) %}
     {% set translations = translations|merge({'full_name': 'full_name'|trans(manager.nameManager.fullNameDetails(manager.individual, {'dates': true}))}) %}
     {% set translations = translations|merge({'formerly': 'formerly'|trans}) %}
     {% set translations = translations|merge({'aka': 'aka'|trans}) %}
@@ -28,7 +30,7 @@
     {% set translations = translations|merge({'sibling_sentence': 'sibling sentence'|trans({gender: manager.individual.genderValue, name: 'short_name'|trans(manager.nameManager.fullNameDetails(manager.individual, {'dates': true}))})}) %}
     {% set siblings = [] %}
     {% for index, sibling in manager.getSiblings %}
-        {% set siblings = siblings|merge(['short_name'|trans(manager.nameManager.fullNameDetails(sibling, {'dates': false}))]) %}
+        {% set siblings = siblings|merge([manager.nameManager.fullName(sibling, {'words': false, 'dates': true})]) %}
     {% endfor %}
     {% set translations = translations|merge({'siblings': siblings}) %}
     {% set spouses = [] %}
@@ -39,10 +41,13 @@
     {% set translations = translations|merge({'spouses': spouses}) %}
     {% set translations = translations|merge({'children_list': 'children.list'|trans({gender: details.gender})}) %}
     {% set translations = translations|merge({'and': 'and'|trans }) %}
+    {% set translations = translations|merge({'Quick Search Names': 'Quick Search Names'|trans }) %}
+    {% set translations = translations|merge({'Loading': 'Loading'|trans }) %}
     <script>
         window.INDIVIDUAL_PROPS = [];
         window.INDIVIDUAL_PROPS.translations = {{ translations|json_encode|raw }};
         window.INDIVIDUAL_PROPS.form = {{ full_form|json_encode|raw }};
+        window.INDIVIDUAL_PROPS.search = {{ full_search|json_encode|raw }};
         window.INDIVIDUAL_PROPS.individual = {{ manager.individualDetails(form.vars.template)|json_encode|raw }};
         window.INDIVIDUAL_PROPS.addition = false;
     </script>

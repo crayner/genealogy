@@ -63,7 +63,7 @@ export function buildFormData(data, form) {
             return {...data[i]};
         });
     } else {
-        if (typeof form.value === 'object' && form.value !== null && form.value.length > 1) {
+        if (typeof form.value === 'array' && form.value !== null && form.value.length >= 1) {
             let result = form.value.map(value => {
                 return value;
             })
@@ -89,6 +89,13 @@ export function extractFormSection(form, section) {
         }
     })
     return result;
+}
+
+export function updateFormChange(value, element, form) {
+    form = {...form};
+    element = {...element};
+    element.value = value;
+    return setFormElement(element, form);
 }
 
 

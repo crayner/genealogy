@@ -4,7 +4,7 @@ import React, {Fragment} from 'react'
 import PropTypes from 'prop-types'
 import { DarkGreenP } from "../component/StyledCSS";
 
-export default function BirthDetails(props) {
+export default function DeathDetails(props) {
     const {
         translations,
         details,
@@ -12,7 +12,8 @@ export default function BirthDetails(props) {
     } = props;
 
     function parseDetails() {
-        let result = translations.birth_details.replaceAll('{', '|{').replaceAll('}', '}|');
+        let result = translations.death_details_date + translations.death_details_location;
+        result = result.replaceAll('{', '|{').replaceAll('}', '}|');
         result = result.split('|');
         return result.map((value, i) => {
             if (value === '{date}') {
@@ -21,6 +22,9 @@ export default function BirthDetails(props) {
             if (value === '{location}') {
                 return (<strong key={i}>{details.location}</strong>);
             }
+            if (value === '{age}') {
+                return details.age;
+            }
             return (<Fragment key={i}>{value}</Fragment>)
         })
     }
@@ -28,7 +32,7 @@ export default function BirthDetails(props) {
     return (<DarkGreenP>{parseDetails()}</DarkGreenP>);
 }
 
-BirthDetails.propTypes = {
+DeathDetails.propTypes = {
     translations: PropTypes.object.isRequired,
     details: PropTypes.object.isRequired,
     handleOpenForm: PropTypes.func.isRequired,

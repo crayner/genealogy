@@ -4,6 +4,7 @@ namespace App\Manager;
 use App\Entity\Category;
 use App\Entity\Cemetery;
 use App\Entity\Individual;
+use App\Entity\IndividualIndex;
 use App\Entity\Migrant;
 use App\Repository\CategoryRepository;
 use App\Repository\IndividualRepository;
@@ -73,7 +74,6 @@ class CategoryParse
 
         $file = new \SplFileObject($letterFile);
         $file->seek($offset);
-        $individuals = [];
         for($i = 0; !$file->eof() && $file->valid(); $i++, $file->next()) {
             $line = explode("\t", trim($file->current()));
             if (count($line) === 2) {
@@ -91,6 +91,21 @@ class CategoryParse
                     $this->getEntityManager()->flush();
                     if ($file->eof()) {
                         return 0;
+                    }
+                    if ($this->getCategory()->getIndividuals()->count() > 30000) {
+                        for ($q = 0; !$file->eof() && $file->valid(); $q++, $file->next()) {
+                            $line = explode("\t", trim($file->current()));
+                            if (count($line) === 2) {
+                                $w = trim(str_replace('_', ' ', $line[1]));
+                            }
+                            if ($w !== $name) {
+                                return $offset;
+                            }
+                            if ($file->eof()) {
+                                return 0;
+                            }
+                            $offset++;
+                        }
                     }
                     return $offset;
                 } catch (UniqueConstraintViolationException $e) {

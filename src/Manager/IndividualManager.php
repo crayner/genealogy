@@ -3,6 +3,7 @@
 namespace App\Manager;
 
 use App\Entity\Individual;
+use App\Entity\IndividualIndex;
 use App\Entity\Marriage;
 use App\Repository\IndividualRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -333,6 +334,7 @@ class IndividualManager extends GenealogySecurityManager
         $result = [
             'full_name' => $this->getNameManager()->getFullNameDetails($this->getIndividual(), ['dates' => true]),
             'birth_details' => $this->getBirthDetails(),
+            'death_details' => $this->getDeathDetails(),
             'parents' => [
                 'father' => $this->getIndividual()->getFather() ? $this->getIndividual()->getFather()->getId() : 0,
                 'mother' => $this->getIndividual()->getMother() ? $this->getIndividual()->getMother()->getId() : 0,

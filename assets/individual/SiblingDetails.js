@@ -16,11 +16,12 @@ export default function SiblingDetails(props) {
         result.push(<Fragment key={'sentence'}>{translations.sibling_sentence}</Fragment>);
         details.map((value, index) => {
             if (index === details.length - 1) {
+                result.push(<Fragment key={index}> {translations.and} <DarkGreenA href={'/genealogy/individual/' + value + '/modify'}>{translations.siblings[index]}</DarkGreenA>.</Fragment>);
+            } else if (index === 0) {
                 result.push(<DarkGreenA key={index}
-                                        href={'/genealogy/individual/' + value + '/modify'}>{translations.siblings[index]}.</DarkGreenA>);
+                                        href={'/genealogy/individual/' + value + '/modify'}>{translations.siblings[index]}</DarkGreenA>);
             } else {
-                result.push(<DarkGreenA key={index}
-                                        href={'/genealogy/individual/' + value + '/modify'}>{translations.siblings[index]}, </DarkGreenA>);
+                result.push(<Fragment key={index}>, <DarkGreenA href={'/genealogy/individual/' + value + '/modify'}>{translations.siblings[index]}</DarkGreenA></Fragment>);
             }
         })
         return result;

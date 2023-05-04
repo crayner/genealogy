@@ -17,6 +17,8 @@ namespace App\Repository;
 
 use App\Entity\Individual;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Types\TextType;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -102,4 +104,51 @@ class IndividualRepository extends ServiceEntityRepository
         return $result[0] ?? null;
     }
 
+    /**
+     * @param array $content
+     * @return array
+     */
+    public function quickNameSearch(array $content): ?ArrayCollection
+    {
+        $rawSearch = trim(str_replace(' ', '', $content['familyName'].$content['givenNames']));
+        if (strlen($rawSearch) < 3) return null;
+        $search = explode(' ', $content['familyName']);
+        $gn = explode(' ', $content['givenNames']);
+        $search = array_merge($search, $gn);
+        $gn = $gn[0];
+        $query = $this->createQueryBuilder('i')
+            ->select(['i.id AS value', "CONCAT(i.last_name_at_birth, ' ', i.first_name, ' ', COALESCE(i.middle_name, ''), ' ', COALESCE(i.nick_names, ''), ' ', COALESCE(i.last_name_current, '')) AS label"]);
+        if (empty($gn)) {
+            $query
+                ->where('i.name_index LIKE :familyStart')
+                ->setParameter('familyStart', '% ' . strtolower($content['familyName']) . '%');
+
+        } elseif (empty($content['familyName'])) {
+            $query
+                ->where('i.name_index LIKE :givenStart')
+                ->setParameter('givenStart', strtolower($gn) . '%');
+        } else {
+            $query
+                ->where('i.name_index LIKE :familyStart')
+                ->andWhere('i.name_index LIKE :givenStart')
+                ->setParameter('givenStart', strtolower($gn) . '%')
+                ->setParameter('familyStart', '% ' . strtolower($content['familyName']) . '%');
+        }
+        foreach ($search as $q=>$w) {
+            $param =  'any_'.$q;
+            if (!empty($w)) {
+                $query->andWhere('i.name_index LIKE :' . $param)
+                    ->setParameter($param, '%' . strtolower($w) . '%');
+            }
+        }
+        $query
+            ->setMaxResults(1000)
+            ->orderBy('i.last_name_at_birth', 'ASC')
+            ->addOrderBy('i.first_name', 'ASC');
+        $result = $query->getQuery()
+            ->getResult();
+dump($result);
+        if (is_array($result) && count($result) > 0) return new ArrayCollection($result);
+        return null;
+    }
 }

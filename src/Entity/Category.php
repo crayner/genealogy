@@ -42,7 +42,7 @@ class Category
     #[ORM\JoinTable(name: 'individual_category')]
     #[ORM\JoinColumn(name: 'individual', referencedColumnName: 'id')]
     #[ORM\InverseJoinColumn(name: 'category', referencedColumnName: 'id')]
-    #[ORM\OrderBy(['last_Name_At_Birth' => 'ASC', 'first_Name' => 'ASC'])]
+    #[ORM\OrderBy(['last_name_at_birth' => 'ASC', 'first_name' => 'ASC'])]
     #[MaxDepth(2)]
     var Collection $individuals;
 

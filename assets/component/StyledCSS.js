@@ -30,8 +30,12 @@ export const Column1 = styled.div`
   flex: 1;
 `
 export const Column2 = styled.div`
+  background-color: ${props => props.theme.bg};
+  flex: 2;
+`
+export const Column4 = styled.div`
     background-color: ${props => props.theme.bg};
-    flex: 2;
+    flex: 4;
 `
 export const Column6 = styled.div`
   background-color: ${props => props.theme.bg};
@@ -42,7 +46,7 @@ export const Column8 = styled.div`
     flex: 8;
 `
 export const Main = styled.div`
-    flex:6;
+    flex: 6;
     padding: 0 2px;
     border: 1px solid ${props => props.theme.fg};
 `

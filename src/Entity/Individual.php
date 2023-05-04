@@ -7,7 +7,6 @@ use App\Repository\IndividualRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 
@@ -22,9 +21,13 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(columns: ['mother'], name: 'mother')]
 #[ORM\Index(columns: ['father'], name: 'father')]
+#[ORM\Index(columns: ['name_index'], name: 'name_index', flags: ['fulltext'])]
 #[ORM\UniqueConstraint(name: 'source', columns: ['source_ID'])]
 #[ORM\UniqueConstraint(name: 'userID', columns: ['user_ID'])]
 #[ORM\UniqueConstraint(name: 'userIDDB', columns: ['user_ID_DB'])]
+#[ORM\Index(columns: ['first_name'], name: 'first_name')]
+#[ORM\Index(columns: ['last_name_at_birth', 'last_name_current', 'last_name_other'], name: 'last_name')]
+#[ORM\Index(columns: ['preferred_name', 'middle_name', 'nick_names'], name: 'preferred_name')]
 class Individual
 {
     /**
@@ -81,43 +84,43 @@ class Individual
      * @var string
      */
     #[ORM\Column(type: 'string', length: 255)]
-    private string $first_Name;
+    private string $first_name;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $preferred_Name;
+    private ?string $preferred_name;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $middle_Name;
+    private ?string $middle_name;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $nick_Names;
+    private ?string $nick_names;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $last_Name_At_Birth;
+    private ?string $last_name_at_birth;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $last_Name_Current;
+    private ?string $last_name_current;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $last_Name_Other;
+    private ?string $last_name_other;
 
     /**
      * @var string|null
@@ -261,6 +264,12 @@ class Individual
     private Collection $categories;
 
     /**
+     * @var string
+     */
+    #[ORM\Column(name: 'name_index', type: 'text', nullable: false)]
+    private string $name_index;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -351,7 +360,7 @@ class Individual
      */
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
-    public function wastedSpace(LifecycleEventArgs $args)
+    public function databaseTidy(LifecycleEventArgs $args): void
     {
         $this->setUserIDDB(str_replace(["_"], ' ', $this->getUserIDDB()));
         if ($this->getUserID() === $this->getUserIDDB() || empty($this->user_ID_DB)) {
@@ -395,6 +404,20 @@ class Individual
                     dd($this->getPrivacy(), $this);
             }
         }
+
+        $result = explode(' ', $this->getFirstName());
+        $result = array_merge($result, explode(' ', $this->getPreferredName()));
+        $result = array_merge($result, explode(' ', $this->getMiddleName()));
+        $result = array_merge($result, explode(' ', $this->getNickNames()));
+        $result = array_merge($result, explode(' ', $this->getLastNameAtBirth()));
+        $result = array_merge($result, explode(' ', $this->getLastNameCurrent()));
+        $result = array_merge($result, explode(' ', $this->getLastNameOther()));
+        $result = array_unique($result);
+        foreach ($result as $q=>$w) {
+            $result[$q] = trim($w);
+            if (empty(trim($w))) unset($result[$q]);
+        }
+        $this->setNameIndex(strtolower(implode(' ', $result)));
     }
 
     /**
@@ -475,16 +498,16 @@ class Individual
      */
     public function getFirstName(): string
     {
-        return $this->first_Name;
+        return $this->first_name;
     }
 
     /**
-     * @param string $first_Name
+     * @param string $first_name
      * @return Individual
      */
-    public function setFirstName(string $first_Name): Individual
+    public function setFirstName(string $first_name): Individual
     {
-        $this->first_Name = $first_Name;
+        $this->first_name = $first_name;
         return $this;
     }
 
@@ -493,16 +516,16 @@ class Individual
      */
     public function getPreferredName(): ?string
     {
-        return !is_null($this->preferred_Name) ? $this->preferred_Name : $this->getFirstName();
+        return !is_null($this->preferred_name) ? $this->preferred_name : $this->getFirstName();
     }
 
     /**
-     * @param string|null $preferred_Name
+     * @param string|null $preferred_name
      * @return Individual
      */
-    public function setPreferredName(?string $preferred_Name): Individual
+    public function setPreferredName(?string $preferred_name): Individual
     {
-        $this->preferred_Name = $preferred_Name;
+        $this->preferred_name = $preferred_name;
         return $this;
     }
 
@@ -511,16 +534,16 @@ class Individual
      */
     public function getMiddleName(): ?string
     {
-        return $this->middle_Name;
+        return $this->middle_name;
     }
 
     /**
-     * @param string|null $middle_Name
+     * @param string|null $middle_name
      * @return Individual
      */
-    public function setMiddleName(?string $middle_Name): Individual
+    public function setMiddleName(?string $middle_name): Individual
     {
-        $this->middle_Name = $middle_Name === "" ? null : $middle_Name;
+        $this->middle_name = $middle_name === "" ? null : $middle_name;
         return $this;
     }
 
@@ -529,16 +552,16 @@ class Individual
      */
     public function getNickNames(): ?string
     {
-        return $this->nick_Names = !empty($this->nick_Names) ? $this->nick_Names : null;
+        return $this->nick_names = !empty($this->nick_names) ? $this->nick_names : null;
     }
 
     /**
-     * @param string|null $nick_Names
+     * @param string|null $nick_names
      * @return Individual
      */
-    public function setNickNames(?string $nick_Names): Individual
+    public function setNickNames(?string $nick_names): Individual
     {
-        $this->nick_Names = $nick_Names === "" ? null : $nick_Names;
+        $this->nick_names = $nick_names === "" ? null : $nick_names;
         return $this;
     }
 
@@ -547,16 +570,16 @@ class Individual
      */
     public function getLastNameAtBirth(): ?string
     {
-        return $this->last_Name_At_Birth;
+        return $this->last_name_at_birth;
     }
 
     /**
-     * @param string|null $last_Name_At_Birth
+     * @param string|null $last_name_at_birth
      * @return Individual
      */
-    public function setLastNameAtBirth(?string $last_Name_At_Birth): Individual
+    public function setLastNameAtBirth(?string $last_name_at_birth): Individual
     {
-        $this->last_Name_At_Birth = $last_Name_At_Birth;
+        $this->last_name_at_birth = $last_name_at_birth;
         return $this;
     }
 
@@ -565,16 +588,16 @@ class Individual
      */
     public function getLastNameCurrent(): ?string
     {
-        return !is_null($this->last_Name_Current) ? $this->last_Name_Current : $this->getLastNameAtBirth();
+        return !is_null($this->last_name_current) ? $this->last_name_current : $this->getLastNameAtBirth();
     }
 
     /**
-     * @param string|null $last_Name_Current
+     * @param string|null $last_name_current
      * @return Individual
      */
-    public function setLastNameCurrent(?string $last_Name_Current): Individual
+    public function setLastNameCurrent(?string $last_name_current): Individual
     {
-        $this->last_Name_Current = $last_Name_Current;
+        $this->last_name_current = $last_name_current;
         return $this;
     }
 
@@ -583,16 +606,16 @@ class Individual
      */
     public function getLastNameOther(): ?string
     {
-        return $this->last_Name_Other = !empty($last_Name_Other) ? $last_Name_Other : null;;
+        return $this->last_name_other = !empty($last_name_other) ? $last_name_other : null;;
     }
 
     /**
-     * @param string|null $last_Name_Other
+     * @param string|null $last_name_other
      * @return Individual
      */
-    public function setLastNameOther(?string $last_Name_Other): Individual
+    public function setLastNameOther(?string $last_name_other): Individual
     {
-        $this->last_Name_Other = !empty($last_Name_Other) ? $last_Name_Other : null;
+        $this->last_name_other = !empty($last_name_other) ? $last_name_other : null;
         return $this;
     }
 
@@ -1195,7 +1218,26 @@ class Individual
     public function isValid(): bool
     {
         if (isset($this->id)) return true;
-        if (isset($this->first_Name) && isset($this->last_Name_At_Birth)) return true;
+        if (isset($this->first_name) && isset($this->last_name_at_birth)) return true;
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameIndex(): string
+    {
+        if (!isset($this->name_index)) $this->createIndex();
+        return $this->name_index;
+    }
+
+    /**
+     * @param string $name_index
+     * @return Individual
+     */
+    public function setNameIndex(string $name_index): Individual
+    {
+        $this->name_index = $name_index;
+        return $this;
     }
 }

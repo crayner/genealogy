@@ -8,6 +8,7 @@ export default class IndividualApp extends Component {
         super(props);
 
         this.translations = props.translations;
+        this.search = props.search
         this.state = {
             individual: props.individual,
             form: props.form,
@@ -55,7 +56,11 @@ export default class IndividualApp extends Component {
     }
 
     render() {
-        return (<IndividualDetails translations={this.translations} individual={this.state.individual} handleOpenForm={this.handleOpenForm} />);
+        return (<IndividualDetails translations={this.translations}
+                                   individual={this.state.individual}
+                                   handleOpenForm={this.handleOpenForm}
+                                   search={this.search}
+        />);
     }
 }
 

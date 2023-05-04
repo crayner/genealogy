@@ -124,16 +124,17 @@ death:
     details:
         date: >-
             { status, select,
-                in {Died in <strong>{date}</strong>}
-                decade_only {Died in {date}s.}
-                on_the {Died on the <strong>{date}</strong>, aged <strong>{age}</strong>}
-                other {Death without status in {date}}
+                in {Died in |{date}|}
+                on {Died on |{date}|}
+                decade_only {Died in |{date}|s.}
+                on_the {Died on the |{date}|, aged |{age}|}
+                other {Death without status in |{date}|}
             }
         location: >-
             { location_status, select,
-                ok { in <strong>{location}</strong>.}
+                ok { at |{location}|.}
                 empty {.}
-                other {location status not set correctly {location}}
+                other {location status not set correctly |{location}|}
             }
 WikiTree User name: WikiTree User name
 Usually an email address: Usually an email address
@@ -428,3 +429,7 @@ short_name: >-
     }
 
 'formerly': 'formerly'
+'Family Name': 'Family Name'
+'Given Names': 'Given Names'
+'Search Name List': 'Search Name List'
+'Quick Search Names': 'Quick Search Names'
